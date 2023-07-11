@@ -1,12 +1,12 @@
 import { Options } from "@mikro-orm/core"
 import { SqlHighlighter } from "@mikro-orm/sql-highlighter"
 
-type Config = { production: Options, development?: Options } 
+type Config = { production: Options, development?: Options }
 
 export const databaseConfig: DatabaseConfigType = {
-    
+
     path: './database/', // path to the folder containing the migrations and SQLite database (if used)
-    
+
     // config for setting up an automated backup of the database (ONLY FOR SQLITE)
     backup: {
         enabled: false,
@@ -21,8 +21,8 @@ const envMikroORMConfig = {
         /**
          * SQLite
          */
-        type: 'better-sqlite', // or 'sqlite'
-        dbName: `${databaseConfig.path}db.sqlite`,
+        // type: 'better-sqlite', // or 'sqlite'
+        // dbName: `${databaseConfig.path}db.sqlite`,
 
         /**
          * MongoDB
@@ -43,12 +43,14 @@ const envMikroORMConfig = {
         /**
          * MySQL
          */
-        // type: 'mysql',
-        // dbName: process.env['DATABASE_NAME'],
-        // host: process.env['DATABASE_HOST'],
-        // port: Number(process.env['DATABASE_PORT']),
-        // user: process.env['DATABASE_USER'],
-        // password: process.env['DATABASE_PASSWORD'],
+        type: 'mysql',
+        dbName: process.env['DATABASE_NAME'],
+        host: process.env['DATABASE_HOST'],
+        port: Number(process.env['DATABASE_PORT']),
+        user: process.env['DATABASE_USER'],
+        password: process.env['DATABASE_PASSWORD'],
+
+
 
         /**
          * MariaDB
@@ -62,7 +64,7 @@ const envMikroORMConfig = {
 
         highlighter: new SqlHighlighter(),
         debug: false,
-        
+
         migrations: {
             path: './database/migrations',
             emit: 'js',
