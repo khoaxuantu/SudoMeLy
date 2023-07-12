@@ -34,7 +34,8 @@ type GeneralConfigType = {
                 channel: string,
                 imageChannel: string
             }
-        }
+        },
+        nicknameChannelKeyword: string
     }
 
 }

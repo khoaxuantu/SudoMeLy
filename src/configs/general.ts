@@ -38,7 +38,8 @@ export const generalConfig: GeneralConfigType = {
                 channel: "hello-world",
                 imageChannel: "image-welcome"
             }
-        }
+        },
+        nicknameChannelKeyword: "nickname-requests"
     }
 
 }

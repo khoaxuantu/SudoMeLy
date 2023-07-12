@@ -64,6 +64,49 @@ type RootTranslation = {
 				DESCRIPTION: RequiredParams<'link'>
 			}
 		}
+		CONFIG: {
+			OPTIONS: {
+				PREFIX: {
+					/**
+					 * n​e​w​_​p​r​e​f​i​x
+					 */
+					NAME: string
+					/**
+					 * T​h​e​ ​n​e​w​ ​p​r​e​f​i​x​ ​o​f​ ​t​h​e​ ​b​o​t​.
+					 */
+					DESCRIPTION: string
+				}
+				NICKNAME_CHANNEL: {
+					/**
+					 * n​i​c​k​n​a​m​e​_​c​h​a​n​n​e​l
+					 */
+					NAME: string
+					/**
+					 * S​e​t​ ​t​h​e​ ​n​i​c​k​n​a​m​e​ ​r​e​q​u​e​s​t​s​ ​c​h​a​n​n​e​l​.
+					 */
+					DESCRIPTION: string
+				}
+				GREETING_CHANNEL: {
+					/**
+					 * g​r​e​e​t​i​n​g​_​c​h​a​n​n​e​l
+					 */
+					NAME: string
+					/**
+					 * S​e​t​ ​t​h​e​ ​g​r​e​e​t​i​n​g​ ​c​h​a​n​n​e​l​.
+					 */
+					DESCRIPTION: string
+				}
+			}
+			EMBED: {
+				/**
+				 * P​r​e​f​i​x​:​ ​`​{​p​r​e​f​i​x​}​`​.​ ​N​i​c​k​n​a​m​e​ ​c​h​a​n​n​e​l​:​ ​{​n​i​c​k​n​a​m​e​}​.​ ​G​r​e​e​t​i​n​g​ ​c​h​a​n​n​e​l​:​ ​{​g​r​e​e​t​i​n​g​}​.
+				 * @param {string} greeting
+				 * @param {string} nickname
+				 * @param {string} prefix
+				 */
+				DESCRIPTION: RequiredParams<'greeting' | 'nickname' | 'prefix'>
+			}
+		}
 		PREFIX: {
 			/**
 			 * p​r​e​f​i​x
@@ -220,6 +263,46 @@ export type TranslationFunctions = {
 				 * [Click here]({link}) to invite me!
 				 */
 				DESCRIPTION: (arg: { link: unknown }) => LocalizedString
+			}
+		}
+		CONFIG: {
+			OPTIONS: {
+				PREFIX: {
+					/**
+					 * new_prefix
+					 */
+					NAME: () => LocalizedString
+					/**
+					 * The new prefix of the bot.
+					 */
+					DESCRIPTION: () => LocalizedString
+				}
+				NICKNAME_CHANNEL: {
+					/**
+					 * nickname_channel
+					 */
+					NAME: () => LocalizedString
+					/**
+					 * Set the nickname requests channel.
+					 */
+					DESCRIPTION: () => LocalizedString
+				}
+				GREETING_CHANNEL: {
+					/**
+					 * greeting_channel
+					 */
+					NAME: () => LocalizedString
+					/**
+					 * Set the greeting channel.
+					 */
+					DESCRIPTION: () => LocalizedString
+				}
+			}
+			EMBED: {
+				/**
+				 * Prefix: `{prefix}`. Nickname channel: {nickname}. Greeting channel: {greeting}.
+				 */
+				DESCRIPTION: (arg: { greeting: string, nickname: string, prefix: string }) => LocalizedString
 			}
 		}
 		PREFIX: {

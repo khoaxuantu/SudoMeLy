@@ -22,6 +22,25 @@ const en = {
 				DESCRIPTION: '[Click here]({link}) to invite me!',
 			},
 		},
+		CONFIG: {
+			OPTIONS: {
+				PREFIX: {
+					NAME: 'new_prefix',
+					DESCRIPTION: 'The new prefix of the bot.',
+				},
+				NICKNAME_CHANNEL: {
+					NAME: 'nickname_channel',
+					DESCRIPTION: 'Set the nickname requests channel.',
+				},
+				GREETING_CHANNEL: {
+					NAME: 'greeting_channel',
+					DESCRIPTION: 'Set the greeting channel.',
+				},
+			},
+			EMBED: {
+				DESCRIPTION: 'Prefix: `{prefix:string}`. Nickname channel: {nickname:string}. Greeting channel: {greeting:string}.',
+			},
+		},
 		PREFIX: {
 			NAME: 'prefix',
 			DESCRIPTION: 'Change the prefix of the bot.',

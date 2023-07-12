@@ -7,7 +7,7 @@ import { generalConfig } from "@configs"
 import { Discord, Slash, SlashOption } from "@decorators"
 import { Guild } from "@entities"
 import { UnknownReplyError } from "@errors"
-import { Guard, UserPermissions } from "@guards"
+import { Disabled, Guard, UserPermissions } from "@guards"
 import { Database, EventManager } from "@services"
 import { resolveGuild, simpleSuccessEmbed } from "@utils/functions"
 
@@ -23,7 +23,7 @@ export default class PrefixCommand {
 
     @SimpleCommand({ name: 'test' })
     @Guard(
-        UserPermissions(['Administrator'])
+       Disabled
     )
     async test(
         command: SimpleCommandMessage, client: Client
