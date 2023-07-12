@@ -6,7 +6,7 @@ type GeneralConfigType = {
     ownerId: string
     timezone: string
     automaticUploadImagesToImgur: boolean
-    
+
     simpleCommandsPrefix: string
     automaticDeferring: boolean
 
@@ -28,11 +28,15 @@ type GeneralConfigType = {
         type: "PLAYING" | "STREAMING" | "LISTENING" | "WATCHING" | "CUSTOM" | "COMPETING"
     }[]
 
+    mely: {
+        greetingChannelKeywords: string
+    }
+
 }
 
 type DatabaseConfigType = {
-    
-    path: `${string}/` 
+
+    path: `${string}/`
 
     backup: {
         enabled: boolean
@@ -80,7 +84,7 @@ type LogsConfigType = {
 type StatsConfigType = {
 
     interaction: {
-        
+
         exclude: InteractionsConstants[]
     }
 }

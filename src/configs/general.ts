@@ -35,7 +35,10 @@ export const generalConfig: GeneralConfigType = {
             text: 'some knowledge',
             type: 'STREAMING'
         }
-    ]
+    ],
+    mely: {
+        greetingChannelKeywords: "hello-world"
+    }
 
 }
 
