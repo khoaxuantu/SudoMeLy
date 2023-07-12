@@ -6,15 +6,15 @@ type GeneralConfigType = {
     ownerId: string
     timezone: string
     automaticUploadImagesToImgur: boolean
-    
+
     simpleCommandsPrefix: string
     automaticDeferring: boolean
 
     links: {
-		invite: string
-		supportServer: string
-		gitRemoteRepo: string
-	}
+        invite: string
+        supportServer: string
+        gitRemoteRepo: string
+    }
 
     devs: string[]
 
@@ -28,11 +28,21 @@ type GeneralConfigType = {
         type: "PLAYING" | "STREAMING" | "LISTENING" | "WATCHING" | "CUSTOM" | "COMPETING"
     }[]
 
+    mely: {
+        greeting: {
+            keywords: {
+                channel: string,
+                imageChannel: string
+            }
+        },
+        nicknameChannelKeyword: string
+    }
+
 }
 
 type DatabaseConfigType = {
-    
-    path: `${string}/` 
+
+    path: `${string}/`
 
     backup: {
         enabled: boolean
@@ -80,7 +90,7 @@ type LogsConfigType = {
 type StatsConfigType = {
 
     interaction: {
-        
+
         exclude: InteractionsConstants[]
     }
 }

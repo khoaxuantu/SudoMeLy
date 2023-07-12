@@ -98,6 +98,24 @@
           "nullable": true,
           "mappedType": "string"
         },
+        "nickname_channel_id": {
+          "name": "nickname_channel_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "greeting_channel_id": {
+          "name": "greeting_channel_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
         "deleted": {
           "name": "deleted",
           "type": "tinyint(1)",

@@ -18,6 +18,12 @@ export class Guild extends CustomBaseEntity {
     @Property({ nullable: true, type: 'string' })
     prefix: string | null
 
+    @Property({ nullable: true, type: 'string' })
+    nickname_channel_id: string | null
+
+    @Property({ nullable: true, type: 'string' })
+    greeting_channel_id: string | null
+
     @Property()
     deleted: boolean = false
 
@@ -29,12 +35,12 @@ export class Guild extends CustomBaseEntity {
 // =========== Custom Repository =============
 // ===========================================
 
-export class GuildRepository extends EntityRepository<Guild> { 
+export class GuildRepository extends EntityRepository<Guild> {
 
     async updateLastInteract(guildId?: string): Promise<void> {
 
         const guild = await this.findOne({ id: guildId })
-        
+
         if (guild) {
             guild.lastInteract = new Date()
             await this.flush()
