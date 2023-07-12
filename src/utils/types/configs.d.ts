@@ -11,10 +11,10 @@ type GeneralConfigType = {
     automaticDeferring: boolean
 
     links: {
-		invite: string
-		supportServer: string
-		gitRemoteRepo: string
-	}
+        invite: string
+        supportServer: string
+        gitRemoteRepo: string
+    }
 
     devs: string[]
 
@@ -29,7 +29,12 @@ type GeneralConfigType = {
     }[]
 
     mely: {
-        greetingChannelKeywords: string
+        greeting: {
+            keywords: {
+                channel: string,
+                imageChannel: string
+            }
+        }
     }
 
 }

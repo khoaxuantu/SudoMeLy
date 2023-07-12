@@ -37,7 +37,12 @@ export const generalConfig: GeneralConfigType = {
         }
     ],
     mely: {
-        greetingChannelKeywords: "hello-world"
+        greeting: {
+            keywords: {
+                channel: "hello-world",
+                imageChannel: "image-welcome"
+            }
+        }
     }
 
 }
