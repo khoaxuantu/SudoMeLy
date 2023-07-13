@@ -24,6 +24,9 @@ export class Guild extends CustomBaseEntity {
     @Property({ nullable: true, type: 'string' })
     greeting_channel_id: string | null
 
+    @Property({ nullable: true, type: 'string' })
+    log_channel_id: string | null
+
     @Property()
     deleted: boolean = false
 
