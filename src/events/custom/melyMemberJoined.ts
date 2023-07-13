@@ -1,4 +1,4 @@
-import { ArgsOf, Client,  SimpleCommandMessage } from 'discordx'
+import { ArgsOf, Client, SimpleCommandMessage } from 'discordx'
 import { inject, injectable, delay, container } from 'tsyringe'
 
 import { Discord, On, OnCustom } from '@decorators'
@@ -19,9 +19,10 @@ import {
     Guild,
     GuildMember,
     TextChannel,
+    codeBlock,
 } from 'discord.js'
 import { generalConfig } from '@configs'
-import generateHelloWorld from './helpers/generateHelloWorld'
+import helloWorldTemplates from './helloWorldTemplates.json'
 
 @Discord()
 @injectable()
@@ -48,7 +49,9 @@ export default class MelyMemberJoined {
 
         if (!guildData || !guildData.greeting_channel_id) return
 
-        const greetingChannel = await guild.channels.fetch(guildData.greeting_channel_id)
+        const greetingChannel = await guild.channels.fetch(
+            guildData.greeting_channel_id
+        )
 
         if (!greetingChannel || greetingChannel.type !== ChannelType.GuildText)
             return
@@ -97,7 +100,7 @@ export default class MelyMemberJoined {
             .setTitle(
                 `Chào mừng ${member.displayName} đã đến với vũ trụ ${guild.name}!`
             )
-            .setDescription(generateHelloWorld(member))
+            .setDescription(this.generateHelloWorld(member))
             .setThumbnail(member.displayAvatarURL())
             .setImage(banner?.url ?? null)
 
@@ -151,5 +154,16 @@ export default class MelyMemberJoined {
             .random()
 
         return banner
+    }
+
+    generateHelloWorld(member: GuildMember) {
+        const template =
+            helloWorldTemplates[
+                Math.floor(Math.random() * helloWorldTemplates.length)
+            ]
+        return codeBlock(
+            template.lang,
+            template.template.replace('${username}', member.displayName)
+        )
     }
 }
