@@ -20,7 +20,8 @@
     "migration:up": "npx mikro-orm migration:up",
     "migration:down": "npx mikro-orm migration:down",
     "plugins:install": "installoop --rootDir=./src/plugins",
-    "postinstall": "npm run plugins:install"
+    "postinstall": "npm run plugins:install",
+    "lint": "eslint . --ext .js,.jsx,.ts"
   },
   "dependencies": {
     "@discordx/importer": "~1.2.1",
