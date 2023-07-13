@@ -21,6 +21,7 @@ import {
     TextChannel,
 } from 'discord.js'
 import { generalConfig } from '@configs'
+import generateHelloWorld from './helpers/generateHelloWorld'
 
 @Discord()
 @injectable()
@@ -80,8 +81,6 @@ export default class MelyMemberJoined {
 
         const banner = await this.getRandomWelcomeImage(guild)
 
-        let content = `cout << "hello world, ${member}!";`
-
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()
                 .setStyle(ButtonStyle.Link)
@@ -98,11 +97,12 @@ export default class MelyMemberJoined {
             .setTitle(
                 `Chào mừng ${member.displayName} đã đến với vũ trụ ${guild.name}!`
             )
+            .setDescription(generateHelloWorld(member))
             .setThumbnail(member.displayAvatarURL())
             .setImage(banner?.url ?? null)
 
         greetingChannel.send({
-            content,
+            content: `${member}`,
             embeds: [embed],
             components: [row],
         })
