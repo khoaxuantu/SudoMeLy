@@ -1,8 +1,10 @@
 import { Category } from '@discordx/utilities'
 import {
+    APIEmbedField,
     ApplicationCommandOptionType,
     Channel,
     CommandInteraction,
+    EmbedBuilder,
     PermissionFlagsBits,
 } from 'discord.js'
 import { Client } from 'discordx'
@@ -30,22 +32,24 @@ export default class PrefixCommand {
     async configGuild(
         @SlashOption({
             name: 'prefix',
-            localizationSource: 'COMMANDS.CONFIG.OPTIONS.PREFIX',
             type: ApplicationCommandOptionType.String,
         })
         prefix: string | undefined,
         @SlashOption({
             name: 'nickname_channel',
-            localizationSource: 'COMMANDS.CONFIG.OPTIONS.NICKNAME_CHANNEL',
             type: ApplicationCommandOptionType.Channel,
         })
         nicknameChannel: Channel | undefined,
         @SlashOption({
             name: 'greeting_channel',
             type: ApplicationCommandOptionType.Channel,
-            localizationSource: 'COMMANDS.CONFIG.OPTIONS.GREETING_CHANNEL',
         })
         greetingChannel: Channel | undefined,
+        @SlashOption({
+            name: 'introduction_channel',
+            type: ApplicationCommandOptionType.Channel,
+        })
+        introductionChannel: Channel | undefined,
         interaction: CommandInteraction,
         client: Client,
         { localize }: InteractionData
@@ -63,19 +67,31 @@ export default class PrefixCommand {
                 greetingChannel?.id || guildData.greeting_channel_id || null
             this.db.get(Guild).persistAndFlush(guildData)
 
-            simpleSuccessEmbed(
-                interaction,
-                localize['COMMANDS']['CONFIG']['EMBED']['DESCRIPTION']({
-                    prefix:
+            const fields: APIEmbedField[] = [
+                {
+                    name: 'Prefix',
+                    value:
                         guildData.prefix || generalConfig.simpleCommandsPrefix,
-                    nickname: guildData.nickname_channel_id
+                },
+                {
+                    name: 'Nickname',
+                    value: guildData.nickname_channel_id
                         ? `<#${guildData.nickname_channel_id}>`
                         : '`null`',
-                    greeting: guildData.greeting_channel_id
+                },
+                {
+                    name: 'Greeting',
+                    value: guildData.greeting_channel_id
                         ? `<#${guildData.greeting_channel_id}>`
                         : '`null`',
-                })
-            )
+                },
+            ]
+            
+            const embed = new EmbedBuilder()
+                .setTitle('CONFIG')
+                .addFields(fields)
+
+            interaction.followUp({ embeds: [embed] })
         } else {
             throw new UnknownReplyError(interaction)
         }

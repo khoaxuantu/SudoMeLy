@@ -17,7 +17,7 @@ import {
 import { ButtonComponent, Client, SlashOption } from 'discordx'
 import { Guard, UserPermissions } from '@guards'
 import { Discord, Slash } from '@decorators'
-import { Database } from '@services'
+import { Database, Logger } from '@services'
 import { Guild } from '@entities'
 import { injectable } from 'tsyringe'
 
@@ -25,7 +25,7 @@ import { injectable } from 'tsyringe'
 @injectable()
 @Category('General')
 export default class NickReqCommand {
-    constructor(private db: Database) {}
+    constructor(private db: Database, private logger: Logger) {}
 
     extractField(embed: Embed) {
         const { fields } = embed
@@ -188,7 +188,7 @@ export default class NickReqCommand {
                                 ephemeral: true,
                             })
 
-                        console.error('[Nick Decline User DM]', e)
+                        this.logger.logError(e, 'unhandledRejection')
                     })
             })
             .catch((error) => {
@@ -197,7 +197,7 @@ export default class NickReqCommand {
                         content: `${error.message}`,
                         ephemeral: true,
                     })
-                console.error('[Nick Decline]', error)
+                this.logger.logError(error, 'unhandledRejection')
             })
     }
 
