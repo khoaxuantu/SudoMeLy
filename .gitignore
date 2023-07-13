@@ -21,3 +21,4 @@ logs/
 # other
 tests/
 pnpm-lock.yaml
+package-lock.json
