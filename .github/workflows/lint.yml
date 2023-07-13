@@ -1,4 +1,4 @@
-name: CI
+name: Linter
 on:
     push:
         branches:
@@ -25,3 +25,4 @@ jobs:
 
             - name: Run ESLint
               run: npm run lint
+
