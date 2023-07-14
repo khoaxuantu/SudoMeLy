@@ -21,7 +21,7 @@
     "migration:down": "npx mikro-orm migration:down",
     "plugins:install": "installoop --rootDir=./src/plugins",
     "postinstall": "npm run plugins:install",
-    "lint": "eslint src/** --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "format": "prettier src && eslint src/** --ext .js,.jsx,.ts,.tsx --fix"
   },
   "dependencies": {
