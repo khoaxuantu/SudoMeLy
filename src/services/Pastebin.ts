@@ -29,7 +29,7 @@ export class Pastebin {
 
         const paste = await this.client.createPaste({ content })
 
-        const pasteEntity = new PastebinEntity()
+        let pasteEntity = new PastebinEntity()
         pasteEntity.id = paste.url
         pasteEntity.editCode = paste.editCode
         if (lifetime) pasteEntity.lifetime = Math.floor(lifetime)
