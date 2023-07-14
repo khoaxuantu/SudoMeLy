@@ -76,7 +76,7 @@
             "error",
             "always"
         ],
-        "prefer-const": "error",
+        // "prefer-const": "error",
         "space-before-blocks": "error",
         "space-before-function-paren": [
             "error",
