@@ -19,7 +19,7 @@ export const initDataTable = async () => {
 
         await dataRepository.add(
             key as DataType, 
-            defaultData[key as DataType]
+            defaultData[key as DataType],
         )
     }
 }

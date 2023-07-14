@@ -11,11 +11,11 @@ export default class MessageCreateEvent {
 
     @On("messageCreate")
     @Guard(
-        Maintenance
+        Maintenance,
     )
     async messageCreateHandler(
         [message]: ArgsOf<"messageCreate">, 
-        client: Client
+        client: Client,
      ) {
 
         // eval command

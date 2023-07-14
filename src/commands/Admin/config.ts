@@ -52,7 +52,7 @@ export default class PrefixCommand {
         introductionChannel: Channel | undefined,
         interaction: CommandInteraction,
         client: Client,
-        { localize }: InteractionData
+        { localize }: InteractionData,
     ) {
         const guild = resolveGuild(interaction),
             guildData = await this.db

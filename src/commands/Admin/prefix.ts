@@ -31,7 +31,7 @@ export default class PrefixCommand {
         prefix: string | undefined,
         interaction: CommandInteraction,
         client: Client,
-        { localize }: InteractionData
+        { localize }: InteractionData,
     ) {
         const guild = resolveGuild(interaction),
             guildData = await this.db
@@ -46,7 +46,7 @@ export default class PrefixCommand {
                 interaction,
                 localize['COMMANDS']['PREFIX']['EMBED']['DESCRIPTION']({
                     prefix: prefix || generalConfig.simpleCommandsPrefix,
-                })
+                }),
             )
         } else {
             throw new UnknownReplyError(interaction)

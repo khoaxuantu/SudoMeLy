@@ -17,7 +17,7 @@ export const Schedule = (cronExpression: string, jobName?: string) => {
     return (
 		target: any,
 		propertyKey: string,
-		descriptor: PropertyDescriptor
+		descriptor: PropertyDescriptor,
 	) => {
         
         // associate the context to the function, with the injected dependencies defined
@@ -32,7 +32,7 @@ export const Schedule = (cronExpression: string, jobName?: string) => {
             null, 
             false, 
             generalConfig.timezone,
-            target
+            target,
         )
 
         import('@services').then(async services => {

@@ -3,10 +3,10 @@ import { container, InjectionToken } from 'tsyringe'
 
 export const OnCustom = (event: string) => {
 
-    return function (
+    return function(
 		target: any,
 		propertyKey: string,
-		descriptor: PropertyDescriptor
+		descriptor: PropertyDescriptor,
     ) {
 
         // associate the context to the function, with the injected dependencies defined

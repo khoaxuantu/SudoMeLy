@@ -6,7 +6,7 @@ export const getLocalizedInfo = (target: 'NAME' | 'DESCRIPTION', localizationSou
     const localizations = Object.fromEntries(
         locales
             .map(locale => [locale, getLocalizationFromPathString(localizationSource + '.' + target as TranslationsNestedPaths, locale)])
-            .filter(([_, value]) => value)
+            .filter(([_, value]) => value),
     )
 
     return Object.keys(localizations).length > 0 ? localizations : undefined

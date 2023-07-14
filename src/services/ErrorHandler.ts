@@ -7,7 +7,7 @@ import { BaseError } from "@utils/classes"
 export class ErrorHandler {
 
     constructor(
-        private logger: Logger
+        private logger: Logger,
     ) {
 
         // Catch all exceptions

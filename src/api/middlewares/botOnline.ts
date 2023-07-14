@@ -13,8 +13,8 @@ export class BotOnline {
 
         const { data } = await axios.get(`${baseUrl}/health/check`, {
             params: {
-                logIgnore: true
-            }
+                logIgnore: true,
+            },
         })
     
         if (!data?.online) throw new InternalServerError('Bot is offline')

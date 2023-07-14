@@ -15,7 +15,7 @@ export default class SimpleCommandCreateEvent {
         private stats: Stats,
         private logger: Logger,
         private db: Database,
-        private eventManager: EventManager    
+        private eventManager: EventManager,    
     ) {}
 
     // =============================
@@ -42,11 +42,11 @@ export default class SimpleCommandCreateEvent {
     
     @On('messageCreate')
     @Guard( 
-        Maintenance
+        Maintenance,
     )
     async simpleCommandCreateEmitter(
         [message]: ArgsOf<'messageCreate'>, 
-        client: Client
+        client: Client,
     ) {
        
         const prefix = await getPrefixFromMessage(message)

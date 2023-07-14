@@ -15,31 +15,31 @@ export const logsConfig: LogsConfigType = {
         // exclude some interactions types
         exclude: [
             'BUTTON_INTERACTION', 
-            'SELECT_MENU_INTERACTION'
-        ]
+            'SELECT_MENU_INTERACTION',
+        ],
     },
 
     simpleCommand: {
         file: true,
         console: true,
-        channel: null
+        channel: null,
     },
 
     newUser: {
         file: true,
         console: true,
-        channel: null
+        channel: null,
     },
 
     guild: {
         file: true,
         console: true,
-        channel: null
+        channel: null,
     },
     
     error: {
         file: true,
         console: true,
-        channel: null
-    }
+        channel: null,
+    },
 }

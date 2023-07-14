@@ -16,16 +16,16 @@ export default class InteractionCreateEvent {
     constructor(
         private stats: Stats,
         private logger: Logger,
-        private db: Database
+        private db: Database,
     ) {}
 
     @On('interactionCreate')
     @Guard(
-        Maintenance
+        Maintenance,
     )
     async interactionCreateHandler(
         [interaction]: ArgsOf<'interactionCreate'>, 
-        client: Client
+        client: Client,
     ) {
         
         // defer the reply

@@ -28,7 +28,7 @@ export const ContextMenu = (options: ContextMenuOptions) => {
             target: 'name',
             options, 
             localizationSource,
-            nameFallback: commandNameFromFile
+            nameFallback: commandNameFromFile,
         })
     } 
 

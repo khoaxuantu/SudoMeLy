@@ -11,7 +11,7 @@ import { formatDate, resolveDependencies } from "@utils/functions"
 
 @Controller('/database')
 @UseBefore(
-    Authenticated
+    Authenticated,
 )
 @injectable()
 export class DatabaseController extends BaseController {
@@ -36,11 +36,11 @@ export class DatabaseController extends BaseController {
             return { 
                 message: 'Backup generated',
                 data: {
-                    snapshotName: snapshotName + '.txt'
-                }
+                    snapshotName: snapshotName + '.txt',
+                },
             }
         }
-        else throw new InternalServerError("Couldn't generate backup, see the logs for more information")
+        else {throw new InternalServerError("Couldn't generate backup, see the logs for more information")}
     }
 
     @Post('/restore')

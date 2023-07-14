@@ -1,26 +1,28 @@
-import { User as DUser } from "discord.js"
-import { Client } from "discordx"
+import { User as DUser } from 'discord.js'
+import { Client } from 'discordx'
 
-import { Guild, User } from "@entities"
-import { Database, Logger, Stats } from "@services"
-import { resolveDependencies, resolveDependency } from "@utils/functions"
+import { Guild, User } from '@entities'
+import { Database, Logger, Stats } from '@services'
+import { resolveDependencies, resolveDependency } from '@utils/functions'
 
 /**
  * Add a active user to the database if doesn't exist.
- * @param user 
+ * @param user
  */
 export const syncUser = async (user: DUser) => {
-    
-    const  [ db, stats, logger ] = await resolveDependencies([Database, Stats, Logger])
+    const [db, stats, logger] = await resolveDependencies([
+        Database,
+        Stats,
+        Logger,
+    ])
 
     const userRepo = db.get(User)
 
     const userData = await userRepo.findOne({
-        id: user.id
+        id: user.id,
     })
 
     if (!userData) {
-
         // add user to the db
         const newUser = new User()
         newUser.id = user.id
@@ -34,35 +36,39 @@ export const syncUser = async (user: DUser) => {
 
 /**
  * Sync a guild with the database.
- * @param guildId 
- * @param client 
+ * @param guildId
+ * @param client
  */
 export const syncGuild = async (guildId: string, client: Client) => {
-
-    const  [ db, stats, logger ] = await resolveDependencies([Database, Stats, Logger])
+    const [db, stats, logger] = await resolveDependencies([
+        Database,
+        Stats,
+        Logger,
+    ])
 
     const guildRepo = db.get(Guild),
-          guildData = await guildRepo.findOne({ id: guildId, deleted: false })
+        guildData = await guildRepo.findOne({ id: guildId, deleted: false })
 
     const fetchedGuild = await client.guilds.fetch(guildId).catch(() => null)
 
-    //check if this guild exists in the database, if not it creates it (or recovers it from the deleted ones)
+    // check if this guild exists in the database, if not it creates it (or recovers it from the deleted ones)
     if (!guildData) {
-
-        const deletedGuildData = await guildRepo.findOne({ id: guildId, deleted: true })
+        const deletedGuildData = await guildRepo.findOne({
+            id: guildId,
+            deleted: true,
+        })
 
         if (deletedGuildData) {
             // recover deleted guild
-            
+
             deletedGuildData.deleted = false
             await guildRepo.persistAndFlush(deletedGuildData)
 
             stats.register('RECOVER_GUILD', guildId)
             logger.logGuild('RECOVER_GUILD', guildId)
-        }
-        else {
+        } else {
             // create new guild
-        
+
             const newGuild = new Guild()
             newGuild.id = guildId
             await guildRepo.persistAndFlush(newGuild)
@@ -70,9 +76,7 @@ export const syncGuild = async (guildId: string, client: Client) => {
             stats.register('NEW_GUILD', guildId)
             logger.logGuild('NEW_GUILD', guildId)
         }
-
-    }
-    else if (!fetchedGuild) {
+    } else if (!fetchedGuild) {
         // guild is deleted but still exists in the database
 
         guildData.deleted = true
@@ -85,9 +89,9 @@ export const syncGuild = async (guildId: string, client: Client) => {
 
 /**
  * Sync all guilds with the database.
- * @param client 
+ * @param client
  */
-export const syncAllGuilds = async (client: Client)  => {
+export const syncAllGuilds = async (client: Client) => {
     const db = await resolveDependency(Database)
 
     // add missing guilds

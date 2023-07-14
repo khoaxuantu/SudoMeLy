@@ -14,7 +14,7 @@ export const GuildOnly: GuardFunction<
 
     const isInGuild = arg instanceof CommandInteraction ? arg.inGuild() : arg.message.guild
 
-    if (isInGuild) return next()
+    if (isInGuild) {return next()}
     else {
         await replyToInteraction(arg, L[getLocaleFromInteraction(arg)].GUARDS.GUILD_ONLY())
     }

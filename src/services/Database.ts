@@ -16,7 +16,7 @@ export class Database {
     private _orm: MikroORM<DatabaseDriver>
 
     constructor(
-        @inject(delay(() => Logger)) private logger: Logger
+        @inject(delay(() => Logger)) private logger: Logger,
     ) { }
 
     async initialize() {
@@ -24,7 +24,7 @@ export class Database {
         const pluginsManager = await resolveDependency(PluginsManager)
 
         // get config
-        let config = mikroORMConfig[process.env.NODE_ENV || 'development'] as Options<DatabaseDriver>
+        const config = mikroORMConfig[process.env.NODE_ENV || 'development'] as Options<DatabaseDriver>
 
         // defines entities into the config
         config.entities = [...Object.values(entities), ...pluginsManager.getEntities()]
@@ -94,12 +94,12 @@ export class Database {
             await backup(
                 mikroORMConfig[process.env.NODE_ENV]!.dbName!, 
                 snapshotName + '.txt', 
-                objectsPath
+                objectsPath,
             )
 
             return true
 
-        } catch(e) {
+        } catch (e) {
 
             const errorMessage = typeof e === 'string' ? e : e instanceof Error ? e.message : 'Unknown error'
 
@@ -165,7 +165,7 @@ export class Database {
 
         const size: DatabaseSize = {
             db: null,
-            backups: null
+            backups: null,
         }
 
         if (this.isSQLiteDatabase()) {

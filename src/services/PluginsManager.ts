@@ -17,7 +17,7 @@ export class PluginsManager {
     private _plugins: Plugin[] = []
 
     constructor(
-        private store: Store
+        private store: Store,
     ) {}
 
     public async loadPlugins(): Promise<void> {
@@ -51,7 +51,7 @@ export class PluginsManager {
 
     public async initServices(): Promise<{ [key: string]: any }> {
 
-        let services: { [key: string]: any } = {}
+        const services: { [key: string]: any } = {}
 
         for (const plugin of this._plugins) {
 
@@ -73,9 +73,9 @@ export class PluginsManager {
 
     public async syncTranslations(): Promise<void> {
 
-        let localeMapping: ImportLocaleMapping[] =  []
-        let namespaces: { [key: string]: string[] } = {}
-        let translations: { [key: string]: BaseTranslation } = {}
+        const localeMapping: ImportLocaleMapping[] = []
+        const namespaces: { [key: string]: string[] } = {}
+        const translations: { [key: string]: BaseTranslation } = {}
 
         for (const locale of locales) {
             const path = getSourceCodeLocation() + '/i18n/' + locale
@@ -101,7 +101,7 @@ export class PluginsManager {
             localeMapping.push({
                 locale,
                 translations: translations[locale],
-                namespaces: namespaces[locale]
+                namespaces: namespaces[locale],
             })
         }
 

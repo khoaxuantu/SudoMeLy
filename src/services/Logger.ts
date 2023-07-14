@@ -21,19 +21,19 @@ export class Logger {
         @inject(delay(() => Scheduler)) private scheduler: Scheduler,
         @inject(delay(() => WebSocket)) private ws: WebSocket,
         @inject(delay(() => Pastebin)) private pastebin: Pastebin,
-        @inject(delay(() => PluginsManager)) private pluginsManager: PluginsManager
+        @inject(delay(() => PluginsManager)) private pluginsManager: PluginsManager,
     ) {
         this.defaultConsole = { ...console }
-        console.info    = (...args) => this.log(args.join(", "), 'info')
-        console.warn    = (...args) => this.log(args.join(", "), 'warn')
-        console.error   = (...args) => this.log(args.join(", "), 'error')
+        console.info = (...args) => this.log(args.join(", "), 'info')
+        console.warn = (...args) => this.log(args.join(", "), 'warn')
+        console.error = (...args) => this.log(args.join(", "), 'error')
     }
 
     private readonly logPath: string = `${__dirname}/../../logs`
     private readonly levels = ['info', 'warn', 'error'] as const
     private embedLevelBuilder = {
-        info:  (message: string): BaseMessageOptions => ({ embeds: [{ title: "INFO",  description: message, color: 0x007fe7, timestamp: new Date().toISOString() }] }),
-        warn:  (message: string): BaseMessageOptions => ({ embeds: [{ title: "WARN",  description: message, color: 0xf37100, timestamp: new Date().toISOString() }] }),
+        info:  (message: string): BaseMessageOptions => ({ embeds: [{ title: "INFO", description: message, color: 0x007fe7, timestamp: new Date().toISOString() }] }),
+        warn:  (message: string): BaseMessageOptions => ({ embeds: [{ title: "WARN", description: message, color: 0xf37100, timestamp: new Date().toISOString() }] }),
         error: (message: string): BaseMessageOptions => ({ embeds: [{ title: "ERROR", description: message, color: 0x7C1715, timestamp: new Date().toISOString() }] }),
     }
     private interactionTypeReadable: { [key in InteractionsConstants]: string } = {
@@ -106,8 +106,8 @@ export class Logger {
         
         if (
             channel && 
-            ( channel instanceof TextChannel 
-            || channel instanceof ThreadChannel )
+            (channel instanceof TextChannel 
+            || channel instanceof ThreadChannel)
         ) {
 
             if (typeof message !== 'string') return channel.send(message).catch(console.error)
@@ -121,7 +121,7 @@ export class Logger {
         // send the log to all connected websocket clients        
         this.ws.broadcast('log', { 
             level, 
-            message: message 
+            message: message, 
         })
     }
 
@@ -140,7 +140,7 @@ export class Logger {
         message: string, 
         level: typeof this.levels[number] = 'info', 
         saveToFile: boolean = true,
-        channelId: string | null = null
+        channelId: string | null = null,
     ) {
 
         if (message === '') return
@@ -176,9 +176,9 @@ export class Logger {
         const message = oneLine`
             (${type})
             "${action}"
-            ${channel instanceof TextChannel || channel instanceof ThreadChannel ? `in channel #${channel.name}`: ''}
-            ${guild ? `in guild ${guild.name}`: ''}
-            ${user ? `by ${user.username}#${user.discriminator}`: ''}
+            ${channel instanceof TextChannel || channel instanceof ThreadChannel ? `in channel #${channel.name}` : ''}
+            ${guild ? `in guild ${guild.name}` : ''}
+            ${user ? `by ${user.username}#${user.discriminator}` : ''}
         `
 
         const chalkedMessage = oneLine`
@@ -200,52 +200,52 @@ export class Logger {
 
         if (logsConfig.interaction.console) this.console(chalkedMessage)
         if (logsConfig.interaction.file) this.file(message)
-        if (logsConfig.interaction.channel) this.discordChannel(logsConfig.interaction.channel, {
+        if (logsConfig.interaction.channel) {this.discordChannel(logsConfig.interaction.channel, {
             embeds: [{
                 author: {
                     name: (user ? `${user.username}#${user.discriminator}` : 'Unknown user'),
-                    icon_url: (user?.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}` : '')
+                    icon_url: (user?.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}` : ''),
                 },
                 title: `Interaction`,
                 thumbnail: {
-                    url: guild?.iconURL({ forceStatic: true }) ?? ""
+                    url: guild?.iconURL({ forceStatic: true }) ?? "",
                 },
                 fields: [
                     {
                         name: 'Type',
                         value: this.interactionTypeReadable[type],
-                        inline: true
+                        inline: true,
                     },
                     {
                         name: "\u200b",
                         value: "\u200b",
-                        inline: true
+                        inline: true,
                     },
                     {
                         name: 'Action',
                         value: action,
-                        inline: true
+                        inline: true,
                     },
                     {
                         name: "Guild",
                         value: guild ? guild.name : 'Unknown',
-                        inline: true
+                        inline: true,
                     },
                     {
                         name: "\u200b",
                         value: "\u200b",
-                        inline: true
+                        inline: true,
                     },
                     {
                         name: "Channel",
                         value: channel instanceof TextChannel || channel instanceof ThreadChannel ? `#${channel.name}` : 'Unknown',
-                        inline: true
-                    }
+                        inline: true,
+                    },
                 ],
                 color: 0xdb5c21,
-                timestamp: new Date().toISOString()
-            }]
-        })
+                timestamp: new Date().toISOString(),
+            }],
+        })}
     }
 
     /**
@@ -259,20 +259,20 @@ export class Logger {
 
         if (logsConfig.newUser.console) this.console(chalkedMessage)
         if (logsConfig.newUser.file) this.file(message)
-        if (logsConfig.newUser.channel) this.discordChannel(logsConfig.newUser.channel, {
+        if (logsConfig.newUser.channel) {this.discordChannel(logsConfig.newUser.channel, {
             embeds: [{
                 title: 'New user',
                 description: `**${user.tag}**`,
                 thumbnail: {
-                    url: user.displayAvatarURL({ forceStatic: false })
+                    url: user.displayAvatarURL({ forceStatic: false }),
                 },
                 color: 0x83dd80,
                 timestamp: new Date().toISOString(),
                 footer: {
-                    text: user.id
-                }
-            }]
-        })
+                    text: user.id,
+                },
+            }],
+        })}
     }
 
     /**
@@ -304,24 +304,24 @@ export class Logger {
 
             if (logsConfig.guild.console) this.console(chalkedMessage)
             if (logsConfig.guild.file) this.file(message)
-            if (logsConfig.guild.channel) this.discordChannel(logsConfig.guild.channel, {
+            if (logsConfig.guild.channel) {this.discordChannel(logsConfig.guild.channel, {
                 embeds: [{
                     title: (type === 'NEW_GUILD' ? 'New guild' : type === 'DELETE_GUILD' ? 'Deleted guild' : 'Recovered guild'),
-                    //description: `**${guild.name} (\`${guild.id}\`)**\n${guild.memberCount} members`,
+                    // description: `**${guild.name} (\`${guild.id}\`)**\n${guild.memberCount} members`,
                     fields: [{
                         name: guild?.name ?? 'Unknown',
-                        value: `${guild?.memberCount ?? 'N/A'} members`
+                        value: `${guild?.memberCount ?? 'N/A'} members`,
                     }],
                     footer: {
-                        text: guild?.id ?? 'Unknown'
+                        text: guild?.id ?? 'Unknown',
                     },
                     thumbnail: {
-                        url: guild?.iconURL() ?? ''
+                        url: guild?.iconURL() ?? '',
                     },
                     color: (type === 'NEW_GUILD' ? 0x02fd77 : type === 'DELETE_GUILD' ? 0xff0000 : 0xfffb00),
                     timestamp: new Date().toISOString(),
-                }]
-            })
+                }],
+            })}
         })
     }
 
@@ -343,15 +343,13 @@ export class Logger {
             embedMessage += `\`\`\`\n${trace.map((frame: StackFrame) => `\> ${frame.file}:${frame.lineNumber}`).join('\n')}\n\`\`\``
             embedTitle += `***${type === 'Exception' ? 'Exception' : 'Unhandled rejection'}* : ${error.message}**`
             chalkedMessage += ` ${chalk.dim.italic.gray(type === 'Exception' ? 'Exception' : 'Unhandled rejection')} : ${error.message}\n${chalk.dim.italic(trace.map((frame: StackFrame) => `\t> ${frame.file}:${frame.lineNumber}`).join('\n'))}`
-        } else {
-            if (type === 'Exception') {
+        } else if (type === 'Exception') {
                 message += `An exception as occurred in a unknown file\n\t> ${error.message}`
                 embedMessage += `An exception as occurred in a unknown file\n${error.message}`
             } else {
                 message += `An unhandled rejection as occurred in a unknown file\n\t> ${error}`
                 embedMessage += `An unhandled rejection as occurred in a unknown file\n${error}`
             }
-        }
 
         if (embedMessage.length >= 4096) {        
             const paste = await this.pastebin.createPaste(embedTitle + "\n" + embedMessage)
@@ -361,15 +359,15 @@ export class Logger {
 
         if (logsConfig.error.console) this.console(chalkedMessage, 'error')
         if (logsConfig.error.file) this.file(message, 'error')
-        if (logsConfig.error.channel && process.env['NODE_ENV'] === 'production') this.discordChannel(logsConfig.error.channel, {
+        if (logsConfig.error.channel && process.env['NODE_ENV'] === 'production') {this.discordChannel(logsConfig.error.channel, {
             embeds: [{
                 title: (embedTitle.length >= 256 ? (embedTitle.substring(0, 252) + "...") : embedTitle),
                 description: embedMessage,
                 color: 0x7C1715,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
                 
-            }]
-        }, 'error')
+            }],
+        }, 'error')}
     }
 
     // =================================
@@ -395,7 +393,7 @@ export class Logger {
         const simpleCommands = MetadataStorage.instance.simpleCommands
         const contextMenus = [
             ...MetadataStorage.instance.applicationCommandMessages,
-            ...MetadataStorage.instance.applicationCommandUsers
+            ...MetadataStorage.instance.applicationCommandUsers,
         ]
         const commandsSum = slashCommands.length + simpleCommands.length + contextMenus.length
 
@@ -411,7 +409,7 @@ export class Logger {
         const entities = fs.readdirSync(`${__dirname}/../entities`)
             .filter(entity => 
                 !entity.startsWith('index')
-                && !entity.startsWith('BaseEntity')
+                && !entity.startsWith('BaseEntity'),
             )
 
         const pluginsEntitesCount = this.pluginsManager.plugins.reduce((acc, plugin) => acc + Object.values(plugin.entities).length, 0)
@@ -449,7 +447,7 @@ export class Logger {
         // plugins
         const pluginsCount = this.pluginsManager.plugins.length
 
-        this.console(chalk.hex('#47d188')(`${symbol} ${numberAlign(pluginsCount)} ${chalk.bold('plugin' + (pluginsCount > 1 ? 's':''))} loaded`), 'info', true)
+        this.console(chalk.hex('#47d188')(`${symbol} ${numberAlign(pluginsCount)} ${chalk.bold('plugin' + (pluginsCount > 1 ? 's' : ''))} loaded`), 'info', true)
     
         // connected
         if (apiConfig.enabled) {
@@ -462,11 +460,11 @@ export class Logger {
                         top: 1,
                         bottom: 0,
                         left: 1,
-                        right: 1
+                        right: 1,
                     },
                     borderStyle: 'round',
-                    dimBorder: true
-                }
+                    dimBorder: true,
+                },
             )), 'info', true)
         }
 
@@ -478,11 +476,11 @@ export class Logger {
                     top: 1,
                     bottom: 1,
                     left: 1 * 3,
-                    right: 1 * 3
+                    right: 1 * 3,
                 },
                 borderStyle: 'round',
-                dimBorder: true
-            }
+                dimBorder: true,
+            },
         )), 'info', true)
     }
 }

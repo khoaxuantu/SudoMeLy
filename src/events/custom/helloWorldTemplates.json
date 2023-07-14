@@ -1,98 +1,98 @@
 [
     {
         "lang": "c",
-        "template": "printf(\"Hello World ${username}!\");"
+        "template": "printf(\"Hello World ${username}!\");",
     },
     {
         "lang": "cpp",
-        "template": "std::cout << \"Hello World ${username}!\";"
+        "template": "std::cout << \"Hello World ${username}!\";",
     },
     {
         "lang": "bash",
-        "template": "#!/bin/bash\necho \"Hello World ${username}!\""
+        "template": "#!/bin/bash\necho \"Hello World ${username}!\"",
     },
     {
         "lang": "bat",
-        "template": "@echo off\necho \"Hello World ${username}!\""
+        "template": "@echo off\necho \"Hello World ${username}!\"",
     },
     {
         "lang": "csharp",
-        "template": "Console.WriteLine(\"Hello World ${username}!\");"
+        "template": "Console.WriteLine(\"Hello World ${username}!\");",
     },
     {
         "lang": "go",
-        "template": "fmt.Println(\"Hello World ${username}!\")"
+        "template": "fmt.Println(\"Hello World ${username}!\")",
     },
     {
         "lang": "html",
-        "template": "<h1>Hello World ${username}!</h1>"
+        "template": "<h1>Hello World ${username}!</h1>",
     },
     {
         "lang": "java",
-        "template": "System.out.println(\"Hello World ${username}!\");"
+        "template": "System.out.println(\"Hello World ${username}!\");",
     },
     {
         "lang": "js",
-        "template": "console.log(\"Hello World ${username}!\");"
+        "template": "console.log(\"Hello World ${username}!\");",
     },
     {
         "lang": "ts",
-        "template": "console.log(\"Hello World ${username}!\" as string);"
+        "template": "console.log(\"Hello World ${username}!\" as string);",
     },
     {
         "lang": "markdown",
-        "template": "# Hello World ${username}!"
+        "template": "# Hello World ${username}!",
     },
     {
         "lang": "objectivec",
-        "template": "NSLog(@\"Hello World! ${username}!\");"
+        "template": "NSLog(@\"Hello World! ${username}!\");",
     },
     {
         "lang": "perl",
-        "template": "#!/usr/bin/perl\nprint \"Hello World ${username}!\";"
+        "template": "#!/usr/bin/perl\nprint \"Hello World ${username}!\";",
     },
     {
         "lang": "php",
-        "template": "echo \"Hello World ${username}!\";"
+        "template": "echo \"Hello World ${username}!\";",
     },
     {
         "lang": "python",
-        "template": "print(\"Hello World ${username}!\")"
+        "template": "print(\"Hello World ${username}!\")",
     },
     {
         "lang": "sql",
-        "template": "SELECT user FROM Mely WHERE greeting = \"Hello World ${username}!\";"
+        "template": "SELECT user FROM Mely WHERE greeting = \"Hello World ${username}!\";",
     },
     {
         "lang": "ruby",
-        "template": "puts \"Hello World ${username}!\""
+        "template": "puts \"Hello World ${username}!\"",
     },
     {
         "lang": "haskell",
-        "template": "putStrLn \"Hello World ${username}!\" ;"
+        "template": "putStrLn \"Hello World ${username}!\" ;",
     },
     {
         "lang": "pascal",
-        "template": "begin\n\twriteln ('Hello World ${username}!');\nend."
+        "template": "begin\n\twriteln ('Hello World ${username}!');\nend.",
     },
     {
         "lang": "scala",
-        "template": "object HelloWorld extends App {\n\tprintIn(\"Hello World ${username}!\")\n}"
+        "template": "object HelloWorld extends App {\n\tprintIn(\"Hello World ${username}!\")\n}",
     },
     {
         "lang": "matlab",
-        "template": "disp('Hello World ${username}!');"
+        "template": "disp('Hello World ${username}!');",
     },
     {
         "lang": "lisp",
-        "template": "(print \"Hello World ${username}!\")"
+        "template": "(print \"Hello World ${username}!\")",
     },
     {
         "lang": "fortran",
-        "template": "print *, \"Hello World ${username}!\""
+        "template": "print *, \"Hello World ${username}!\"",
     },
     {
         "lang": "r",
-        "template": "cat('Hello World ${username}!')"
-    }
+        "template": "cat('Hello World ${username}!')",
+    },
 ]

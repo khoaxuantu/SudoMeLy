@@ -7,7 +7,7 @@ import { resolveDependencies } from "@utils/functions"
 
 @Controller('/stats')
 @UseBefore(
-    Authenticated
+    Authenticated,
 )
 export class StatsController extends BaseController {
 
@@ -32,7 +32,7 @@ export class StatsController extends BaseController {
                 totalGuilds: totalStats.TOTAL_GUILDS,
                 totalActiveUsers: totalStats.TOTAL_ACTIVE_USERS,
                 totalCommands: totalStats.TOTAL_COMMANDS,
-            }
+            },
         }
     }
 
@@ -66,7 +66,7 @@ export class StatsController extends BaseController {
                 date: commandsUsage.slashCommands[i].date,
                 slashCommands: commandsUsage.slashCommands[i].count,
                 simpleCommands: commandsUsage.simpleCommands[i].count,
-                contextMenus: commandsUsage.userContextMenus[i].count + commandsUsage.messageContextMenus[i].count
+                contextMenus: commandsUsage.userContextMenus[i].count + commandsUsage.messageContextMenus[i].count,
             })
         }
 

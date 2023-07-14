@@ -13,7 +13,7 @@ export class WebSocket {
     private _isInit = false
 
     constructor(
-        private store: Store
+        private store: Store,
     ) {}
 
     get socket() {
@@ -33,8 +33,8 @@ export class WebSocket {
                 botName: this._botName,
                 type: 'bot',
                 botId: botId || '',
-                authorized: getDevs()
-            }
+                authorized: getDevs(),
+            },
         })
 
         this._socket.on('connect', () => {

@@ -94,9 +94,7 @@ export function SlashGroup<TRoot extends string>(options: VerifyName<string> | S
         
         return SlashGroupX(options as SlashGroupOptionsX<VerifyName<string>, string, VerifyName<string>>)
     
-    } else {
-        if (root) return SlashGroupX(options, root)
-        else return SlashGroupX(options)
-    }
+    } else if (root) {return SlashGroupX(options, root)}
+        else {return SlashGroupX(options)}
 }
 

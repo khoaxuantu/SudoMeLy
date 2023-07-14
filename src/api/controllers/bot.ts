@@ -14,7 +14,7 @@ import { getDevs, isDev, isInMaintenance, resolveDependencies, setMaintenance } 
 @Controller('/bot')
 @UseBefore(
     BotOnline,
-    Authenticated
+    Authenticated,
 )
 export class BotController extends BaseController {
 
@@ -70,7 +70,7 @@ export class BotController extends BaseController {
 
             body.push({
                 discord: discordGuild,
-                database: databaseGuild
+                database: databaseGuild,
             })
         }
 
@@ -93,7 +93,7 @@ export class BotController extends BaseController {
 
         return {
             discord: discordGuild,
-            database: databaseGuild
+            database: databaseGuild,
         }
     }
 
@@ -107,7 +107,7 @@ export class BotController extends BaseController {
 
         return {
             success: true,
-            message: 'Guild deleted'
+            message: 'Guild deleted',
         }
     }
 
@@ -132,7 +132,7 @@ export class BotController extends BaseController {
             }
         }
 
-        if (invite) return invite.toJSON()
+        if (invite) {return invite.toJSON()}
         else {
             throw new Unauthorized('Missing permission to create an invite in this guild')           
         }
@@ -159,7 +159,7 @@ export class BotController extends BaseController {
 
                     users.push({
                         discord: discordUser,
-                        database: databaseUser
+                        database: databaseUser,
                     })
                 }
             }
@@ -184,7 +184,7 @@ export class BotController extends BaseController {
 
         return {
             discord: discordUser,
-            database: databaseUser
+            database: databaseUser,
         }
     }
 
@@ -208,7 +208,7 @@ export class BotController extends BaseController {
         await setMaintenance(maintenance)
 
         return {
-            maintenance
+            maintenance,
         }
     }
 

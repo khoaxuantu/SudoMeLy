@@ -16,7 +16,7 @@ export default class ReadyEvent {
         private db: Database,
         private logger: Logger,
         private scheduler: Scheduler,
-        private store: Store
+        private store: Store,
     ) {}
 
     private activityIndex = 0
@@ -31,9 +31,9 @@ export default class ReadyEvent {
         await client.initApplicationCommands({
             global: {
                 disable: {
-                    delete: false
-                }
-            }
+                    delete: false,
+                },
+            },
         })
 
         // change activity
@@ -65,18 +65,18 @@ export default class ReadyEvent {
         
         activity.text = eval(`new String(\`${activity.text}\`).toString()`)
             
-        if (activity.type === 'STREAMING') { //streaming activity
+        if (activity.type === 'STREAMING') { // streaming activity
             
             client.user?.setStatus('online')
             client.user?.setActivity(activity.text, {
                 'url': 'https://www.twitch.tv/discord',
-                'type': ActivityType.Streaming
+                'type': ActivityType.Streaming,
             })
 
-        } else { //other activities
+        } else { // other activities
             
             client.user?.setActivity(activity.text, {
-                type: ActivityTypeEnumString.indexOf(activity.type)
+                type: ActivityTypeEnumString.indexOf(activity.type),
             })
         }
 

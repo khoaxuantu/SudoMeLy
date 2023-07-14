@@ -12,23 +12,23 @@ import { getColor } from "@utils/functions"
 export default class InviteCommand {
 
 	@Slash({ 
-		name: 'invite'
+		name: 'invite',
     })
 	@Guard()
 	async invite(
 		interaction: CommandInteraction, 
 		client: Client,
-		{ localize }: InteractionData
+		{ localize }: InteractionData,
 	) {
 
 		const embed = new EmbedBuilder()
 			.setTitle(localize.COMMANDS.INVITE.EMBED.TITLE())
-			.setDescription(localize.COMMANDS.INVITE.EMBED.DESCRIPTION({link: generalConfig.links.invite}))
+			.setDescription(localize.COMMANDS.INVITE.EMBED.DESCRIPTION({ link: generalConfig.links.invite }))
 			.setColor(getColor('primary'))
-			.setFooter({ text : 'Powered by DiscBot Team ❤'})
+			.setFooter({ text : 'Powered by DiscBot Team ❤' })
 
 		interaction.followUp({
-			embeds: [embed]
+			embeds: [embed],
 		})
 	}
 }

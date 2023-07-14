@@ -22,30 +22,30 @@ export const generalConfig: GeneralConfigType = {
 
     eval: {
         name: 'bot', // name to trigger the eval command
-        onlyOwner: false // restrict the eval command to the owner only (if not, all the devs can trigger it)
+        onlyOwner: false, // restrict the eval command to the owner only (if not, all the devs can trigger it)
     },
 
     // define the bot activities (phrases under its name). Types can be: PLAYING, LISTENING, WATCHING, STREAMING
     activities: [
         {
             text: 'Code MeLy',
-            type: 'WATCHING'
-        }
+            type: 'WATCHING',
+        },
     ],
     mely: {
         greeting: {
             keywords: {
                 channel: "hello-world",
-                imageChannel: "image-welcome"
-            }
+                imageChannel: "image-welcome",
+            },
         },
-        nicknameChannelKeyword: "nickname-requests"
-    }
+        nicknameChannelKeyword: "nickname-requests",
+    },
 
 }
 
 // global colors
 export const colorsConfig = {
 
-    primary: '#2F3136'
+    primary: '#2F3136',
 }

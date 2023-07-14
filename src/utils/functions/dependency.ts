@@ -15,6 +15,6 @@ type Forward<T> = {[Key in keyof T]: T[Key] extends abstract new (...args: any) 
 export const resolveDependencies = async <T extends readonly [...unknown[]]>(tokens: F.Narrow<T>) => {
 
     return Promise.all(tokens.map((token: any) => 
-        resolveDependency(token)
+        resolveDependency(token),
     )) as Promise<Forward<F.Narrow<T>>>
 }

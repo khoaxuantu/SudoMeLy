@@ -31,7 +31,7 @@ export default class MelyMemberJoined {
         private stats: Stats,
         private logger: Logger,
         private db: Database,
-        private eventManager: EventManager
+        private eventManager: EventManager,
     ) {}
 
     // =============================
@@ -50,16 +50,16 @@ export default class MelyMemberJoined {
         if (!guildData || !guildData.greeting_channel_id) return
 
         const greetingChannel = await guild.channels.fetch(
-            guildData.greeting_channel_id
+            guildData.greeting_channel_id,
         )
 
         if (!greetingChannel || greetingChannel.type !== ChannelType.GuildText)
-            return
+            {return}
 
         if (member.user.bot) {
             const botRole =
                 (await guild.roles.cache.find(
-                    (r) => r.name.toLowerCase() == 'bots'
+                    (r) => r.name.toLowerCase() == 'bots',
                 )) ||
                 (await guild.roles.create({
                     name: 'bots',
@@ -77,7 +77,7 @@ export default class MelyMemberJoined {
         if (!guild.rulesChannel) return
 
         const generalChat = await guild.channels.cache.find((c) =>
-            c.name.toLowerCase().includes('general-chat')
+            c.name.toLowerCase().includes('general-chat'),
         )
 
         if (!generalChat) return
@@ -92,13 +92,13 @@ export default class MelyMemberJoined {
             new ButtonBuilder()
                 .setStyle(ButtonStyle.Link)
                 .setURL(`${generalChat.url}`)
-                .setLabel('Cùng tám thôi!')
+                .setLabel('Cùng tám thôi!'),
         )
 
         const embed = new EmbedBuilder()
             .setColor('Random')
             .setTitle(
-                `Chào mừng ${member.displayName} đã đến với vũ trụ ${guild.name}!`
+                `Chào mừng ${member.displayName} đã đến với vũ trụ ${guild.name}!`,
             )
             .setDescription(this.generateHelloWorld(member))
             .setThumbnail(member.displayAvatarURL())
@@ -119,7 +119,7 @@ export default class MelyMemberJoined {
     @Guard(Maintenance)
     async melyMemberJoinedEmitter(
         [member]: ArgsOf<'guildMemberAdd'>,
-        client: Client
+        client: Client,
     ) {
         /**
          * @param {GuildMember} member
@@ -132,7 +132,7 @@ export default class MelyMemberJoined {
         const imagesChannelCache = await guild.channels.cache.find((c) =>
             c.name
                 .toLowerCase()
-                .includes(generalConfig.mely.greeting.keywords.imageChannel)
+                .includes(generalConfig.mely.greeting.keywords.imageChannel),
         )
 
         if (!imagesChannelCache) return
@@ -163,7 +163,7 @@ export default class MelyMemberJoined {
             ]
         return codeBlock(
             template.lang,
-            template.template.replace('${username}', member.displayName)
+            template.template.replace('${username}', member.displayName),
         )
     }
 }

@@ -117,7 +117,7 @@ export default class NickReqCommand {
 
         const reqDecReasonRow =
             new ActionRowBuilder<TextInputBuilder>().addComponents(
-                reqDecReasonInput
+                reqDecReasonInput,
             )
 
         const modal = new ModalBuilder()
@@ -135,7 +135,7 @@ export default class NickReqCommand {
             .then(async (replyInteraction: ModalSubmitInteraction) => {
                 if (!interaction.guild) return
                 const reqMem = await interaction.guild.members.fetch(
-                    fields.reqId || ''
+                    fields.reqId || '',
                 )
                 const reason =
                     replyInteraction.fields.getTextInputValue('reason')
@@ -165,7 +165,7 @@ export default class NickReqCommand {
                         text: `Declined by ${replyInteraction.user.tag}`,
                     })
 
-                //@ts-ignore
+                // @ts-ignore
                 replyInteraction.update({
                     embeds: [decline_embed],
                     components: [],
@@ -183,20 +183,20 @@ export default class NickReqCommand {
                     })
                     .catch((e) => {
                         if (e.message)
-                            replyInteraction.followUp({
+                            {replyInteraction.followUp({
                                 content: `${e.message}`,
                                 ephemeral: true,
-                            })
+                            })}
 
                         this.logger.logError(e, 'unhandledRejection')
                     })
             })
             .catch((error) => {
                 if (error.message)
-                    interaction.followUp({
+                    {interaction.followUp({
                         content: `${error.message}`,
                         ephemeral: true,
-                    })
+                    })}
                 this.logger.logError(error, 'unhandledRejection')
             })
     }
@@ -215,7 +215,7 @@ export default class NickReqCommand {
         new_nick: string,
         interaction: CommandInteraction,
         client: Client,
-        { localize }: InteractionData
+        { localize }: InteractionData,
     ) {
         const { guild } = interaction
 
@@ -240,7 +240,7 @@ export default class NickReqCommand {
         }
 
         const nickReqChannel = await guild.channels.fetch(
-            guildData.nickname_channel_id
+            guildData.nickname_channel_id,
         )
 
         if (!nickReqChannel || nickReqChannel.type !== ChannelType.GuildText) {
@@ -286,7 +286,7 @@ export default class NickReqCommand {
                     .setCustomId('nick-d')
                     .setDisabled(state)
                     .setLabel('Decline')
-                    .setStyle(ButtonStyle.Danger)
+                    .setStyle(ButtonStyle.Danger),
             ),
         ]
 

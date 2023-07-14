@@ -17,7 +17,7 @@ import packageJson from "../../../package.json"
 const links = [
 	{ label: 'Invite me!', url: generalConfig.links.invite },
 	{ label: 'Support server', url: generalConfig.links.supportServer },
-	{ label: 'Github', url: generalConfig.links.gitRemoteRepo }
+	{ label: 'Github', url: generalConfig.links.gitRemoteRepo },
 ]
 
 @Discord()
@@ -26,7 +26,7 @@ const links = [
 export default class InfoCommand {
 
 	constructor(
-		private stats: Stats
+		private stats: Stats,
 	) {}
 
 	@Slash({
@@ -36,7 +36,7 @@ export default class InfoCommand {
 	async info(
 		interaction: CommandInteraction,
 		client: Client,
-		{ localize }: InteractionData
+		{ localize }: InteractionData,
 	) {
 		
 		const embed = new EmbedBuilder()
@@ -124,7 +124,7 @@ export default class InfoCommand {
 						.setLabel(link.label)
 						.setURL(url)
 						.setStyle(ButtonStyle.Link)
-				} else return null
+				} else {return null}
 			})
 			.filter(link => link) as ButtonBuilder[]
 		const row = new ActionRowBuilder<ButtonBuilder>()
