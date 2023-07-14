@@ -17,7 +17,7 @@ export class PluginsManager {
     private _plugins: Plugin[] = []
 
     constructor(
-        private store: Store
+        private store: Store,
     ) {}
 
     public async loadPlugins(): Promise<void> {
@@ -73,7 +73,7 @@ export class PluginsManager {
 
     public async syncTranslations(): Promise<void> {
 
-        let localeMapping: ImportLocaleMapping[] =  []
+        let localeMapping: ImportLocaleMapping[] = []
         let namespaces: { [key: string]: string[] } = {}
         let translations: { [key: string]: BaseTranslation } = {}
 
@@ -101,7 +101,7 @@ export class PluginsManager {
             localeMapping.push({
                 locale,
                 translations: translations[locale],
-                namespaces: namespaces[locale]
+                namespaces: namespaces[locale],
             })
         }
 

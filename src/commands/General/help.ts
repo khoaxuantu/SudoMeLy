@@ -22,39 +22,39 @@ export default class HelpCommand {
     }
 
     @Slash({
-        name: 'help'
+        name: 'help',
     })
     async help(
         interaction: CommandInteraction,
         client: Client,
-        { localize }: InteractionData
+        { localize }: InteractionData,
     ) {
 
         const embed = await this.getEmbed({ client, interaction, locale: localize })
 
-        let components: any[] = []
+        const components: any[] = []
         components.push(this.getSelectDropdown("categories", localize).toJSON())
 
         interaction.followUp({
             embeds: [embed],
-            components
+            components,
         })
     }
 
     @SelectMenuComponent({
-        id: 'help-category-selector'
+        id: 'help-category-selector',
     })
     async selectCategory(interaction: StringSelectMenuInteraction, client: Client, { localize }: InteractionData) {
 
         const category = interaction.values[0]
 
         const embed = await this.getEmbed({ client, interaction, category, locale: localize })
-        let components: any[] = []
+        const components: any[] = []
         components.push(this.getSelectDropdown(category, localize).toJSON())
 
         interaction.update({
             embeds: [embed],
-            components
+            components,
         })
     }
 
@@ -75,21 +75,21 @@ export default class HelpCommand {
             const embed = new EmbedBuilder()
                 .setAuthor({
                     name: interaction.user.username,
-                    iconURL: interaction.user.displayAvatarURL({ forceStatic: false })
+                    iconURL: interaction.user.displayAvatarURL({ forceStatic: false }),
                 })
                 .setTitle(locale.COMMANDS.HELP.EMBED.TITLE())
                 .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/a/a4/Cute-Ball-Help-icon.png')
                 .setColor(getColor('primary'))
 
-            let currentGuild = resolveGuild(interaction)
-            let applicationCommands = [
+            const currentGuild = resolveGuild(interaction)
+            const applicationCommands = [
                 ...(currentGuild ? (await currentGuild.commands.fetch()).values() : []),
-                ...(await client.application!.commands.fetch()).values()
+                ...(await client.application!.commands.fetch()).values(),
             ]
 
             for (const category of this._categories) {
 
-                let commands = category[1]
+                const commands = category[1]
                     .map(cmd => {
                         return "</" +
                             (cmd.group ? cmd.group + ' ' : '') +
@@ -102,7 +102,7 @@ export default class HelpCommand {
 
                 embed.addFields([{
                     name: category[0],
-                    value: commands.join(', ')
+                    value: commands.join(', '),
                 }])
             }
 
@@ -117,21 +117,21 @@ export default class HelpCommand {
         const embed = new EmbedBuilder()
             .setAuthor({
                 name: interaction.user.username,
-                iconURL: interaction.user.displayAvatarURL({ forceStatic: false })
+                iconURL: interaction.user.displayAvatarURL({ forceStatic: false }),
             })
             .setTitle(locale.COMMANDS.HELP.EMBED.CATEGORY_TITLE({ category }))
             .setFooter({
-                text: `${client.user!.username} • Page ${pageNumber + 1} of ${maxPage}`
+                text: `${client.user!.username} • Page ${pageNumber + 1} of ${maxPage}`,
             })
 
         if (!resultsOfPage) return embed
 
         for (const item of resultsOfPage) {
 
-            let currentGuild = resolveGuild(interaction)
-            let applicationCommands = [
+            const currentGuild = resolveGuild(interaction)
+            const applicationCommands = [
                 ...(currentGuild ? (await currentGuild.commands.fetch()).values() : []),
-                ...(await client.application!.commands.fetch()).values()
+                ...(await client.application!.commands.fetch()).values(),
             ]
 
             const { description } = item
@@ -147,7 +147,7 @@ export default class HelpCommand {
             embed.addFields([{
                 name: name,
                 value: fieldValue,
-                inline: resultsOfPage.length > 5
+                inline: resultsOfPage.length > 5,
             }])
         }
 
@@ -162,7 +162,7 @@ export default class HelpCommand {
             description: locale.COMMANDS.HELP.SELECT_MENU.TITLE(),
             label: "Categories",
             value: "categories",
-            default: defaultValue === "categories"
+            default: defaultValue === "categories",
         })
 
         for (const [category] of this._categories) {
@@ -172,7 +172,7 @@ export default class HelpCommand {
                 description,
                 label: category,
                 value: category,
-                default: defaultValue === category
+                default: defaultValue === category,
             })
         }
 

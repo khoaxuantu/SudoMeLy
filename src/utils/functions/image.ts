@@ -19,7 +19,7 @@ export const getImage = async (imageName: string): Promise<string | null> => {
             { fileName: `${imageName}.jpg` },
             { fileName: `${imageName}.jpeg` },
             { fileName: `${imageName}.gif` },
-        ]
+        ],
     })
 
     return image?.url || null

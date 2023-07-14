@@ -5,7 +5,7 @@ export const statsConfig: StatsConfigType = {
         // exclude interaction types from being recorded as stat
         exclude: [
             'BUTTON_INTERACTION',
-            'SELECT_MENU_INTERACTION'
-        ]
-    }
+            'SELECT_MENU_INTERACTION',
+        ],
+    },
 }

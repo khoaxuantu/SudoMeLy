@@ -32,7 +32,7 @@ const resolvers = {
 		MessageReaction: (interaction: MessageReaction) => interaction.message.author,
 		PartialMessageReaction: (interaction: PartialMessageReaction) => interaction.message.author,
 
-		fallback: (interaction: any) => null
+		fallback: (interaction: any) => null,
 	},
 
 	member: {
@@ -50,7 +50,7 @@ const resolvers = {
 		MessageReaction: (interaction: MessageReaction) => interaction.message.member,
 		PartialMessageReaction: (interaction: PartialMessageReaction) => interaction.message.member,
 
-		fallback: (interaction: any) => null
+		fallback: (interaction: any) => null,
 	},
 
 	guild: {
@@ -63,7 +63,7 @@ const resolvers = {
 		StringSelectMenuInteraction: (interaction: StringSelectMenuInteraction) => interaction.guild,
         ModalSubmitInteraction: (interaction: ModalSubmitInteraction) => interaction.guild,
 
-		fallback: (interaction: any) => null
+		fallback: (interaction: any) => null,
 	},
 
 	channel: {
@@ -76,7 +76,7 @@ const resolvers = {
 		StringSelectMenuInteraction: (interaction: StringSelectMenuInteraction) => interaction.channel,
         ModalSubmitInteraction: (interaction: ModalSubmitInteraction) => interaction.channel,
 
-		fallback: (interaction: any) => null
+		fallback: (interaction: any) => null,
 	},
 
 	commandName: {
@@ -85,7 +85,7 @@ const resolvers = {
 		UserContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.commandName,
 		MessageContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.commandName,
 
-		fallback: (_: any) => ''
+		fallback: (_: any) => '',
 	},
 
 	action: {
@@ -102,7 +102,7 @@ const resolvers = {
 		StringSelectMenuInteraction: (interaction: StringSelectMenuInteraction) => interaction.customId,
         ModalSubmitInteraction: (interaction: ModalSubmitInteraction) => interaction.customId,	
 	
-		fallback: (_: any) => ''
+		fallback: (_: any) => '',
 	},
 
 	locale: {
@@ -115,8 +115,8 @@ const resolvers = {
 		StringSelectMenuInteraction: (interaction: StringSelectMenuInteraction) => interaction.locale,
         ModalSubmitInteraction: (interaction: ModalSubmitInteraction) => interaction.locale,	
 	
-		fallback: (_: any) => 'en'
-	}
+		fallback: (_: any) => 'en',
+	},
 }
 
 export const resolveUser = (interaction: AllInteractions | Interaction | Message | VoiceState | MessageReaction | PartialMessageReaction) => {

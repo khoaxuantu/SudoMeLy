@@ -1,6 +1,6 @@
 import {
 	Pagination,
-	PaginationType
+	PaginationType,
 } from "@discordx/pagination"
 import { Category } from "@discordx/utilities"
 import { ApplicationCommandOptionType, CommandInteraction, EmbedBuilder, User } from "discord.js"
@@ -24,9 +24,9 @@ const statsResolver: StatsResolverType = [
 	  
 	  		return stats.sumStats(
 				stats.sumStats(simpleCommandMessages, commandInteractions),
-				stats.sumStats(userContextMenus, messageContextMenus)
+				stats.sumStats(userContextMenus, messageContextMenus),
 			)
-		}
+		},
 	},
 	{
 		name: 'GUILDS',
@@ -48,17 +48,17 @@ const statsResolver: StatsResolverType = [
 export default class StatsCommand {
 
 	constructor(
-		private stats: Stats
+		private stats: Stats,
 	) {}
 
 	@Slash({
-		name: 'stats'
+		name: 'stats',
 	})
 	async statsHandler(
 		@SlashOption({ name: 'days', type: ApplicationCommandOptionType.Number, required: true }) days: number,
 		interaction: CommandInteraction,
 		client: Client,
-		{ localize }: InteractionData
+		{ localize }: InteractionData,
 	) {
 
 		const embeds: EmbedBuilder[] = []
@@ -77,11 +77,11 @@ export default class StatsCommand {
 		await new Pagination(
 			interaction,
 			embeds.map((embed) => ({
-				embeds: [embed]
+				embeds: [embed],
 			})),
 			{
-				type: PaginationType.Button
-			}
+				type: PaginationType.Button,
+			},
 		).send()
 	}
 
@@ -100,9 +100,9 @@ export default class StatsCommand {
                         backgroundColor: 'rgba(252,231,3,0.1)',
                         borderColor: 'rgb(252,186,3)',
                         borderCapStyle: 'round',
-                        lineTension: 0.3
-                    }
-                ]
+                        lineTension: 0.3,
+                    },
+                ],
             },
             options: {
                 title: {
@@ -110,14 +110,14 @@ export default class StatsCommand {
                     text: name,
                     fontColor: 'rgba(255,255,254,0.6)',
                     fontSize: 20,
-                    padding: 15
+                    padding: 15,
                 },
                 legend: { display: false },
                 scales: {
                     xAxes: [ { ticks: { fontColor: 'rgba(255,255,254,0.6)' } } ],
-                    yAxes: [ { ticks: { fontColor: 'rgba(255,255,254,0.6)', beginAtZero: false, stepSize: 1 } } ]
-                }
-            }
+                    yAxes: [ { ticks: { fontColor: 'rgba(255,255,254,0.6)', beginAtZero: false, stepSize: 1 } } ],
+                },
+            },
         }
     
         return `https://quickchart.io/chart?c=${JSON.stringify(obj)}&format=png`.split(' ').join('%20')
@@ -128,7 +128,7 @@ export default class StatsCommand {
 		return new EmbedBuilder()
 			.setAuthor({ 
 				name: author.username, 
-				iconURL: author.displayAvatarURL({ forceStatic: false }) 
+				iconURL: author.displayAvatarURL({ forceStatic: false }), 
 			})
 			.setColor(getColor('primary'))
 			.setImage(link)

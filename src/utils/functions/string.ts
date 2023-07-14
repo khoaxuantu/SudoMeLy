@@ -6,11 +6,11 @@ import { constant } from "case"
  * @returns {boolean}
  */
 export const validString = (...strings: Array<unknown>): boolean => {
-    
+
     if (strings.length === 0) return false
-    
+
     for (const currString of strings) {
-        
+
         if (!currString) return false
         if (typeof currString !== "string") return false
         if (currString.length === 0) return false
@@ -23,7 +23,7 @@ export const validString = (...strings: Array<unknown>): boolean => {
 export const oneLine = (strings: TemplateStringsArray, ...keys: any[]) => {
 
     return strings
-        .reduce((result, part, i) => result + part + (keys[i] ?? '') , '')
+        .reduce((result, part, i) => result + part + (keys[i] ?? ''), '')
         .replace(/(?:\n(?:\s*))+/g, ' ')
         .split('\NEWLINE')
         .join('\n')
@@ -36,7 +36,7 @@ export const numberAlign = (number: number, align: number = 2) => {
 }
 
 export const constantPreserveDots = (string: string) => {
-    
+
     return string
         .split('.')
         .map(word => constant(word))
@@ -44,7 +44,7 @@ export const constantPreserveDots = (string: string) => {
 }
 
 export const isValidUrl = (url: string) => {
-    
+
     try {
         new URL(url)
         return true

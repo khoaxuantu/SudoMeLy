@@ -17,7 +17,7 @@ const allInteractions = {
         { type: 'CHAT_INPUT_COMMAND_INTERACTION' },
         { type: 'USER_CONTEXT_MENU_COMMAND_INTERACTION' },
         { type: 'MESSAGE_CONTEXT_MENU_COMMAND_INTERACTION' },
-    ] 
+    ], 
 }
 
 @singleton()
@@ -28,7 +28,7 @@ export class Stats {
     constructor(
         private db: Database,
         @inject(delay(() => Client)) private client: Client,
-        @inject(delay(() => WebSocket)) private ws: WebSocket
+        @inject(delay(() => WebSocket)) private ws: WebSocket,
     ) {
         this.statsRepo = this.db.get(Stat)
     }
@@ -63,7 +63,7 @@ export class Stats {
         const additionalData = {
             user: resolveUser(interaction)?.id,
             guild: resolveGuild(interaction)?.id || 'dm',
-            channel: resolveChannel(interaction)?.id
+            channel: resolveChannel(interaction)?.id,
         }
 
         // add it to the db
@@ -82,7 +82,7 @@ export class Stats {
         const additionalData = {
             user: command.message.author.id,
             guild: command.message.guild?.id || 'dm',
-            channel: command.message.channel?.id
+            channel: command.message.channel?.id,
         }
 
         // add it to the db
@@ -98,7 +98,7 @@ export class Stats {
             TOTAL_USERS: this.client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
             TOTAL_GUILDS: this.client.guilds.cache.size,
             TOTAL_ACTIVE_USERS: await this.db.get(User).count(),
-            TOTAL_COMMANDS: await this.statsRepo.count(allInteractions)
+            TOTAL_COMMANDS: await this.statsRepo.count(allInteractions),
         }
 
         return totalStatsObj
@@ -110,7 +110,7 @@ export class Stats {
     async getLastInteraction() {
 
         const lastInteraction = await this.statsRepo.findOne(allInteractions, {
-            orderBy: { createdAt: 'DESC' }
+            orderBy: { createdAt: 'DESC' },
         })
 
         return lastInteraction
@@ -122,7 +122,7 @@ export class Stats {
     async getLastGuildAdded() {
 
         const guilds = await this.db.get(Guild).find({}, {
-            orderBy: { createdAt: 'DESC' }
+            orderBy: { createdAt: 'DESC' },
         })
 
         return guilds[0]
@@ -151,28 +151,28 @@ export class Stats {
             // @ts-ignore
             const slashCommands = await this.db.em.aggregate(Stat, [
                 {
-                    $match: allInteractions
+                    $match: allInteractions,
                 },
                 {
                     '$group': {
                         _id : { type: '$type', value: '$value' },
-                        count: { '$sum': 1 }
-                    }
+                        count: { '$sum': 1 },
+                    },
                 },
                 {
                     '$replaceRoot': {
                         newRoot: {
                             '$mergeObjects': [
                                 '$_id',
-                                { count: '$count' }
-                            ]
-                        }
-                    }
-                }
+                                { count: '$count' },
+                            ],
+                        },
+                    },
+                },
             ])
     
             return slashCommands.sort((a: any, b: any) => b.count - a.count)
-        } else return []
+        } else {return []}
     }
 
     /**
@@ -185,7 +185,7 @@ export class Stats {
             '11-50': 0,
             '51-100': 0,
             '101-1000': 0,
-            '>1000': 0
+            '>1000': 0,
         }
 
         const users = await this.db.get(User).findAll()
@@ -195,8 +195,8 @@ export class Stats {
             const commandsCount = await this.db.get(Stat).count({
                 ...allInteractions,
                 additionalData: {
-                    user: user.id
-                }
+                    user: user.id,
+                },
             })
 
             if (commandsCount <= 10) usersActivity['1-10']++
@@ -230,14 +230,14 @@ export class Stats {
             const commandsCount = await this.db.get(Stat).count({
                 ...allInteractions,
                 additionalData: {
-                    guild: guild.id
-                }
+                    guild: guild.id,
+                },
             })
 
             topGuilds.push({
                 id: guild.id,
                 name: discordGuild?.name || '',
-                totalCommands: commandsCount
+                totalCommands: commandsCount,
             })
         }
 
@@ -261,7 +261,7 @@ export class Stats {
 
             stats.push({
                 date: formatDate(date, 'onlyDate'),
-                count: statCount
+                count: statCount,
             })
         }
 
@@ -279,11 +279,11 @@ export class Stats {
                 .reverse()
                 .reduce((acc, stat, i) => {
 
-                    if (acc.length === 0) acc.push(stat)
-                    else acc.push({
+                    if (acc.length === 0) {acc.push(stat)}
+                    else {acc.push({
                         date: stat.date,
-                        count: acc[i - 1].count + stat.count
-                    })
+                        count: acc[i - 1].count + stat.count,
+                    })}
                 
                     return acc
                 }, [] as StatPerInterval)
@@ -301,7 +301,7 @@ export class Stats {
 
         const allDays = [...new Set(stats1.concat(stats2).map(stat => stat.date))]
             .sort((a, b) => {
-                var aa = a.split('/').reverse().join(),
+                const aa = a.split('/').reverse().join(),
                     bb = b.split('/').reverse().join()
                 return aa < bb ? -1 : (aa > bb ? 1 : 0)
             })
@@ -310,7 +310,7 @@ export class Stats {
             date: day,
             count: 
             (stats1.find(stat => stat.date === day)?.count || 0) 
-            + (stats2.find(stat => stat.date === day)?.count || 0)
+            + (stats2.find(stat => stat.date === day)?.count || 0),
         }))
 
         return sumStats
@@ -330,8 +330,8 @@ export class Stats {
             type,
             createdAt: {
                 $gte: start,
-                $lte: end
-            }   
+                $lte: end,
+            },   
         })
 
         return stats.length
@@ -349,8 +349,8 @@ export class Stats {
             cpu: pidUsage.cpu.toFixed(1),
             memory: {
                 usedInMb: (pidUsage.memory / (1024 * 1024)).toFixed(1),
-                percentage: (pidUsage.memory / osu.mem.totalMem() * 100).toFixed(1)
-            }
+                percentage: (pidUsage.memory / osu.mem.totalMem() * 100).toFixed(1),
+            },
         }
     }
 
@@ -365,7 +365,7 @@ export class Stats {
             os: await osu.os.oos(),
             uptime: await osu.os.uptime(),
             hostname: await osu.os.hostname(),
-            platform: await osu.os.platform()
+            platform: await osu.os.platform(),
             // drive: osu.drive.info(),
         }
     }
@@ -376,7 +376,7 @@ export class Stats {
     getLatency() {
 
         return {
-            ping: this.client.ws.ping
+            ping: this.client.ws.ping,
         }
     }
 
@@ -405,11 +405,11 @@ export class Stats {
                 botStatus: {
                     online: true,
                     uptime: this.client.uptime,
-                    maintenance: await isInMaintenance()
+                    maintenance: await isInMaintenance(),
                 },
                 host: await this.getHostUsage(),
                 pid: await this.getPidUsage(),
-                latency: this.getLatency()
+                latency: this.getLatency(),
             }
     
             if (response) response('monitoring', data)

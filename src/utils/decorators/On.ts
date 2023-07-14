@@ -15,7 +15,7 @@ export const On = (event: string, options?: Omit<EventOptions, 'event'>): Method
     return function <T>(
         target: Record<string, T>,
         key: string,
-        descriptor?: PropertyDescriptor
+        descriptor?: PropertyDescriptor,
     ) {
 
         const clazz = target as unknown as new () => unknown

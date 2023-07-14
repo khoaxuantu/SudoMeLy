@@ -15,7 +15,7 @@ export const Once = (event: string, options?: EventOptions): MethodDecoratorEx =
     return function <T>(
         target: Record<string, T>,
         key: string,
-        descriptor?: PropertyDescriptor
+        descriptor?: PropertyDescriptor,
     ) {
 
         const clazz = target as unknown as new () => unknown
@@ -23,7 +23,7 @@ export const Once = (event: string, options?: EventOptions): MethodDecoratorEx =
             botIds: options?.botIds,
             event: event,
             once: true,
-            rest: false
+            rest: false,
         }).decorate(clazz.constructor, key, descriptor?.value)
 
         MetadataStorage.instance.addOn(on)

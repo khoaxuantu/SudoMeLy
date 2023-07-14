@@ -18,15 +18,15 @@ export default class PrefixCommand {
 
     constructor(
         private db: Database,
-        private eventManager: EventManager
+        private eventManager: EventManager,
     ) { }
 
     @SimpleCommand({ name: 'test' })
     @Guard(
-       Disabled
+       Disabled,
     )
     async test(
-        command: SimpleCommandMessage, client: Client
+        command: SimpleCommandMessage, client: Client,
     ) {
 
         /**

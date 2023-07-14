@@ -31,7 +31,7 @@ export const Maintenance: GuardFunction<
             
             if (arg instanceof CommandInteraction || arg instanceof SimpleCommandMessage) await replyToInteraction(arg, localizedReplyMessage)
         }
-        else return next()
+        else {return next()}
     } 
-    else return next()
+    else {return next()}
 }

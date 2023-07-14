@@ -40,7 +40,7 @@ export class Authenticated {
         
         // verify that the token is a valid FMA protected (or not) OAuth2 token -> https://stackoverflow.com/questions/71166596/is-there-a-way-to-check-if-a-discord-account-token-is-valid-or-not
         // FIXME: doesn't match actual tokens
-        //if (!token.match(fmaTokenRegex) && !token.match(nonFmaTokenRegex)) return ctx.throw(400, 'Invalid token')
+        // if (!token.match(fmaTokenRegex) && !token.match(nonFmaTokenRegex)) return ctx.throw(400, 'Invalid token')
 
         // directly skip the middleware if the token is already in the store, which is used here as a "cache"
         const authorizedAPITokens = this.store.get('authorizedAPITokens')

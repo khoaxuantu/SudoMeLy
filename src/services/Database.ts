@@ -16,7 +16,7 @@ export class Database {
     private _orm: MikroORM<DatabaseDriver>
 
     constructor(
-        @inject(delay(() => Logger)) private logger: Logger
+        @inject(delay(() => Logger)) private logger: Logger,
     ) { }
 
     async initialize() {
@@ -94,12 +94,12 @@ export class Database {
             await backup(
                 mikroORMConfig[process.env.NODE_ENV]!.dbName!, 
                 snapshotName + '.txt', 
-                objectsPath
+                objectsPath,
             )
 
             return true
 
-        } catch(e) {
+        } catch (e) {
 
             const errorMessage = typeof e === 'string' ? e : e instanceof Error ? e.message : 'Unknown error'
 
@@ -165,7 +165,7 @@ export class Database {
 
         const size: DatabaseSize = {
             db: null,
-            backups: null
+            backups: null,
         }
 
         if (this.isSQLiteDatabase()) {

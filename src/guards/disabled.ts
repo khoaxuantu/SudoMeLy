@@ -18,13 +18,11 @@ export const Disabled: GuardFunction<
     if (user?.id && isDev(user.id)) {
         return next()
     }
-    else {
-        if (arg instanceof CommandInteraction || arg instanceof SimpleCommandMessage) {
+    else if (arg instanceof CommandInteraction || arg instanceof SimpleCommandMessage) {
 
             const locale = getLocaleFromInteraction(arg),
                   localizedReplyMessage = L[locale].GUARDS.DISABLED_COMMAND()
     
             await replyToInteraction(arg, localizedReplyMessage)
         }
-    }
 }

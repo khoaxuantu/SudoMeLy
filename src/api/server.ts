@@ -19,7 +19,7 @@ export class Server {
     constructor(
         private pluginsManager: PluginsManager,
         private store: Store,
-        db: Database
+        db: Database,
     ) {
         this.orm = db.orm
     }
@@ -28,7 +28,7 @@ export class Server {
         
         this.app
             .use(bodyParser.json())
-            .use(bodyParser.urlencoded({extended: true}))
+            .use(bodyParser.urlencoded({ extended: true }))
             .use(Log)
             .use(PlatformAcceptMimesMiddleware)
 
@@ -44,19 +44,19 @@ export class Server {
             httpsPort: false,
             acceptMimes: ['application/json'],
             mount: {
-                '/': [...Object.values(controllers), ...this.pluginsManager.getControllers()]
+                '/': [...Object.values(controllers), ...this.pluginsManager.getControllers()],
             },
             swagger: [
                 {
                     path: '/docs',
-                    specVersion: '3.0.1'
-                }
+                    specVersion: '3.0.1',
+                },
             ],
             logger: {
                 level: 'warn',
                 logRequest: false,
-                disableRoutesSummary: true
-            }
+                disableRoutesSummary: true,
+            },
         })
 
         platform.listen().then(() => {

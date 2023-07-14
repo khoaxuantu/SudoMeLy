@@ -9,16 +9,16 @@ import { setMaintenance, simpleSuccessEmbed } from "@utils/functions"
 export default class MaintenanceCommand {
 
 	@Slash({ 
-		name: 'maintenance'
+		name: 'maintenance',
 	})
 	@Guard(
-		Disabled
+		Disabled,
 	)
 	async maintenance(
 		@SlashOption({ name: 'state', type: ApplicationCommandOptionType.Boolean, required: true }) state: boolean,
 		interaction: CommandInteraction,
 		client: Client,
-		{ localize }: InteractionData
+		{ localize }: InteractionData,
 	) {
 				
 		await setMaintenance(state)
@@ -26,8 +26,8 @@ export default class MaintenanceCommand {
 		simpleSuccessEmbed(
 			interaction, 
 			localize.COMMANDS.MAINTENANCE.EMBED.DESCRIPTION({
-				state: state ? 'on' : 'off'
-			})
+				state: state ? 'on' : 'off',
+			}),
 		)
 	}
 }

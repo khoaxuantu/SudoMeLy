@@ -17,11 +17,11 @@ export const clientConfig = {
 		GatewayIntentBits.GuildVoiceStates,
 		GatewayIntentBits.GuildPresences,
 		GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.MessageContent
+		GatewayIntentBits.MessageContent,
 	],
 
 	partials: [
-		Partials.Channel
+		Partials.Channel,
 	],
 
 	// debug logs are disabled in silent mode
@@ -31,12 +31,12 @@ export const clientConfig = {
 		RequestContextIsolator,
 		NotBot,
 		Maintenance,
-		ExtractLocale
+		ExtractLocale,
 	],
 
 	// configuration for @SimpleCommand
 	simpleCommand: {
 		prefix: generalConfig.simpleCommandsPrefix,
-	}
+	},
 	
 }

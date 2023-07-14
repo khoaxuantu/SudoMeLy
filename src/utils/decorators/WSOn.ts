@@ -11,10 +11,10 @@ import { resolveDependency } from "@utils/functions"
  */
 export const WSOn = (event: string) => {
 
-    return function (
+    return function(
 		target: any,
 		propertyKey: string,
-		descriptor: PropertyDescriptor
+		descriptor: PropertyDescriptor,
     ) {
         import('@services').then(services => {
             resolveDependency(services.WebSocket).then(webSocket => {

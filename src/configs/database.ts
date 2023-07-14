@@ -10,8 +10,8 @@ export const databaseConfig: DatabaseConfigType = {
     // config for setting up an automated backup of the database (ONLY FOR SQLITE)
     backup: {
         enabled: false,
-        path: './database/backups/' // path to the backups folder (should be in the database/ folder)
-    }
+        path: './database/backups/', // path to the backups folder (should be in the database/ folder)
+    },
 }
 
 const envMikroORMConfig = {
@@ -51,7 +51,6 @@ const envMikroORMConfig = {
         password: process.env['DATABASE_PASSWORD'],
 
 
-
         /**
          * MariaDB
          */
@@ -68,13 +67,13 @@ const envMikroORMConfig = {
         migrations: {
             path: './database/migrations',
             emit: 'js',
-            snapshot: true
-        }
+            snapshot: true,
+        },
     },
 
     development: {
 
-    }
+    },
 
 } satisfies Config
 

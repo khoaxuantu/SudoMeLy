@@ -19,7 +19,7 @@ const initialState: State = {
         bot: false,
         api: apiConfig.enabled ? false : null,
         websocket: websocketConfig.enabled ? false : null,
-    }
+    },
 }
 
 @singleton()

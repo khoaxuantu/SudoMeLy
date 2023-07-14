@@ -10,11 +10,11 @@ import { replyToInteraction, resolveChannel } from "@utils/functions"
 export const NSFW: GuardFunction<
     | CommandInteraction 
     | SimpleCommandMessage
-> = async(arg, client, next) => {
+> = async (arg, client, next) => {
  
     const channel = resolveChannel(arg)
 
-    if (!(channel instanceof TextChannel && !channel?.nsfw)) await next()
+    if (!(channel instanceof TextChannel && !channel?.nsfw)) {await next()}
     else {
         const locale = getLocaleFromInteraction(arg),
               localizedReplyMessage = L[locale].GUARDS.NSFW()

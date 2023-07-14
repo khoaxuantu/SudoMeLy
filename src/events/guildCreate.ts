@@ -9,7 +9,7 @@ export default class GuildCreateEvent {
     @On('guildCreate')
     async guildCreateHandler(
         [newGuild]: ArgsOf<'guildCreate'>,
-        client: Client
+        client: Client,
     ) {
 
         await syncGuild(newGuild.id, client)

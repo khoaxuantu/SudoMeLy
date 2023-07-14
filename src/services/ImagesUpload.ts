@@ -19,14 +19,14 @@ export class ImagesUpload {
 
     private imgurClient: ImgurClient | null = process.env.IMGUR_CLIENT_ID ?
         new ImgurClient({
-            clientId: process.env.IMGUR_CLIENT_ID
+            clientId: process.env.IMGUR_CLIENT_ID,
         }) : null
 
     private imageRepo: ImageRepository
 
     constructor(
         private db: Database,
-        private logger: Logger
+        private logger: Logger,
     ) {
         this.imageRepo = this.db.get(Image)
     }
@@ -72,7 +72,7 @@ export class ImagesUpload {
             const imageHash = await imageHasher(
                 `${this.imageFolderPath}/${imagePath}`, 
                 16, 
-                true
+                true,
             ) as string
 
             const imageInDb = await this.imageRepo.findOne({ 
@@ -83,7 +83,7 @@ export class ImagesUpload {
             else if (
                 imageInDb && (
                 imageInDb.basePath != imagePath.split('/').slice(0, -1).join('/') ||
-                imageInDb.fileName != imagePath.split('/').slice(-1)[0] )
+                imageInDb.fileName != imagePath.split('/').slice(-1)[0])
             ) console.warn(`Image ${chalk.bold.green(imagePath)} has the same hash as ${chalk.bold.green(imageInDb.basePath + (imageInDb.basePath?.length ? "/" : "") + imageInDb.fileName)} so it will skip`)
         }
     }
@@ -97,7 +97,7 @@ export class ImagesUpload {
         this.logger.log(
             `Image ${image.fileName} deleted from database because it is not in the filesystem anymore`, 
             'info',
-            true
+            true,
         )
     }
 
@@ -116,14 +116,14 @@ export class ImagesUpload {
             const uploadResponse = await this.imgurClient.upload({
                 image: base64,
                 type: 'base64',
-                name: imageFileName
+                name: imageFileName,
             })
 
-            if (!uploadResponse.success ) {
+            if (!uploadResponse.success) {
                 this.logger.log(
                     `Error uploading image ${imageFileName} to imgur: ${uploadResponse.status} ${uploadResponse.data}`,
                     'error',
-                    true
+                    true,
                 )
                 return
             }
@@ -143,7 +143,7 @@ export class ImagesUpload {
             this.logger.log(
                 `Image ${chalk.bold.green(imagePath)} uploaded to imgur`,
                 'info',
-                true
+                true,
             )
 
         } 
