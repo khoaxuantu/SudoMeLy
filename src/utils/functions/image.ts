@@ -12,7 +12,7 @@ export const getImage = async (imageName: string): Promise<string | null> => {
     const db = await resolveDependency(Database)
     const imageRepo = db.get(Image)
 
-    const image = await imageRepo.findOne({
+    let image = await imageRepo.findOne({
         $or: [
             { fileName: imageName },
             { fileName: `${imageName}.png` },
