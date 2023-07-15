@@ -11,7 +11,7 @@ import { Client } from 'discordx'
 import { injectable } from 'tsyringe'
 
 import { generalConfig } from '@configs'
-import { Discord, Slash, SlashOption } from '@decorators'
+import { Discord, Slash, SlashGroup, SlashOption } from '@decorators'
 import { Guild } from '@entities'
 import { UnknownReplyError } from '@errors'
 import { Disabled, Guard, UserPermissions } from '@guards'
@@ -21,12 +21,17 @@ import { resolveGuild, simpleSuccessEmbed } from '@utils/functions'
 @Discord()
 @injectable()
 @Category('Admin')
-export default class PrefixCommand {
+@SlashGroup({
+    description: 'Manage general configs',
+    name: 'config',
+    defaultMemberPermissions: PermissionFlagsBits.Administrator,
+})
+@SlashGroup('config')
+export default class GeneralConfigCommand {
     constructor(private db: Database) {}
 
     @Slash({
-        name: 'config',
-        defaultMemberPermissions: PermissionFlagsBits.Administrator,
+        name: 'general',
     })
     @Guard(UserPermissions(['Administrator']), Disabled)
     async configGuild(
@@ -52,7 +57,7 @@ export default class PrefixCommand {
         introductionChannel: Channel | undefined,
         interaction: CommandInteraction,
         client: Client,
-        { localize }: InteractionData,
+        { localize }: InteractionData
     ) {
         const guild = resolveGuild(interaction),
             guildData = await this.db
@@ -86,7 +91,7 @@ export default class PrefixCommand {
                         : '`null`',
                 },
             ]
-            
+
             const embed = new EmbedBuilder()
                 .setTitle('CONFIG')
                 .addFields(fields)

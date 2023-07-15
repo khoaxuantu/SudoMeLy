@@ -1,4 +1,4 @@
-import { Category } from '@discordx/utilities'
+import { Category, RateLimit, TIME_UNIT } from '@discordx/utilities'
 import {
     ActionRowBuilder,
     ApplicationCommandOptionType,
@@ -25,7 +25,10 @@ import { injectable } from 'tsyringe'
 @injectable()
 @Category('General')
 export default class NickReqCommand {
-    constructor(private db: Database, private logger: Logger) {}
+    constructor(
+        private db: Database,
+        private logger: Logger
+    ) {}
 
     extractField(embed: Embed) {
         const { fields } = embed
@@ -117,7 +120,7 @@ export default class NickReqCommand {
 
         const reqDecReasonRow =
             new ActionRowBuilder<TextInputBuilder>().addComponents(
-                reqDecReasonInput,
+                reqDecReasonInput
             )
 
         const modal = new ModalBuilder()
@@ -135,7 +138,7 @@ export default class NickReqCommand {
             .then(async (replyInteraction: ModalSubmitInteraction) => {
                 if (!interaction.guild) return
                 const reqMem = await interaction.guild.members.fetch(
-                    fields.reqId || '',
+                    fields.reqId || ''
                 )
                 const reason =
                     replyInteraction.fields.getTextInputValue('reason')
@@ -173,30 +176,31 @@ export default class NickReqCommand {
 
                 reqMem
                     .send({
-                        content: `❌ ${
-                            member?.user.username
-                        } đã từ chối yêu cầu đổi tên của bạn.${
+                        content: `❌ ${member?.user
+                            .username} đã từ chối yêu cầu đổi tên của bạn.${
                             reason.length == 0
                                 ? ''
                                 : `\n**Lý do**: \`\`\`${reason}\`\`\``
                         }`,
                     })
                     .catch((e) => {
-                        if (e.message)
-                            {replyInteraction.followUp({
+                        if (e.message) {
+                            replyInteraction.followUp({
                                 content: `${e.message}`,
                                 ephemeral: true,
-                            })}
+                            })
+                        }
 
                         this.logger.logError(e, 'unhandledRejection')
                     })
             })
             .catch((error) => {
-                if (error.message)
-                    {interaction.followUp({
+                if (error.message) {
+                    interaction.followUp({
                         content: `${error.message}`,
                         ephemeral: true,
-                    })}
+                    })
+                }
                 this.logger.logError(error, 'unhandledRejection')
             })
     }
@@ -205,6 +209,11 @@ export default class NickReqCommand {
         name: 'nickname',
         description: 'Send a request to change your nickname',
     })
+    @Guard(
+        RateLimit(TIME_UNIT.minutes, 5, {
+            message: 'Hãy thử lại vào lúc {until}!',
+        })
+    )
     async sendNicknameReq(
         @SlashOption({
             description: 'Your wish new nickname',
@@ -215,7 +224,7 @@ export default class NickReqCommand {
         new_nick: string,
         interaction: CommandInteraction,
         client: Client,
-        { localize }: InteractionData,
+        { localize }: InteractionData
     ) {
         const { guild } = interaction
 
@@ -240,7 +249,7 @@ export default class NickReqCommand {
         }
 
         const nickReqChannel = await guild.channels.fetch(
-            guildData.nickname_channel_id,
+            guildData.nickname_channel_id
         )
 
         if (!nickReqChannel || nickReqChannel.type !== ChannelType.GuildText) {
@@ -286,7 +295,7 @@ export default class NickReqCommand {
                     .setCustomId('nick-d')
                     .setDisabled(state)
                     .setLabel('Decline')
-                    .setStyle(ButtonStyle.Danger),
+                    .setStyle(ButtonStyle.Danger)
             ),
         ]
 

@@ -1,10 +1,14 @@
 import { Category } from '@discordx/utilities'
-import { ApplicationCommandOptionType, CommandInteraction, PermissionFlagsBits } from 'discord.js'
+import {
+    ApplicationCommandOptionType,
+    CommandInteraction,
+    PermissionFlagsBits,
+} from 'discord.js'
 import { Client } from 'discordx'
 import { injectable } from 'tsyringe'
 
 import { generalConfig } from '@configs'
-import { Discord, Slash, SlashOption } from '@decorators'
+import { Discord, Slash, SlashGroup, SlashOption } from '@decorators'
 import { Guild } from '@entities'
 import { UnknownReplyError } from '@errors'
 import { Disabled, Guard, UserPermissions } from '@guards'
@@ -14,12 +18,17 @@ import { resolveGuild, simpleSuccessEmbed } from '@utils/functions'
 @Discord()
 @injectable()
 @Category('Admin')
+@SlashGroup({
+    description: 'Manage prefix',
+    name: 'config',
+    defaultMemberPermissions: PermissionFlagsBits.Administrator,
+})
+@SlashGroup('config')
 export default class PrefixCommand {
     constructor(private db: Database) {}
 
     @Slash({
         name: 'prefix',
-        defaultMemberPermissions: PermissionFlagsBits.Administrator,
     })
     @Guard(UserPermissions(['Administrator']), Disabled)
     async prefix(
@@ -31,7 +40,7 @@ export default class PrefixCommand {
         prefix: string | undefined,
         interaction: CommandInteraction,
         client: Client,
-        { localize }: InteractionData,
+        { localize }: InteractionData
     ) {
         const guild = resolveGuild(interaction),
             guildData = await this.db
@@ -46,7 +55,7 @@ export default class PrefixCommand {
                 interaction,
                 localize['COMMANDS']['PREFIX']['EMBED']['DESCRIPTION']({
                     prefix: prefix || generalConfig.simpleCommandsPrefix,
-                }),
+                })
             )
         } else {
             throw new UnknownReplyError(interaction)

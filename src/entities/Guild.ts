@@ -1,7 +1,12 @@
-import { Entity, PrimaryKey, Property, EntityRepositoryType } from "@mikro-orm/core"
-import { EntityRepository } from "@mikro-orm/sqlite"
+import {
+    Entity,
+    PrimaryKey,
+    Property,
+    EntityRepositoryType,
+} from '@mikro-orm/core'
+import { EntityRepository } from '@mikro-orm/sqlite'
 
-import { CustomBaseEntity } from "./BaseEntity"
+import { CustomBaseEntity } from './BaseEntity'
 
 // ===========================================
 // ================= Entity ==================
@@ -9,7 +14,6 @@ import { CustomBaseEntity } from "./BaseEntity"
 
 @Entity({ customRepository: () => GuildRepository })
 export class Guild extends CustomBaseEntity {
-
     [EntityRepositoryType]?: GuildRepository
 
     @PrimaryKey({ autoincrement: false })
@@ -23,6 +27,9 @@ export class Guild extends CustomBaseEntity {
 
     @Property({ nullable: true, type: 'string' })
     greeting_channel_id: string | null
+
+    @Property({ nullable: true, type: 'array' })
+    reply_channel_ids: string[] | null
 
     @Property({ nullable: true, type: 'string' })
     log_channel_id: string | null
@@ -39,9 +46,7 @@ export class Guild extends CustomBaseEntity {
 // ===========================================
 
 export class GuildRepository extends EntityRepository<Guild> {
-
     async updateLastInteract(guildId?: string): Promise<void> {
-
         const guild = await this.findOne({ id: guildId })
 
         if (guild) {

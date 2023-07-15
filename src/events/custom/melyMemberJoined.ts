@@ -125,7 +125,7 @@ export default class MelyMemberJoined {
          * @param {GuildMember} member
          */
         this.eventManager.emit('melyMemberJoined', member)
-        console.log(member)
+        // console.log(member)
     }
 
     async getRandomWelcomeImage(guild: Guild) {

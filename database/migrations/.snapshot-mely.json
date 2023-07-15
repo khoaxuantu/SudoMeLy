@@ -116,6 +116,24 @@
           "nullable": true,
           "mappedType": "string"
         },
+        "reply_channel_ids": {
+          "name": "reply_channel_ids",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "log_channel_id": {
+          "name": "log_channel_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
         "deleted": {
           "name": "deleted",
           "type": "tinyint(1)",
