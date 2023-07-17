@@ -9,7 +9,7 @@ on:
 
 jobs:
     build:
-        name: ESLint
+        name: ESLint & Typecheck
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -25,3 +25,6 @@ jobs:
 
             - name: Run ESLint
               run: npm run lint
+
+            - name: Type checking
+              run: npm run type:check
