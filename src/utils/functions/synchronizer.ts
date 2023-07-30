@@ -22,7 +22,7 @@ export const syncUser = async (user: DUser) => {
         id: user.id,
     })
 
-    if (!userData) {
+    if (!userData && !user.bot) {
         // add user to the db
         const newUser = new User()
         newUser.id = user.id

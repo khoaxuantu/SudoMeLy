@@ -24,6 +24,7 @@
         "no-mixed-spaces-and-tabs": "off",
         "@typescript-eslint/ban-types": "off",
         "no-useless-escape": "off",
+        "object-curly-spacing": "off",
         "arrow-spacing": [
             "warn",
             {
@@ -43,7 +44,7 @@
             "property"
         ],
         "handle-callback-err": "off",
-        "keyword-spacing": "error",
+        "keyword-spacing": "off",
         "max-nested-callbacks": [
             "error",
             {
@@ -69,12 +70,8 @@
             }
         ],
         "no-var": "error",
-        "object-curly-spacing": [
-            "error",
-            "always"
-        ],
         "prefer-const": "off",
-        "space-before-blocks": "error",
+        "space-before-blocks": "off",
         // "space-before-function-paren": [
         //     "error",
         //     {

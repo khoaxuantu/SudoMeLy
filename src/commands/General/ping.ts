@@ -3,21 +3,23 @@ import type { CommandInteraction, Message } from "discord.js"
 import { Client } from "discordx"
 
 import { Discord, Slash } from "@decorators"
+import { replyToInteraction } from "@utils/functions"
 
 @Discord()
 @Category('General')
 export default class PingCommand {
 
-	@Slash({ 
+	@Slash({
 		name: 'ping',
+        description: "Pong!!!"
 	})
 	async ping(
 		interaction: CommandInteraction,
 		client: Client,
 		{ localize }: InteractionData,
 	) {
-		
-		const msg = (await interaction.followUp({ content: "Pinging...", fetchReply: true })) as Message
+
+		const msg = (await replyToInteraction(interaction, { content: "Pinging...", fetchReply: true })) as Message
 
 		const content = localize["COMMANDS"]["PING"]["MESSAGE"]({
 			member: msg.inGuild() ? `${interaction.member},` : "",

@@ -1,109 +1,134 @@
-import { Category } from "@discordx/utilities"
-import { ActionRowBuilder, APISelectMenuOption, CommandInteraction, EmbedBuilder, inlineCode, StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js"
-import { Client, MetadataStorage, SelectMenuComponent, SimpleCommand, SimpleCommandMessage } from "discordx"
+import { Category } from '@discordx/utilities'
+import {
+    ActionRowBuilder,
+    APISelectMenuOption,
+    CommandInteraction,
+    EmbedBuilder,
+    Guild as DGuild,
+    inlineCode,
+    StringSelectMenuBuilder,
+    StringSelectMenuInteraction,
+    ButtonBuilder,
+    ButtonStyle,
+} from 'discord.js'
+import {
+    Client,
+    MetadataStorage,
+    SelectMenuComponent,
+    SimpleCommand,
+    SimpleCommandMessage,
+} from 'discordx'
 
-import { Discord, Slash } from "@decorators"
-import { chunkArray, getColor, resolveGuild, validString } from "@utils/functions"
-import { TranslationFunctions } from "src/i18n/i18n-types"
+import { Discord, Slash } from '@decorators'
+import {
+    chunkArray,
+    getColor,
+    getRankKeys,
+    getRankValues,
+    replyToInteraction,
+    resolveDependency,
+    resolveGuild,
+    validString,
+} from '@utils/functions'
+import { TranslationFunctions } from 'src/i18n/i18n-types'
+import { generalConfig } from '@configs'
 
 @Discord()
 @Category('General')
 export default class HelpCommand {
-
     private readonly _categories: Map<string, CommandCategory[]> = new Map()
 
     constructor() {
         this.loadCategories()
     }
 
-    @SimpleCommand({ name: "help" })
-    async helpSimple(command: SimpleCommandMessage) {
-        command.message.reply("nyagami an cuc");
-    }
-
     @Slash({
         name: 'help',
+        description: 'Call some helps!',
     })
     async help(
         interaction: CommandInteraction,
         client: Client,
-        { localize }: InteractionData,
+        { localize }: InteractionData
     ) {
+        const guild = resolveGuild(interaction)
+        if (!guild) return
+        const embed = await this.getEmbed({
+            client,
+            currentGuild: guild,
+            locale: localize,
+        })
 
-        const embed = await this.getEmbed({ client, interaction, locale: localize })
+        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder()
+                .setStyle(ButtonStyle.Link)
+                .setLabel('Điều khoản/điều kiện sử dụng dịch vụ')
+                .setURL(generalConfig.links.tos)
+        )
 
-        const components: any[] = []
-        components.push(this.getSelectDropdown("categories", localize).toJSON())
-
-        interaction.followUp({
+        replyToInteraction(interaction, {
             embeds: [embed],
-            components,
+            components: [row],
         })
     }
 
-    @SelectMenuComponent({
-        id: 'help-category-selector',
-    })
-    async selectCategory(interaction: StringSelectMenuInteraction, client: Client, { localize }: InteractionData) {
-
-        const category = interaction.values[0]
-
-        const embed = await this.getEmbed({ client, interaction, category, locale: localize })
-        const components: any[] = []
-        components.push(this.getSelectDropdown(category, localize).toJSON())
-
-        interaction.update({
-            embeds: [embed],
-            components,
-        })
-    }
-
-
-    private async getEmbed({ client, interaction, category = '', pageNumber = 0, locale }: {
-        client: Client,
-        interaction: CommandInteraction | StringSelectMenuInteraction,
-        category?: string,
+    private async getEmbed({
+        client,
+        currentGuild,
+        category = '',
+        pageNumber = 0,
+        locale,
+    }: {
+        client: Client
+        currentGuild: DGuild
+        category?: string
         pageNumber?: number
         locale: TranslationFunctions
     }): Promise<EmbedBuilder> {
-
         const commands = this._categories.get(category)
 
         // default embed
         if (!commands) {
-
             const embed = new EmbedBuilder()
-                .setAuthor({
-                    name: interaction.user.username,
-                    iconURL: interaction.user.displayAvatarURL({ forceStatic: false }),
-                })
-                .setTitle(locale.COMMANDS.HELP.EMBED.TITLE())
-                .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/a/a4/Cute-Ball-Help-icon.png')
+                .setTitle(locale.COMMANDS.HELP.EMBED.TITLE().toUpperCase())
+                .setURL(generalConfig.links.invite)
+                .setThumbnail(client.user?.displayAvatarURL() || null)
                 .setColor(getColor('primary'))
 
-            const currentGuild = resolveGuild(interaction)
             const applicationCommands = [
-                ...(currentGuild ? (await currentGuild.commands.fetch()).values() : []),
+                ...(currentGuild
+                    ? (await currentGuild.commands.fetch()).values()
+                    : []),
                 ...(await client.application!.commands.fetch()).values(),
             ]
 
             for (const category of this._categories) {
+                // Hide admin category
+                if (category[0].includes('Admin')) {
+                    continue
+                }
 
-                const commands = category[1]
-                    .map(cmd => {
-                        return "</" +
-                            (cmd.group ? cmd.group + ' ' : '') +
-                            (cmd.subgroup ? cmd.subgroup + ' ' : '') +
-                            cmd.name +
-                            ":" +
-                            applicationCommands.find(acmd => acmd.name == (cmd.group ? cmd.group : cmd.name))!.id +
-                            ">"
-                    })
+                const commands = category[1].map((cmd) => {
+                    return (
+                        '</' +
+                        (cmd.group ? cmd.group + ' ' : '') +
+                        (cmd.subgroup ? cmd.subgroup + ' ' : '') +
+                        cmd.name +
+                        ':' +
+                        applicationCommands.find(
+                            (acmd) =>
+                                acmd.name == (cmd.group ? cmd.group : cmd.name)
+                        )!.id +
+                        '>'
+                    )
+                })
 
-                embed.addFields([{
-                    name: category[0],
-                    value: commands.join(', '),
-                }])
+                embed.addFields([
+                    {
+                        name: category[0],
+                        value: commands.join(', '),
+                    },
+                ])
             }
 
             return embed
@@ -115,78 +140,53 @@ export default class HelpCommand {
             resultsOfPage = chunks[pageNumber]
 
         const embed = new EmbedBuilder()
-            .setAuthor({
-                name: interaction.user.username,
-                iconURL: interaction.user.displayAvatarURL({ forceStatic: false }),
-            })
             .setTitle(locale.COMMANDS.HELP.EMBED.CATEGORY_TITLE({ category }))
             .setFooter({
-                text: `${client.user!.username} • Page ${pageNumber + 1} of ${maxPage}`,
+                text: `Page ${pageNumber + 1} of ${maxPage}`,
             })
 
         if (!resultsOfPage) return embed
 
         for (const item of resultsOfPage) {
-
-            const currentGuild = resolveGuild(interaction)
             const applicationCommands = [
-                ...(currentGuild ? (await currentGuild.commands.fetch()).values() : []),
+                ...(currentGuild
+                    ? (await currentGuild.commands.fetch()).values()
+                    : []),
                 ...(await client.application!.commands.fetch()).values(),
             ]
 
             const { description } = item
-            const fieldValue = validString(description) ? description : "No description"
-            const name = "</" +
+            const fieldValue = validString(description)
+                ? description
+                : 'No description'
+            const name =
+                '</' +
                 (item.group ? item.group + ' ' : '') +
                 (item.subgroup ? item.subgroup + ' ' : '') +
                 item.name +
-                ":" +
-                applicationCommands.find(acmd => acmd.name == (item.group ? item.group : item.name))!.id +
-                ">"
+                ':' +
+                applicationCommands.find(
+                    (acmd) => acmd.name == (item.group ? item.group : item.name)
+                )!.id +
+                '>'
 
-            embed.addFields([{
-                name: name,
-                value: fieldValue,
-                inline: resultsOfPage.length > 5,
-            }])
+            embed.addFields([
+                {
+                    name: name,
+                    value: fieldValue,
+                    inline: resultsOfPage.length > 5,
+                },
+            ])
         }
 
         return embed
     }
 
-    private getSelectDropdown(defaultValue = "categories", locale: TranslationFunctions): ActionRowBuilder {
-
-        const optionsForEmbed: APISelectMenuOption[] = []
-
-        optionsForEmbed.push({
-            description: locale.COMMANDS.HELP.SELECT_MENU.TITLE(),
-            label: "Categories",
-            value: "categories",
-            default: defaultValue === "categories",
-        })
-
-        for (const [category] of this._categories) {
-
-            const description = locale.COMMANDS.HELP.SELECT_MENU.CATEGORY_DESCRIPTION({ category })
-            optionsForEmbed.push({
-                description,
-                label: category,
-                value: category,
-                default: defaultValue === category,
-            })
-        }
-
-        const selectMenu = new StringSelectMenuBuilder().addOptions(optionsForEmbed).setCustomId("help-category-selector")
-
-        return new ActionRowBuilder().addComponents(selectMenu)
-    }
-
     loadCategories(): void {
-
-        const commands: CommandCategory[] = MetadataStorage.instance.applicationCommandSlashesFlat as CommandCategory[]
+        const commands: CommandCategory[] = MetadataStorage.instance
+            .applicationCommandSlashesFlat as CommandCategory[]
 
         for (const command of commands) {
-
             const { category } = command
             if (!category || !validString(category)) continue
 

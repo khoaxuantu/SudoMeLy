@@ -35,7 +35,7 @@
 			"@guards/*": ["src/plugins/*/guards"],
 			
 			"@services": ["src/services"],
-			"@services/*": ["src/plugins/*/services"],
+			"@services/*": ["src/services/*"],
 
 			"@i18n": ["src/i18n"],
 			"@i18n/*": ["src/plugins/*/i18n"],
@@ -55,7 +55,10 @@
 			"@api/middlewares": ["src/api/middlewares"],
 			"@api/middlewares/*": ["src/plugins/*/api/middlewares"],
 
-			"@api/server": ["src/api/server.ts"]
+			"@api/server": ["src/api/server.ts"],
+
+			"@commands/*": ["src/commands/*"],
+			"@events/*": ["src/events/*"], 
 		}
 	},
 

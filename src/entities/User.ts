@@ -1,7 +1,30 @@
-import { Entity, EntityRepositoryType, PrimaryKey, Property } from "@mikro-orm/core"
-import { EntityRepository } from "@mikro-orm/sqlite"
+import {
+    ChangeSet,
+    ChangeSetType,
+    DateTimeType,
+    Entity,
+    EntityData,
+    EntityName,
+    EntityProperty,
+    EntityRepositoryType,
+    EventArgs,
+    EventSubscriber,
+    Formula,
+    Loaded,
+    Platform,
+    PrimaryKey,
+    Property,
+    Subscriber,
+    Type,
+    ValidationError,
+} from '@mikro-orm/core'
+import { EntityRepository } from '@mikro-orm/sqlite'
 
-import { CustomBaseEntity } from "./BaseEntity"
+import { CustomBaseEntity } from './BaseEntity'
+import { checkRank, resolveDependency } from '@utils/functions'
+import { EventManager, Logger } from '@services'
+
+const dbMaxInt = 2147483647
 
 // ===========================================
 // ================= Entity ==================
@@ -9,7 +32,6 @@ import { CustomBaseEntity } from "./BaseEntity"
 
 @Entity({ customRepository: () => UserRepository })
 export class User extends CustomBaseEntity {
-
     [EntityRepositoryType]?: UserRepository
 
     @PrimaryKey({ autoincrement: false })
@@ -17,21 +39,197 @@ export class User extends CustomBaseEntity {
 
     @Property()
     lastInteract: Date = new Date()
+
+    /**
+     * @CUSTOMIZE
+     */
+
+    @Property({ type: 'text', nullable: true })
+    description: string | null
+
+    /**
+     * @RANKING
+     */
+
+    @Property({ type: 'integer' })
+    chat_points: number = 0
+
+    @Property({ type: 'integer' })
+    voice_points: number = 0
+
+    @Property({ type: 'integer' })
+    mely_points: number = 0
+
+    // When a user reach the maximum int, rebirths++
+    @Property({ type: 'integer' })
+    rebirths: number = 0
+
+    /**
+     * @VOICE_STATES
+     */
+
+    @Property({ type: DateTimeType, nullable: true })
+    joinedVoiceTime: Date | null
+
+    @Property({ type: DateTimeType, nullable: true })
+    onMicTime: Date | null
+
+    @Property({ type: DateTimeType, nullable: true })
+    onStreamTime: Date | null
+
+    @Property({ type: DateTimeType, nullable: true })
+    onVideoTime: Date | null
+
+    @Formula('ROUND((chat_points * 50 + voice_points * 50) / 100)')
+    overall_points?: number
 }
 
 // ===========================================
 // =========== Custom Repository =============
 // ===========================================
 
-export class UserRepository extends EntityRepository<User> { 
-
+export class UserRepository extends EntityRepository<User> {
     async updateLastInteract(userId?: string): Promise<void> {
-
         const user = await this.findOne({ id: userId })
 
         if (user) {
             user.lastInteract = new Date()
             await this.flush()
+        }
+    }
+
+    async addPoints(userId: string, points: Point[]): Promise<void> {
+        const userData = await this.findOne({ id: userId })
+
+        if (userData) {
+            this.loopAddPoints(points, userData)
+            await this.flush()
+        }
+    }
+
+    async addPointsToMany(
+        users: { id: string; points: Point[] }[]
+    ): Promise<void> {
+        const usersData = await this.find({ id: users.map((v) => v.id) })
+
+        if (usersData && usersData.length) {
+            usersData.forEach((userData, index) => {
+                const foundUser = users.find((u) => u.id === userData.id)
+                if (foundUser) {
+                    this.loopAddPoints(foundUser.points, userData)
+                }
+            })
+        }
+
+        await this.flush()
+    }
+
+    private loopAddPoints(points: Point[], userData: Loaded<User, never>) {
+        points.forEach((point) => {
+            if (point.type !== 'overall_points') {
+                userData[point.type] += Math.floor(point.value)
+                if (userData[point.type] < 0) {
+                    userData[point.type] = 0
+                }
+            }
+        })
+    }
+
+    getOverallPointsUser(user: User): User {
+        return {
+            ...user,
+            overall_points: Math.round(
+                (user.chat_points * 50 + user.voice_points * 50) / 100
+            ),
+        }
+    }
+}
+
+export interface Point {
+    type: PointType
+    value: number
+}
+
+// export type OverallPointsUser = User & { overall_points: number }
+
+export type PointType =
+    | 'chat_points'
+    | 'voice_points'
+    | 'mely_points'
+    | 'overall_points'
+
+export interface IUserVoicePointProps {
+    joinedVoiceTime: Date | null
+    onMicTime: Date | null
+    onStreamTime: Date | null
+    onVideo: Date | null
+}
+
+@Subscriber()
+export class UserSubscriber implements EventSubscriber<User> {
+    getSubscribedEntities(): EntityName<User>[] {
+        return [User]
+    }
+
+    async afterUpdate({
+        entity,
+        em,
+        changeSet,
+    }: EventArgs<User>): Promise<void> {
+        // emit rank up event
+        if (changeSet && changeSet.type === ChangeSetType.UPDATE) {
+            const user = em
+                .getRepository(User)
+                .getOverallPointsUser(entity) as EntityData<User>
+
+            // Emit 'rankUp' event when user's overall points reached a specific amount
+            if (
+                changeSet.originalEntity &&
+                user.overall_points &&
+                changeSet.originalEntity.overall_points &&
+                user.overall_points != changeSet.originalEntity.overall_points
+                // && checkRank(user.overall_points)
+            ) {
+                const eventManager = await resolveDependency(EventManager)
+                /**
+                 * @param {EntityData<User>} oldUser
+                 * @param {EntityData<User>} newUser
+                 */
+                eventManager.emit('rankUp', changeSet.originalEntity, user)
+            }
+
+            if (
+                changeSet.originalEntity &&
+                JSON.stringify(changeSet.originalEntity) !==
+                    JSON.stringify(user)
+            ) {
+                const logger = await resolveDependency(Logger)
+                for (const prop in user) {
+                    if (
+                        !prop.includes('points') ||
+                        prop.includes('overall_points')
+                    ) {
+                        continue
+                    }
+
+                    const pointType = prop as PointType
+
+                    const calc = Math.round(
+                        (user[pointType] || 0) -
+                            (changeSet.originalEntity[pointType] || 0)
+                    )
+
+                    if (calc === 0) continue
+
+                    logger.log(
+                        `${calc > 0 ? '+' : ''}${calc} ${pointType} ${
+                            calc > 0 ? 'for' : 'of'
+                        } ${user.id}`,
+                        'info',
+                        true
+                    )
+                }
+            }
         }
     }
 }

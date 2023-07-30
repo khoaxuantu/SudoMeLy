@@ -15,7 +15,11 @@ import { Guild } from '@entities'
 import { UnknownReplyError } from '@errors'
 import { Disabled, Guard, UserPermissions } from '@guards'
 import { Database } from '@services'
-import { resolveGuild, simpleSuccessEmbed } from '@utils/functions'
+import {
+    replyToInteraction,
+    resolveGuild,
+    simpleSuccessEmbed,
+} from '@utils/functions'
 
 @Discord()
 @injectable()
@@ -56,14 +60,14 @@ export default class ThreadReplyConfigCommand {
 
             guildData.reply_channel_ids.push(channel.id)
 
-            this.db.get(Guild).persistAndFlush(guildData)
-
-            interaction.followUp({
+            replyToInteraction(interaction, {
                 content: `Added ${channel}`,
             })
         } else {
             throw new UnknownReplyError(interaction)
         }
+
+        this.db.get(Guild).flush()
     }
 
     @Slash({
@@ -124,9 +128,7 @@ export default class ThreadReplyConfigCommand {
                 (v) => v !== channel_id
             )
 
-            this.db.get(Guild).persistAndFlush(guildData)
-
-            interaction.followUp({
+            replyToInteraction(interaction, {
                 content: `Removed ${
                     guild?.channels.cache.find((v) => v.id === channel_id) ||
                     channel_id
@@ -135,5 +137,7 @@ export default class ThreadReplyConfigCommand {
         } else {
             throw new UnknownReplyError(interaction)
         }
+
+        this.db.get(Guild).flush()
     }
 }

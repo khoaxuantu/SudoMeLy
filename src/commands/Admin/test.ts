@@ -8,8 +8,7 @@ import { Discord, Slash, SlashOption } from "@decorators"
 import { Guild } from "@entities"
 import { UnknownReplyError } from "@errors"
 import { Disabled, Guard, UserPermissions } from "@guards"
-import { Database, EventManager } from "@services"
-import { resolveGuild, simpleSuccessEmbed } from "@utils/functions"
+import { Database, EventManager, Store } from "@services"
 
 @Discord()
 @injectable()
@@ -19,6 +18,7 @@ export default class PrefixCommand {
     constructor(
         private db: Database,
         private eventManager: EventManager,
+        private store: Store
     ) { }
 
     @SimpleCommand({ name: 'test' })
@@ -28,11 +28,11 @@ export default class PrefixCommand {
     async test(
         command: SimpleCommandMessage, client: Client,
     ) {
-
         /**
          * @param {GuildMember} member
          */
         this.eventManager.emit("melyMemberJoined", command.message.member)
+        console.log(this.store.get('voiceChannels'))
         command.message.react("✅")
     }
 }

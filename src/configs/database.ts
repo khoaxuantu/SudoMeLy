@@ -1,10 +1,9 @@
-import { Options } from "@mikro-orm/core"
-import { SqlHighlighter } from "@mikro-orm/sql-highlighter"
+import { Options } from '@mikro-orm/core'
+import { SqlHighlighter } from '@mikro-orm/sql-highlighter'
 
-type Config = { production: Options, development?: Options }
+type Config = { production: Options; development?: Options }
 
 export const databaseConfig: DatabaseConfigType = {
-
     path: './database/', // path to the folder containing the migrations and SQLite database (if used)
 
     // config for setting up an automated backup of the database (ONLY FOR SQLITE)
@@ -15,9 +14,7 @@ export const databaseConfig: DatabaseConfigType = {
 }
 
 const envMikroORMConfig = {
-
     production: {
-
         /**
          * SQLite
          */
@@ -44,12 +41,17 @@ const envMikroORMConfig = {
          * MySQL
          */
         type: 'mysql',
+        // clientUrl: process.env['DATABASE_URL'],
         dbName: process.env['DATABASE_NAME'],
         host: process.env['DATABASE_HOST'],
         port: Number(process.env['DATABASE_PORT']),
         user: process.env['DATABASE_USER'],
         password: process.env['DATABASE_PASSWORD'],
-
+        driverOptions: {
+            connection: {
+                ssl: { rejectUnauthorized: false },
+            },
+        },
 
         /**
          * MariaDB
@@ -71,15 +73,17 @@ const envMikroORMConfig = {
         },
     },
 
-    development: {
-
-    },
-
+    development: {},
 } satisfies Config
 
-if (!envMikroORMConfig['development'] || Object.keys(envMikroORMConfig['development']).length === 0) envMikroORMConfig['development'] = envMikroORMConfig['production']
+if (
+    !envMikroORMConfig['development'] ||
+    Object.keys(envMikroORMConfig['development']).length === 0
+) {
+    envMikroORMConfig['development'] = envMikroORMConfig['production']
+}
 
 export const mikroORMConfig = envMikroORMConfig as {
-    production: typeof envMikroORMConfig['production'],
-    development: typeof envMikroORMConfig['production']
+    production: (typeof envMikroORMConfig)['production']
+    development: (typeof envMikroORMConfig)['production']
 }

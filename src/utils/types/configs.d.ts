@@ -1,5 +1,4 @@
 type GeneralConfigType = {
-
     name: string
     description: string
     defaultLocale: import('@i18n').Locales
@@ -14,6 +13,7 @@ type GeneralConfigType = {
         invite: string
         supportServer: string
         gitRemoteRepo: string
+        tos: string
     }
 
     devs: string[]
@@ -25,23 +25,28 @@ type GeneralConfigType = {
 
     activities: {
         text: string
-        type: "PLAYING" | "STREAMING" | "LISTENING" | "WATCHING" | "CUSTOM" | "COMPETING"
+        type:
+            | 'PLAYING'
+            | 'STREAMING'
+            | 'LISTENING'
+            | 'WATCHING'
+            | 'CUSTOM'
+            | 'COMPETING'
     }[]
 
     mely: {
         greeting: {
             keywords: {
-                channel: string,
+                channel: string
                 imageChannel: string
             }
-        },
+        }
         nicknameChannelKeyword: string
+        rank_roles?: { level: number; name: string }[]
     }
-
 }
 
 type DatabaseConfigType = {
-
     path: `${string}/`
 
     backup: {
@@ -51,7 +56,6 @@ type DatabaseConfigType = {
 }
 
 type LogsConfigType = {
-
     debug: boolean
 
     interaction: {
@@ -88,20 +92,16 @@ type LogsConfigType = {
 }
 
 type StatsConfigType = {
-
     interaction: {
-
         exclude: InteractionsConstants[]
     }
 }
 
 type APIConfigType = {
-
     enabled: boolean
     port: number
 }
 
 type WebsocketConfigType = {
-
     enabled: boolean
 }

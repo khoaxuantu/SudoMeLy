@@ -22,8 +22,39 @@ export class Guild extends CustomBaseEntity {
     @Property({ nullable: true, type: 'string' })
     prefix: string | null
 
+    /** ************ @PointRelated ************** **/
+    // ===========================================
+    // ===========================================
+    // ===========================================
+
+    // cant gain any point
+    @Property({ nullable: true, type: 'array' })
+    excluded_roles: string[] | null
+
+    // cant gain any point
+    @Property({ nullable: true, type: 'array' })
+    excluded_channels: string[] | null
+
+    @Property({ nullable: true, type: 'array' })
+    normal_chat_channel_ids: string[] | null
+
+    // special chat -> special points
+    @Property({ nullable: true, type: 'array' })
+    supporting_channel_ids: string[] | null
+
+    @Property({ nullable: true, type: 'array' })
+    club_channel_ids: string[] | null
+
+    @Property({ nullable: true, type: 'array' })
+    sharing_channel_ids: string[] | null
+
+    // all voice channels are gainable channels
+    // ===========================================
+    // ===========================================
+    // ===========================================
+
     @Property({ nullable: true, type: 'string' })
-    nickname_channel_id: string | null
+    nickname_request_channel_id: string | null
 
     @Property({ nullable: true, type: 'string' })
     greeting_channel_id: string | null

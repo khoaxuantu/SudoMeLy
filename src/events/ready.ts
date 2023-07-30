@@ -55,18 +55,18 @@ export default class ReadyEvent {
         this.store.update('ready', (e) => ({ ...e, bot: true }))
     }
 
-    @Schedule('*/15 * * * * *') // each 15 seconds
+    @Schedule('*/15 * * * *') // “At every 15th minute.”
     async changeActivity() {
 
         const ActivityTypeEnumString = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "CUSTOM", "COMPETING"] // DO NOT CHANGE THE ORDER
 
         const client = await resolveDependency(Client)
         const activity = generalConfig.activities[this.activityIndex]
-        
+
         activity.text = eval(`new String(\`${activity.text}\`).toString()`)
-            
+
         if (activity.type === 'STREAMING') { // streaming activity
-            
+
             client.user?.setStatus('online')
             client.user?.setActivity(activity.text, {
                 'url': 'https://www.twitch.tv/discord',
@@ -74,7 +74,7 @@ export default class ReadyEvent {
             })
 
         } else { // other activities
-            
+
             client.user?.setActivity(activity.text, {
                 type: ActivityTypeEnumString.indexOf(activity.type),
             })

@@ -20,6 +20,8 @@ import { Discord, Slash } from '@decorators'
 import { Database, Logger } from '@services'
 import { Guild } from '@entities'
 import { injectable } from 'tsyringe'
+import { replyToInteraction } from '@utils/functions'
+import { UnknownReplyError } from '@errors'
 
 @Discord()
 @injectable()
@@ -71,7 +73,7 @@ export default class NickReqCommand {
                     .addFields([
                         {
                             name: `Changed for`,
-                            value: reqMember.user.tag,
+                            value: reqMember.user.username,
                         },
                         {
                             name: `From`,
@@ -83,7 +85,7 @@ export default class NickReqCommand {
                         },
                     ])
                     .setFooter({
-                        text: `Approved by ${interaction.user.tag}`,
+                        text: `Approved by ${interaction.user.username}`,
                     })
 
                 interaction.update({
@@ -207,7 +209,7 @@ export default class NickReqCommand {
 
     @Slash({
         name: 'nickname',
-        description: 'Send a request to change your nickname',
+        description: 'Gửi yêu cầu đổi tên đến quản trị viên!',
     })
     @Guard(
         RateLimit(TIME_UNIT.minutes, 5, {
@@ -216,7 +218,7 @@ export default class NickReqCommand {
     )
     async sendNicknameReq(
         @SlashOption({
-            description: 'Your wish new nickname',
+            description: 'Biệt danh bạn mong muốn!',
             name: 'new_nick',
             required: true,
             type: ApplicationCommandOptionType.String,
@@ -229,32 +231,28 @@ export default class NickReqCommand {
         const { guild } = interaction
 
         if (!guild || !interaction.member) {
-            interaction.followUp({
-                content: `Error`,
-                ephemeral: true,
-            })
-            return
+            throw new UnknownReplyError(interaction)
         }
 
         const guildData = await this.db.get(Guild).findOne({
             id: guild.id || '',
         })
 
-        if (!guildData || !guildData.nickname_channel_id) {
-            interaction.followUp({
-                content: `Error`,
+        if (!guildData || !guildData.nickname_request_channel_id) {
+            replyToInteraction(interaction, {
+                content: `❌ Máy chủ chưa thiết đặt!`,
                 ephemeral: true,
             })
             return
         }
 
         const nickReqChannel = await guild.channels.fetch(
-            guildData.nickname_channel_id
+            guildData.nickname_request_channel_id
         )
 
         if (!nickReqChannel || nickReqChannel.type !== ChannelType.GuildText) {
-            interaction.followUp({
-                content: `Error`,
+            replyToInteraction(interaction, {
+                content: `❌ Sai kênh!`,
                 ephemeral: true,
             })
             return
@@ -304,7 +302,7 @@ export default class NickReqCommand {
             components: components(false),
         })
 
-        interaction.followUp({
+        replyToInteraction(interaction, {
             content: `Yêu cầu của bạn đã được gửi đi! Vui lòng đợi các QTV duyệt!`,
             ephemeral: true,
         })

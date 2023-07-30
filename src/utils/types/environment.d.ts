@@ -20,6 +20,8 @@ declare global {
         WEBSOCKET_URL: string
 
         IMGUR_CLIENT_ID: string
+
+        KAWAII_API: string
       }
     }
   }

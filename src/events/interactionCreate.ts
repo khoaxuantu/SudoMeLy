@@ -24,10 +24,10 @@ export default class InteractionCreateEvent {
         Maintenance,
     )
     async interactionCreateHandler(
-        [interaction]: ArgsOf<'interactionCreate'>, 
+        [interaction]: ArgsOf<'interactionCreate'>,
         client: Client,
     ) {
-        
+
         // defer the reply
         if (
             generalConfig.automaticDeferring &&
@@ -36,7 +36,7 @@ export default class InteractionCreateEvent {
 
         // insert user in db if not exists
         await syncUser(interaction.user)
-        
+
         // update last interaction time of both user and guild
         await this.db.get(User).updateLastInteract(interaction.user.id)
         await this.db.get(Guild).updateLastInteract(interaction.guild?.id)

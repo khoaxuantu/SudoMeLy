@@ -16,7 +16,11 @@ import { Guild } from '@entities'
 import { UnknownReplyError } from '@errors'
 import { Disabled, Guard, UserPermissions } from '@guards'
 import { Database } from '@services'
-import { resolveGuild, simpleSuccessEmbed } from '@utils/functions'
+import {
+    replyToInteraction,
+    resolveGuild,
+    simpleSuccessEmbed,
+} from '@utils/functions'
 
 @Discord()
 @injectable()
@@ -41,7 +45,7 @@ export default class GeneralConfigCommand {
         })
         prefix: string | undefined,
         @SlashOption({
-            name: 'nickname_channel',
+            name: 'nickname_request_channel',
             type: ApplicationCommandOptionType.Channel,
         })
         nicknameChannel: Channel | undefined,
@@ -50,11 +54,6 @@ export default class GeneralConfigCommand {
             type: ApplicationCommandOptionType.Channel,
         })
         greetingChannel: Channel | undefined,
-        @SlashOption({
-            name: 'introduction_channel',
-            type: ApplicationCommandOptionType.Channel,
-        })
-        introductionChannel: Channel | undefined,
         interaction: CommandInteraction,
         client: Client,
         { localize }: InteractionData
@@ -66,11 +65,12 @@ export default class GeneralConfigCommand {
 
         if (guildData) {
             guildData.prefix = prefix || guildData.prefix || null
-            guildData.nickname_channel_id =
-                nicknameChannel?.id || guildData.nickname_channel_id || null
+            guildData.nickname_request_channel_id =
+                nicknameChannel?.id ||
+                guildData.nickname_request_channel_id ||
+                null
             guildData.greeting_channel_id =
                 greetingChannel?.id || guildData.greeting_channel_id || null
-            this.db.get(Guild).persistAndFlush(guildData)
 
             const fields: APIEmbedField[] = [
                 {
@@ -80,8 +80,8 @@ export default class GeneralConfigCommand {
                 },
                 {
                     name: 'Nickname',
-                    value: guildData.nickname_channel_id
-                        ? `<#${guildData.nickname_channel_id}>`
+                    value: guildData.nickname_request_channel_id
+                        ? `<#${guildData.nickname_request_channel_id}>`
                         : '`null`',
                 },
                 {
@@ -96,9 +96,11 @@ export default class GeneralConfigCommand {
                 .setTitle('CONFIG')
                 .addFields(fields)
 
-            interaction.followUp({ embeds: [embed] })
+            replyToInteraction(interaction, { embeds: [embed] })
         } else {
             throw new UnknownReplyError(interaction)
         }
+
+        await this.db.get(Guild).flush()
     }
 }

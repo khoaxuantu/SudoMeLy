@@ -17,3 +17,6 @@ export * from './dependency'
 export * from './error'
 export * from './localization'
 export * from './files'
+export * from './number'
+export * from './gif'
+
