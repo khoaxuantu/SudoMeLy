@@ -1,16 +1,16 @@
 <p align="center"><img width="50%" src="./logo.svg"></p>
 <p align="center">
-  <a href="https://github.com/mely-apps/Discord-bot-Sudo-MeLy/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mely-apps/Discord-bot-Sudo-MeLy?labelColor=2A2734&color=DEAB63&style=for-the-badge" alt="License: GPL-3.0"></a>
+  <a href="https://github.com/mely-apps/SudoMeLy/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mely-apps/SudoMeLy?labelColor=2A2734&color=DEAB63&style=for-the-badge" alt="License: GPL-3.0"></a>
   <a href=""><img alt="npm" src="https://img.shields.io/npm/v/npm.svg?labelColor=2A2734&color=DEAB63&style=for-the-badge"></a>
-  <a href=""><img alt="starts" src="https://img.shields.io/github/stars/mely-apps/Discord-bot-Sudo-MeLy?labelColor=2A2734&color=DEAB63&style=for-the-badge"></a>
-  <a href=""><img alt="forks" src="https://img.shields.io/github/forks/mely-apps/Discord-bot-Sudo-MeLy?labelColor=2A2734&color=DEAB63&style=for-the-badge"></a>
+  <a href=""><img alt="starts" src="https://img.shields.io/github/stars/mely-apps/SudoMeLy?labelColor=2A2734&color=DEAB63&style=for-the-badge"></a>
+  <a href=""><img alt="forks" src="https://img.shields.io/github/forks/mely-apps/SudoMeLy?labelColor=2A2734&color=DEAB63&style=for-the-badge"></a>
 
 </p>
 
 ## 💡 About
 
 - [TOS](https://gist.github.com/fiezt1492/d0c64a6bea28821a737f5c543d7cff64)
-- [Source Code](https://github.com/mely-apps/Discord-bot-Sudo-MeLy)
+- [Source Code](https://github.com/mely-apps/SudoMeLy)
 
 Sudo MeLy is a private Discord bot made only for Code MeLy Community Discord Server.
 
@@ -33,7 +33,7 @@ Sudo MeLy is a private Discord bot made only for Code MeLy Community Discord Ser
 
 ## 💌 Contribute
 
-Thanks to [contributors](https://github.com/mely-apps/Discord-bot-Sudo-MeLy/graphs/contributors) for contribute for the repository.
+Thanks to [contributors](https://github.com/mely-apps/SudoMeLy/graphs/contributors) for contribute for the repository.
 
 ## 📑 License
 

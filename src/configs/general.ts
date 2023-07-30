@@ -12,7 +12,7 @@ export const generalConfig: GeneralConfigType = {
     links: {
         invite: 'https://codemely.tech',
         supportServer: 'https://discord.gg/codemely',
-        gitRemoteRepo: 'https://github.com/mely-apps/Discord-bot-Sudo-MeLy',
+        gitRemoteRepo: 'https://github.com/mely-apps/SudoMeLy',
         tos: "https://gist.github.com/fiezt1492/d0c64a6bea28821a737f5c543d7cff64"
     },
 

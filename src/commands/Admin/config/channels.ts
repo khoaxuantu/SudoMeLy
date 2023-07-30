@@ -154,7 +154,7 @@ export default class GeneralConfigCommand {
             .setAuthor({
                 name: "Mê lỳ",
                 iconURL: "https://avatars.githubusercontent.com/u/88936664?s=200&v=4",
-                url: 'https://github.com/mely-apps/Discord-bot-Sudo-MeLy',
+                url: 'https://github.com/mely-apps/SudoMeLy',
             })
             .setTitle(
                 'Config ' +
