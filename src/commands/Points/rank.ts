@@ -20,7 +20,7 @@ import {
     SimpleCommandOption,
     SimpleCommandOptionType,
 } from 'discordx'
-import { createCanvas, type Canvas, loadImage } from '@napi-rs/canvas'
+import { createCanvas, type Canvas, loadImage, GlobalFonts } from '@napi-rs/canvas'
 import { request } from 'undici'
 
 import { Discord, Slash, SlashOption } from '@decorators'
@@ -37,6 +37,9 @@ import {
     syncUser,
 } from '@utils/functions'
 import { generalConfig } from '@configs'
+import { join } from 'path'
+
+GlobalFonts.registerFromPath(join(__dirname, "public", "assets", "fonts", "OpenSans-Medium.ttf"), "Open Sans")
 
 // Pass the entire Canvas object because you'll need access to its width and context
 const applyText = (canvas: Canvas, text: string) => {
