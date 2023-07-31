@@ -1,4 +1,5 @@
 import { get } from 'https';
+import { MelyAvatarUrl } from '../constants/Mely';
 
 interface KawaiiAPIResponse{
     response: string;
@@ -15,7 +16,7 @@ export const kawaiiGif = (endpoint: string): Promise<string> => {
                 const data: KawaiiAPIResponse = JSON.parse(text);
                 resolve(data.response);
             });
-            res.on('error', () => resolve("https://avatars.githubusercontent.com/u/88936664?s=200&v=4"));
+            res.on('error', () => resolve(MelyAvatarUrl));
         });
     })
 }

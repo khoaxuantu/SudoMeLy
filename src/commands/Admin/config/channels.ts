@@ -25,6 +25,7 @@ import { Guild } from '@entities'
 import { Disabled, Guard, UserPermissions } from '@guards'
 import { Database } from '@services'
 import { replyToInteraction } from '@utils/functions'
+import { BotName, MelyAvatarUrl, SudoMeLyGitHubRepo } from '@constants'
 
 enum GuildChannelField {
     excluded_channels = 'excluded_channels',
@@ -152,9 +153,9 @@ export default class GeneralConfigCommand {
         }
         return new EmbedBuilder()
             .setAuthor({
-                name: "Mê lỳ",
-                iconURL: "https://avatars.githubusercontent.com/u/88936664?s=200&v=4",
-                url: 'https://github.com/mely-apps/SudoMeLy',
+                name: BotName,
+                iconURL: MelyAvatarUrl,
+                url: SudoMeLyGitHubRepo,
             })
             .setTitle(
                 'Config ' +

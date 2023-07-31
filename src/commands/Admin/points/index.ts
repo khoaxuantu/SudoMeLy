@@ -27,6 +27,7 @@ import { UnknownReplyError } from '@errors'
 import { Disabled, Guard, UserPermissions } from '@guards'
 import { Database, Logger } from '@services'
 import { resolveGuild, simpleSuccessEmbed, syncUser, replyToInteraction, kawaiiGif } from '@utils/functions'
+import { BotName, MelyAvatarUrl, SudoMeLyGitHubRepo } from '@constants'
 
 @Discord()
 @injectable()
@@ -89,9 +90,9 @@ export default class PointsAdminCommand {
         const prettyPointType = pointType.split('_').map(word => word[0].toUpperCase()).join('');
         const embed = new EmbedBuilder()
             .setAuthor({
-                name: "Mê lỳ",
-                iconURL: "https://avatars.githubusercontent.com/u/88936664?s=200&v=4",
-                url: "https://github.com/mely-apps/SudoMeLy",
+                name: BotName,
+                iconURL: MelyAvatarUrl,
+                url: SudoMeLyGitHubRepo,
             })
             .setTitle(pointAction + " điểm")
             .setDescription(`
