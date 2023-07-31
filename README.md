@@ -1,4 +1,4 @@
-<p align="center"><img width="50%" src="./logo.svg"></p>
+<p align="center"><img width="50%" src="./assets/mely.svg"></p>
 <p align="center">
   <a href="https://github.com/mely-apps/SudoMeLy/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mely-apps/SudoMeLy?labelColor=2A2734&color=DEAB63&style=for-the-badge" alt="License: GPL-3.0"></a>
   <a href=""><img alt="npm" src="https://img.shields.io/npm/v/npm.svg?labelColor=2A2734&color=DEAB63&style=for-the-badge"></a>

@@ -1,6 +1,6 @@
-# Contributing to TSCord
+# Contributing to SudoMely
 
-We would love for you to contribute to TSCord and help make it even better than it is today!
+We would love for you to contribute to SudoMely and help make it even better than it is today!
 As a contributor, here are the guidelines we would like you to follow:
 
 - [Code of Conduct](#coc)
@@ -14,13 +14,13 @@ As a contributor, here are the guidelines we would like you to follow:
 
 ## <a name="coc"></a> Code of Conduct
 
-Help us keep TSCord open and inclusive.
+Help us keep SudoMely open and inclusive.
 Please read and follow our [Code of Conduct][coc].
 
 ## <a name="question"></a> Got a Question or Problem?
 
 Do not open issues for general support questions as we want to keep GitHub issues for bug reports and feature requests.
-Instead, we recommend using [Discord Server](https://discord.gg/8P7jFpbKkb) to ask support-related questions.
+Instead, we recommend using [Discord Server](https://discord.gg/codemely) to ask support-related questions.
 
 Discord is a much better place to ask questions since:
 
@@ -64,13 +64,13 @@ We understand that sometimes it might be hard to extract essential bits of code 
 
 Unfortunately, we are not able to investigate / fix bugs without a minimal reproduction, so if we don't hear back from you, we are going to close an issue that doesn't have enough info to be reproduced.
 
-You can file new issues by selecting from our [new issue templates](https://github.com/barthofu/tscord/issues/new/choose) and filling out the issue template.
+You can file new issues by selecting from our [new issue templates](https://github.com/mely-apps/SudoMely/issues/new/choose) and filling out the issue template.
 
 ### <a name="submit-pr"></a> Submitting a Pull Request (PR)
 
 Before you submit your Pull Request (PR) consider the following guidelines:
 
-1. Search [GitHub](https://github.com/oceanroleplay/TSCord/pulls) for an open or closed PR that relates to your submission.
+1. Search [GitHub](https://github.com/mely-apps/SudoMely/pulls) for an open or closed PR that relates to your submission.
    You don't want to duplicate existing efforts.
 
 2. Be sure that an issue describes the problem you're fixing, or documents the design for the feature you'd like to add.
@@ -80,7 +80,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
    We cannot accept code without a signed CLA.
    Make sure you author all contributed Git commits with email address associated with your CLA signature.
 
-4. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) the `barthofu/tscord` repo.
+4. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) the `mely-apps/SudoMely` repo.
 
 5. In your forked repository, make your changes in a new git branch:
 
@@ -109,11 +109,11 @@ Before you submit your Pull Request (PR) consider the following guidelines:
     git push origin my-fix-branch
     ```
 
-11. In GitHub, send a pull request to `tscord:main`.
+11. In GitHub, send a pull request to `SudoMely:main`.
 
 ### Reviewing a Pull Request
 
-The TSCord team reserves the right not to accept pull requests from community members who haven't been good citizens of the community. Such behavior includes not following the [TSCord code of conduct](https://github.com/barthofu/tscord/blob/main/.github/CODE_OF_CONDUCT.md) and applies within or outside of TSCord managed channels.
+The SudoMely team reserves the right not to accept pull requests from community members who haven't been good citizens of the community. Such behavior includes not following the [SudoMely code of conduct](https://github.com/mely-apps/SudoMely/blob/main/.github/CODE_OF_CONDUCT.md) and applies within or outside of SudoMely managed channels.
 
 #### Addressing review feedback
 
@@ -194,7 +194,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 ## <a name="commit"></a> Commit Message Format
 
-_This specification is inspired by and supersedes the [TSCord commit message format][commit-message-format]._
+_This specification is inspired by and supersedes the [SudoMely commit message format][commit-message-format]._
 
 We have very precise rules over how our Git commit messages must be formatted.
 This format leads to **easier to read commit history**.
