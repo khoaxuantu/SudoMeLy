@@ -107,7 +107,7 @@ export default class ChatPointEvent {
         }
 
         // If contains URLs
-        if (message.cleanContent.match(/https?:\/\/[^.]\.[^/]+/g)) {
+        if (message.cleanContent.match(/https?:\/\/[^.]+\.[^/]+/g)) {
             points += 1
         }
 
