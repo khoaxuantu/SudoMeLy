@@ -20,7 +20,7 @@ import {
     SimpleCommandOption,
     SimpleCommandOptionType,
 } from 'discordx'
-import { createCanvas, type Canvas, loadImage } from '@napi-rs/canvas'
+import { createCanvas, type Canvas, loadImage, GlobalFonts } from '@napi-rs/canvas'
 import { request } from 'undici'
 
 import { Discord, Slash, SlashOption } from '@decorators'
@@ -37,6 +37,9 @@ import {
     syncUser,
 } from '@utils/functions'
 import { generalConfig } from '@configs'
+import { join } from 'path'
+
+GlobalFonts.registerFromPath(join(__dirname, "public", "assets", "fonts", "OpenSans-Medium.ttf"), "Open Sans")
 
 // Pass the entire Canvas object because you'll need access to its width and context
 const applyText = (canvas: Canvas, text: string) => {
@@ -47,9 +50,9 @@ const applyText = (canvas: Canvas, text: string) => {
 
     do {
         // Assign the font to the context and decrement it so it can be measured again
-        context.font = `${(fontSize -= 10)}px Arial`
+        context.font = `${(fontSize -= 10)}px Open Sans`
         // Compare pixel width of the text to the canvas minus the approximate avatar size
-    } while (context.measureText(text).width > canvas.width - 200)
+    } while (context.measureText(text).width > canvas.width - 450)
 
     // Return the result to use in the actual canvas
     return context.font
@@ -186,7 +189,7 @@ export default class RankCommand {
         ctx.fill()
 
         // Current Rank Position
-        ctx.font = '24pt Verdana'
+        ctx.font = '24pt Open Sans'
         ctx.textAlign = 'right'
         ctx.fillStyle = currentColor
         ctx.fillText(
@@ -196,7 +199,7 @@ export default class RankCommand {
         )
 
         // Current Rank
-        ctx.font = 'bold 14pt Verdana'
+        ctx.font = 'bold 14pt Open Sans'
         ctx.fillStyle = '#aaaaaa'
         ctx.fillText(
             (rank || '').toUpperCase() +
