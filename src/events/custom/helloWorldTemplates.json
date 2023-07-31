@@ -94,5 +94,25 @@
     {
         "lang": "r",
         "template": "cat('Hello World ${username}!')"
+    },
+    {
+        "lang": "rust",
+        "template": "println!(\"Hello World ${username}!\");"
+    },
+    {
+        "lang": "zig",
+        "template": "std.debug.print(\"Hello World ${username}\");"
+    },
+    {
+        "lang": "v",
+        "template": "println('Hello World ${username}')"
+    },
+    {
+        "lang": "haxe",
+        "template": "trace(\"Hello World ${username}\");"
+    },
+    {
+        "lang": "css",
+        "template": "body:before {\n\tcontent: 'Hello World ${username}';\n}"
     }
 ]
