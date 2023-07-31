@@ -47,9 +47,9 @@ const applyText = (canvas: Canvas, text: string) => {
 
     do {
         // Assign the font to the context and decrement it so it can be measured again
-        context.font = `${(fontSize -= 10)}px Arial`
+        context.font = `${(fontSize -= 10)}px Open Sans`
         // Compare pixel width of the text to the canvas minus the approximate avatar size
-    } while (context.measureText(text).width > canvas.width - 200)
+    } while (context.measureText(text).width > canvas.width - 450)
 
     // Return the result to use in the actual canvas
     return context.font
@@ -186,7 +186,7 @@ export default class RankCommand {
         ctx.fill()
 
         // Current Rank Position
-        ctx.font = '24pt Verdana'
+        ctx.font = '24pt Open Sans'
         ctx.textAlign = 'right'
         ctx.fillStyle = currentColor
         ctx.fillText(
@@ -196,7 +196,7 @@ export default class RankCommand {
         )
 
         // Current Rank
-        ctx.font = 'bold 14pt Verdana'
+        ctx.font = 'bold 14pt Open Sans'
         ctx.fillStyle = '#aaaaaa'
         ctx.fillText(
             (rank || '').toUpperCase() +
