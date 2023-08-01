@@ -26,7 +26,7 @@ import { Guild, PointType, User as UserEntity } from '@entities'
 import { UnknownReplyError } from '@errors'
 import { Disabled, Guard, UserPermissions } from '@guards'
 import { Database, Logger } from '@services'
-import { resolveGuild, simpleSuccessEmbed, syncUser, replyToInteraction, kawaiiGif } from '@utils/functions'
+import { resolveGuild, simpleSuccessEmbed, syncUser, replyToInteraction, kawaiiGif, shortPointType } from '@utils/functions'
 import { BotName, MelyAvatarUrl, SudoMeLyGitHubRepo } from '@constants'
 
 @Discord()
@@ -87,7 +87,6 @@ export default class PointsAdminCommand {
         const pointAction = pointValue >= 0 ? "Cộng" : "Trừ";
         const color = pointValue >= 0 ? 0x57F287 : 0xED4245;
         const gifUrl = await kawaiiGif("money");
-        const prettyPointType = pointType.split('_').map(word => word[0].toUpperCase()).join('');
         const embed = new EmbedBuilder()
             .setAuthor({
                 name: BotName,
@@ -96,7 +95,7 @@ export default class PointsAdminCommand {
             })
             .setTitle(pointAction + " điểm")
             .setDescription(`
-                ${pointAction} ${Math.abs(pointValue)} ${prettyPointType} ${userMention(guildMember.id)}
+                ${pointAction} ${Math.abs(pointValue)} ${shortPointType(pointType)} ${userMention(guildMember.id)}
             `)
             .setImage(gifUrl)
             .setColor(color);

@@ -1,3 +1,4 @@
+import { PointType } from "@entities"
 import { constant } from "case"
 
 /**
@@ -51,4 +52,8 @@ export const isValidUrl = (url: string) => {
     } catch {
         return false
     }
+}
+
+export const shortPointType = (pointType: PointType) => {
+    return pointType.split('_').map(word => word[0].toUpperCase()).join('');
 }

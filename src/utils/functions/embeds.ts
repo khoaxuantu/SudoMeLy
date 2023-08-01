@@ -17,13 +17,14 @@ import { replyToInteraction } from '@utils/functions'
  */
 export const simpleSuccessEmbed = (
     interaction: CommandInteraction,
-    message: string
+    message: string,
+    ephemeral: boolean = false,
 ) => {
     const embed = new EmbedBuilder()
         .setColor(0x57f287) // GREEN // see: https://github.com/discordjs/discord.js/blob/main/packages/discord.js/src/util/Colors.js
         .setTitle(`✅ ${message}`)
 
-    replyToInteraction(interaction, { embeds: [embed] })
+    replyToInteraction(interaction, { embeds: [embed], ephemeral })
 }
 
 /**
@@ -33,13 +34,14 @@ export const simpleSuccessEmbed = (
  */
 export const simpleErrorEmbed = (
     interaction: CommandInteraction,
-    message: string
+    message: string,
+    ephemeral: boolean = false,
 ) => {
     const embed = new EmbedBuilder()
         .setColor(0xed4245) // RED // see: https://github.com/discordjs/discord.js/blob/main/packages/discord.js/src/util/Colors.js
         .setTitle(`❌ ${message}`)
 
-    replyToInteraction(interaction, { embeds: [embed] })
+    replyToInteraction(interaction, { embeds: [embed], ephemeral })
 }
 
 export async function sendForm(threadChannel: PublicThreadChannel<true>) {

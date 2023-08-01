@@ -51,18 +51,14 @@ export class User extends CustomBaseEntity {
      * @RANKING
      */
 
-    @Property({ type: 'integer' })
+    @Property({ type: 'bigint' })
     chat_points: number = 0
 
-    @Property({ type: 'integer' })
+    @Property({ type: 'bigint' })
     voice_points: number = 0
 
-    @Property({ type: 'integer' })
+    @Property({ type: 'bigint' })
     mely_points: number = 0
-
-    // When a user reach the maximum int, rebirths++
-    @Property({ type: 'integer' })
-    rebirths: number = 0
 
     /**
      * @VOICE_STATES
@@ -81,7 +77,7 @@ export class User extends CustomBaseEntity {
     onVideoTime: Date | null
 
     @Formula('ROUND((chat_points * 50 + voice_points * 50) / 100)')
-    overall_points?: number
+    overall_points: number
 }
 
 // ===========================================
