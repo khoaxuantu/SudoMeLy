@@ -10,10 +10,10 @@ import { UnknownReplyError } from '@errors'
 import { Disabled, Guard, UserPermissions } from '@guards'
 import {
     Database,
-    LeaderboardData,
     Logger,
-    generateLeaderBoard,
+    leaderboardGenerator,
 } from '@services'
+import { LeaderboardData } from '@services/imageGenerators/leaderboard'
 import {
     resolveGuild,
     simpleSuccessEmbed,
@@ -72,13 +72,9 @@ export default class PointsAdminCommand {
             }
         })
 
-        const base64 = await generateLeaderBoard(data)
-        const sfbuff = Buffer.from(base64, 'base64')
-        const attachment = new AttachmentBuilder(sfbuff, { name: 'image.png' })
-
         repliedMsg.edit({
             content: '',
-            files: [attachment],
+            files: [new AttachmentBuilder(await leaderboardGenerator.generate(data), { name: 'image.png' })],
             allowedMentions: {
                 users: [],
             },

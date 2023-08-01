@@ -22,6 +22,8 @@ declare global {
         IMGUR_CLIENT_ID: string
 
         KAWAII_API: string
+        
+        CHROMIUM_EXECUTABLE_PATH?: string
       }
     }
   }

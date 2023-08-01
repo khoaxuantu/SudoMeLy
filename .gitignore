@@ -26,4 +26,4 @@ pnpm-lock.yaml
 database/migrations/
 
 # leaderboard data
-src/services/leaderboard/public/assets/js/data.js
+src/services/imageGenerators/**/data.js
