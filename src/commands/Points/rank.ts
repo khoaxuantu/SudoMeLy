@@ -20,13 +20,12 @@ import {
     SimpleCommandOption,
     SimpleCommandOptionType,
 } from 'discordx'
-import { createCanvas, type Canvas, loadImage, GlobalFonts } from '@napi-rs/canvas'
 import { request } from 'undici'
 
 import { Discord, Slash, SlashOption } from '@decorators'
 import { injectable } from 'tsyringe'
 import { User } from '@entities'
-import { Database, Logger } from '@services'
+import { Canvas, Database, Logger } from '@services'
 import { UnknownReplyError } from '@errors'
 import numeral from 'numeral'
 import {
@@ -37,12 +36,9 @@ import {
     syncUser,
 } from '@utils/functions'
 import { generalConfig } from '@configs'
-import { join } from 'path'
-
-GlobalFonts.registerFromPath(join(__dirname, "public", "assets", "fonts", "OpenSans-Medium.ttf"), "Open Sans")
 
 // Pass the entire Canvas object because you'll need access to its width and context
-const applyText = (canvas: Canvas, text: string) => {
+const applyText = (canvas: Canvas.Canvas, text: string) => {
     const context = canvas.getContext('2d')
 
     // Declare a base size of the font
@@ -168,7 +164,7 @@ export default class RankCommand {
 
         const width = 700,
             height = 200
-        const canvas = createCanvas(width, height)
+        const canvas = Canvas.createCanvas(width, height)
         const ctx = canvas.getContext('2d')
 
         // Layer 1st
@@ -261,7 +257,7 @@ export default class RankCommand {
         const { body } = await request(
             user.displayAvatarURL({ extension: 'jpg' })
         )
-        const avatar = await loadImage(await body.arrayBuffer())
+        const avatar = await Canvas.loadImage(await body.arrayBuffer())
         // Move the image downwards vertically and constrain its height to 200, so that it's square
         ctx.drawImage(avatar, 40, 40, 120, 120)
         // Use the helpful Attachment class structure to process the file for you
