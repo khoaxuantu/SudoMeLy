@@ -10,12 +10,11 @@ As a contributor, here are the guidelines we would like you to follow:
 - [Submission Guidelines](#submit)
 - [Coding Rules](#rules)
 - [Commit Message Guidelines](#commit)
-- [Signing the CLA](#cla)
 
 ## <a name="coc"></a> Code of Conduct
 
 Help us keep SudoMely open and inclusive.
-Please read and follow our [Code of Conduct][coc].
+Please read and follow our [Code of Conduct][#coc].
 
 ## <a name="question"></a> Got a Question or Problem?
 
@@ -31,7 +30,7 @@ To save your and our time, we will systematically close all issues that are requ
 
 ## <a name="issue"></a> Found a Bug?
 
-If you find a bug in the source code, you can help us by [submitting an issue](#submit-issue) to our [GitHub Repository][github].
+If you find a bug in the source code, you can help us by [submitting an issue](#submit-issue) to our [GitHub Repository](https://github.com/mely-apps/SudoMeLy).
 Even better, you can [submit a Pull Request](#submit-pr) with a fix.
 
 ## <a name="feature"></a> Missing a Feature?
@@ -76,25 +75,21 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 2. Be sure that an issue describes the problem you're fixing, or documents the design for the feature you'd like to add.
    Discussing the design upfront helps to ensure that we're ready to accept your work.
 
-3. Please sign our [Contributor License Agreement (CLA)](#cla) before sending PRs.
-   We cannot accept code without a signed CLA.
-   Make sure you author all contributed Git commits with email address associated with your CLA signature.
+3. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) the `mely-apps/SudoMely` repo.
 
-4. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) the `mely-apps/SudoMely` repo.
-
-5. In your forked repository, make your changes in a new git branch:
+4. In your forked repository, make your changes in a new git branch:
 
    ```shell
    git checkout -b my-fix-branch master
    ```
 
-6. Create your patch.
+5. Create your patch.
 
-7. Follow our [Coding Rules](#rules).
+6. Follow our [Coding Rules](#rules).
 
-8. Make sure to test your changes.
+7. Make sure to test your changes.
 
-9. Commit your changes using a descriptive commit message that follows our [commit message conventions](#commit).
+8. Commit your changes using a descriptive commit message that follows our [commit message conventions](#commit).
    Adherence to these conventions is necessary because release notes are automatically generated from these messages.
 
    ```shell
@@ -103,13 +98,13 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 
    Note: the optional commit `-a` command line option will automatically "add" and "rm" edited files.
 
-10. Push your branch to GitHub:
+9. Push your branch to GitHub:
 
     ```shell
     git push origin my-fix-branch
     ```
 
-11. In GitHub, send a pull request to `SudoMely:main`.
+10. In GitHub, send a pull request to `SudoMely:main`.
 
 ### Reviewing a Pull Request
 
@@ -193,8 +188,6 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 - All public API methods **must be documented**.
 
 ## <a name="commit"></a> Commit Message Format
-
-_This specification is inspired by and supersedes the [SudoMely commit message format][commit-message-format]._
 
 We have very precise rules over how our Git commit messages must be formatted.
 This format leads to **easier to read commit history**.
@@ -319,21 +312,3 @@ The content of the commit message body should contain:
 
 - information about the SHA of the commit being reverted in the following format: `This reverts commit <SHA>`,
 - a clear description of the reason for reverting the commit message.
-
-## <a name="cla"></a> Signing the CLA
-
-Please sign our Contributor License Agreement (CLA) before sending pull requests. For any code
-changes to be accepted, the CLA must be signed. It's a quick process, we promise!
-
-- For individuals, we have a [simple click-through form][individual-cla].
-- For corporations, we'll need you to
-  [print, sign and one of scan+email, fax or mail the form][corporate-cla].
-
-If you have more than one GitHub accounts, or multiple email addresses associated with a single GitHub account, you must sign the CLA using the primary email address of the GitHub account used to author Git commits and send pull requests.
-
-The following documents can help you sort out issues with GitHub accounts and multiple email addresses:
-
-- https://help.github.com/articles/setting-your-commit-email-address-in-git/
-- https://stackoverflow.com/questions/37245303/what-does-usera-committed-with-userb-13-days-ago-on-github-mean
-- https://help.github.com/articles/about-commit-email-addresses/
-- https://help.github.com/articles/blocking-command-line-pushes-that-expose-your-personal-email-address/
