@@ -44,7 +44,7 @@ export default class HelpCommand {
 
     @Slash({
         name: 'help',
-        description: 'Call some helps!',
+        description: 'Nhận trợ giúp về bot!',
     })
     async help(
         interaction: CommandInteraction,

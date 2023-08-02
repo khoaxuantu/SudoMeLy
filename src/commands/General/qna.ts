@@ -58,7 +58,7 @@ export default class QnaCommand {
 
     @Slash({
         name: 'solve',
-        description: 'Resolve this QNA topic',
+        description: 'Giải quyết xong vấn đề',
     })
     @Guard(GuildOnly)
     async solve(
@@ -77,7 +77,7 @@ export default class QnaCommand {
         if (!channel || channel.type !== ChannelType.PublicThread) {
             await simpleErrorEmbed(
                 interaction,
-                `Please use this command in a thread channel!`
+                `Hãy dùng lệnh này trong một thread!`
             )
             return
         }
@@ -87,7 +87,7 @@ export default class QnaCommand {
         if (!startMessage) {
             await simpleErrorEmbed(
                 interaction,
-                `This thread channel does not have the starter message!`
+                `Thread này không có tin nhắn bắt đầu!`
             )
             return
         }
@@ -97,27 +97,27 @@ export default class QnaCommand {
             .findOne({ id: interaction.guildId || '' })
 
         if (!guildData) {
-            await simpleErrorEmbed(interaction, `Something went wrong`)
+            await simpleErrorEmbed(interaction, `Hình như có gì đó sai sai`)
             return
         }
 
         if (
             !guildData.supporting_channel_ids?.includes(channel.parentId || '')
         ) {
-            await simpleErrorEmbed(interaction, `This channel is not supported!`)
+            await simpleErrorEmbed(interaction, `Kênh này không được hỗ trợ!`)
             return
         }
 
         if (startMessage.reactions.resolve(questionEmoji)?.me) {
             await simpleErrorEmbed(
                 interaction,
-                `Awaiting for thread owner to select answerer...`
+                `Đang chờ chủ thread chọn người đã giúp đỡ...`
             )
             return
         }
 
         if (startMessage.reactions.resolve(markedEmoji)?.me) {
-            await simpleErrorEmbed(interaction, `Solved!`)
+            await simpleErrorEmbed(interaction, `Đã giải quyết!`)
             return
         }
 
@@ -126,7 +126,7 @@ export default class QnaCommand {
         if (!asker) {
             await simpleErrorEmbed(
                 interaction,
-                `This thread channel does not have the starter message!`
+                `Thread này không có tin nhắn bắt đầu!`
             )
             return
         }
@@ -134,7 +134,7 @@ export default class QnaCommand {
         if (asker.id !== interaction.user.id) {
             await simpleErrorEmbed(
                 interaction,
-                `You are not the owner of this thread!`
+                `Bạn không phải là người hỏi!`
             )
             return
         }

@@ -43,7 +43,7 @@ export default class InfoCommand {
 
     @Slash({
         name: 'info',
-        description: 'Getting bot infos',
+        description: 'Lấy thông tin của bot!',
     })
     @Guard()
     async info(
