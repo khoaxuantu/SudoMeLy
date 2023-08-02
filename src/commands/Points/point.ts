@@ -138,7 +138,7 @@ export default class PointCommand {
                 name: `@${user.username} - ${rank}`,
                 iconURL: user.displayAvatarURL(),
             })
-            .setDescription(`${[userData.description].join("\n")}`)
+            .setDescription(userData.description)
             .addFields(...fields)
             .setColor('Random')
             .setFooter({
