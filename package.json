@@ -1,6 +1,6 @@
 {
   "name": "sudo-mely",
-  "version": "0.1.0-beta",
+  "version": "0.2.0-beta",
   "description": "A Discord bot for Code MeLy community.",
   "license": "MIT",
   "main": "build/main.js",
