@@ -10,6 +10,8 @@
 		"baseUrl": "./",
 		"paths": {
 
+            "@constants": ["src/utils/constants"],
+
 			"@decorators": ["src/utils/decorators"],
 			"@decorators/*": ["src/plugins/*/utils/decorators"],
 
@@ -21,7 +23,7 @@
 
 			"@guards": ["src/guards"],
 			"@guards/*": ["src/plugins/*/guards"],
-			
+
 			"@services": ["src/services"],
 			"@services/*": ["src/plugins/*/services"],
 
