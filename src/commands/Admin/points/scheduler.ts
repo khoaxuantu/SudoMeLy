@@ -25,7 +25,7 @@ import {
 import { Guild, Point, PointType, User } from '@entities'
 import { UnknownReplyError } from '@errors'
 import { Disabled, Guard, UserPermissions } from '@guards'
-import { Database, Logger } from '@services'
+import { Database, Logger, PointManager } from '@services'
 import {
     resolveDependency,
     resolveGuild,
@@ -48,7 +48,7 @@ import { satisfies } from 'semver'
 export default class PointsSchedulerCommand {
     constructor(
         private db: Database,
-        private logger: Logger
+        private pm: PointManager,
     ) {}
 
     // @Schedule('0 0 25 * *') // “At 00:00 on day-of-month 25.”
@@ -74,70 +74,9 @@ export default class PointsSchedulerCommand {
             .filter((c) => c.type === ChannelType.GuildForum)
             .filter((c) => guildData.club_channel_ids?.includes(c.id))
 
-        const threads = clubChannels.flatMap(
-            (c) => (c as ForumChannel).threads.cache
+        await Promise.all(
+            clubChannels.map(c => this.pm.clubAdd(c as ForumChannel))
         )
-
-        const data = (
-            await Promise.all(
-                threads
-                    .filter((t) => !!t.ownerId && t.archived !== true)
-                    .map(async (thread) => {
-                        const threadMembers = thread.members.cache.filter(
-                            (tm) =>
-                                tm.user &&
-                                !tm.user.bot &&
-                                tm.id !== thread.ownerId
-                        )
-
-                        const threadMessages = (
-                            await thread.messages.fetch()
-                        ).filter(
-                            (msg) =>
-                                !msg.author.bot &&
-                                msg.author.id !== thread.ownerId
-                        )
-
-                        // Thread vẫn active: `+ mem / 2`
-                        const ownerPoints = Math.floor(threadMembers.size / 2)
-
-                        const membersData: DataPoint[] = threadMembers.map(
-                            (tm) => ({
-                                id: tm.id,
-                                points: [
-                                    {
-                                        type: 'mely_points',
-                                        value: Math.floor(
-                                            threadMessages.filter(
-                                                (m) => m.author.id === tm.id
-                                            ).size / 50
-                                        ),
-                                    },
-                                ],
-                            })
-                        )
-
-                        return [
-                            ...membersData,
-                            {
-                                id: thread.ownerId!,
-                                points: [
-                                    {
-                                        type: 'mely_points',
-                                        value: ownerPoints,
-                                    },
-                                ],
-                            },
-                        ]
-                    })
-                    .flat()
-            )
-        ).shift()
-
-        if (data) {
-            await this.db.get(User).addPointsToMany(data as DataPoint[])
-        }
     }
 }
 
-type DataPoint = { id: string; points: Point[] }

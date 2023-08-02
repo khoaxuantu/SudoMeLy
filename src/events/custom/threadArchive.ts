@@ -3,31 +3,21 @@ import { ArgsOf, Client, Guard } from 'discordx'
 import { Discord, On, OnCustom } from '@decorators'
 import { Maintenance } from '@guards'
 import { injectable } from 'tsyringe'
-import { Database, EventManager, Logger, Stats, Store } from '@services'
+import { Database, EventManager, PointManager, PointPackage } from '@services'
 import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
     ChannelType,
-    EmbedBuilder,
     PublicThreadChannel,
-    StringSelectMenuBuilder,
-    StringSelectMenuOptionBuilder,
-    ThreadChannel,
-    ThreadMember,
 } from 'discord.js'
 import { Guild, Point, User } from '@entities'
-import { getRandomInt, sendForm } from '@utils/functions'
+import { sendForm } from '@utils/functions'
 
 @Discord()
 @injectable()
 export default class ThreadArchiveEvent {
     constructor(
-        private stats: Stats,
-        private logger: Logger,
         private db: Database,
+        private pm: PointManager,
         private eventManager: EventManager,
-        private store: Store
     ) {}
 
     // =============================
@@ -75,7 +65,7 @@ export default class ThreadArchiveEvent {
             return
         }
 
-        const data: { id: string; points: Point[] }[] = (
+        const data: PointPackage[] = (
             await newThread.members.fetch()
         )
             .filter((v) => !v.user?.bot)
@@ -93,13 +83,13 @@ export default class ThreadArchiveEvent {
                     ) + 1
 
                 return {
-                    id: member.id,
-                    points: [{ type: 'chat_points', value: points }],
+                    user: member.user,
+                    type: 'chat_points',
+                    value: points
                 }
             })
-
-        await this.db.get(User).addPointsToMany(data)
-
+        
+        await this.pm.addMany(data);
         await sendForm(newThread)
     }
 

@@ -25,7 +25,7 @@ import {
 import { Guild, PointType, User as UserEntity } from '@entities'
 import { UnknownReplyError } from '@errors'
 import { Disabled, Guard, UserPermissions } from '@guards'
-import { Database, Logger } from '@services'
+import { Database, Logger, PointManager } from '@services'
 import { resolveGuild, simpleSuccessEmbed, syncUser, replyToInteraction, kawaiiGif, shortPointType } from '@utils/functions'
 import { BotName, MelyAvatarUrl, SudoMeLyGitHubRepo } from '@constants'
 
@@ -43,6 +43,7 @@ import { BotName, MelyAvatarUrl, SudoMeLyGitHubRepo } from '@constants'
 export default class PointsAdminCommand {
     constructor(
         private db: Database,
+        private pm: PointManager,
         private logger: Logger
     ) {}
 
@@ -76,13 +77,7 @@ export default class PointsAdminCommand {
         client: Client
     ) {
         // insert user in db if not exists
-        await syncUser(guildMember.user)
-
-        await this.db
-            .get(UserEntity)
-            .addPoints(guildMember.user.id, [
-                { type: pointType, value: pointValue },
-            ])
+        await this.pm.add({ user: guildMember.user, type: pointType, value: pointValue })
 
         const pointAction = pointValue >= 0 ? "Cộng" : "Trừ";
         const color = pointValue >= 0 ? 0x57F287 : 0xED4245;

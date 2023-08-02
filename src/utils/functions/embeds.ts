@@ -77,7 +77,7 @@ export async function sendForm(threadChannel: PublicThreadChannel<true>) {
         .setDescription(
             `${userMention(
                 asker.id
-            )} oi, ai vừa giúp bạn giải quyết vấn đề ở ${threadChannel} vậy?\n\n> Hãy chọn 1 người trong menu xổ xuống ở đưới nếu người đó đã giúp bạn giải quyết chủ đề bạn hỏi, nếu không có ai giúp bạn giải quyết hoặc không có tên họ trong danh sách hãy bấm nút **\`KHÔNG\`** màu đỏ.`
+            )} ơi, ai vừa giúp bạn giải quyết vấn đề ở ${threadChannel} vậy?\n\n> Hãy chọn 1 người trong menu xổ xuống ở đưới nếu người đó đã giúp bạn giải quyết chủ đề bạn hỏi, nếu không có ai giúp bạn giải quyết hoặc không có tên họ trong danh sách hãy bấm nút **\`KHÔNG\`** màu đỏ.`
         )
 
     const rows = (state: boolean) => [

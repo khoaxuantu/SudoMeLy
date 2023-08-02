@@ -23,8 +23,22 @@ import { EntityRepository } from '@mikro-orm/sqlite'
 import { CustomBaseEntity } from './BaseEntity'
 import { checkRank, resolveDependency } from '@utils/functions'
 import { EventManager, Logger } from '@services'
+import { TransformContext } from '@mikro-orm/core/types/Type'
 
-const dbMaxInt = 2147483647
+
+class Int64 extends Type<number, number>{
+    convertToDatabaseValue(value: number): number {
+        return value;
+    }
+
+    convertToJSValue(value: number): number {
+        return value
+    }
+
+    getColumnType(): string {
+        return 'bigint'
+    }
+}
 
 // ===========================================
 // ================= Entity ==================
@@ -51,13 +65,13 @@ export class User extends CustomBaseEntity {
      * @RANKING
      */
 
-    @Property({ type: 'bigint' })
+    @Property({ type: Int64 })
     chat_points: number = 0
 
-    @Property({ type: 'bigint' })
+    @Property({ type: Int64 })
     voice_points: number = 0
 
-    @Property({ type: 'bigint' })
+    @Property({ type: Int64 })
     mely_points: number = 0
 
     /**

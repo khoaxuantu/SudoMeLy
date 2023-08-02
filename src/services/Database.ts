@@ -7,8 +7,9 @@ import { delay, inject, singleton } from "tsyringe"
 import { Schedule } from "@decorators"
 import * as entities from "@entities"
 import { Logger, PluginsManager } from "@services"
-import { resolveDependency } from "@utils/functions"
+import { resolveDependency, syncUser } from "@utils/functions"
 import { backup, restore } from "saveqlite"
+
 
 @singleton()
 export class Database {

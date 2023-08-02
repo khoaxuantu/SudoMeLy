@@ -9,7 +9,7 @@ import { container } from "tsyringe"
 import { Server } from "@api/server"
 import { apiConfig, generalConfig, websocketConfig } from "@configs"
 import { NoBotTokenError } from "@errors"
-import { Database, ErrorHandler, EventManager, ImagesUpload, Logger, PluginsManager, Store, WebSocket } from "@services"
+import { Database, ErrorHandler, EventManager, ImagesUpload, Logger, PluginsManager, PointManager, Store, WebSocket } from "@services"
 import { initDataTable, resolveDependency } from "@utils/functions"
 import { clientConfig } from "./client"
 import { RequestContext } from '@mikro-orm/core'
@@ -36,6 +36,8 @@ async function run() {
     // init the database
     const db = await resolveDependency(Database)
     await db.initialize()
+    const pm = await resolveDependency(PointManager)
+    await pm.initialize(db);
     
     // init the client
     DIService.engine = tsyringeDependencyRegistryEngine.setInjector(container)

@@ -3,18 +3,16 @@ import { ArgsOf, Client, Guard } from 'discordx'
 import { Discord, On, OnCustom } from '@decorators'
 import { Maintenance } from '@guards'
 import { injectable } from 'tsyringe'
-import { Database, EventManager, Logger, Stats } from '@services'
+import { Database, EventManager, PointManager } from '@services'
 import { ChannelType, Message, MessageType } from 'discord.js'
-import { getRandomInt, resolveGuild, syncUser } from '@utils/functions'
 import { Guild, User } from '@entities'
 
 @Discord()
 @injectable()
 export default class ChatPointEvent {
     constructor(
-        private stats: Stats,
-        private logger: Logger,
         private db: Database,
+        private pm: PointManager,
         private eventManager: EventManager
     ) {}
 
@@ -71,57 +69,7 @@ export default class ChatPointEvent {
         }
 
         // ignore message without any attachment and content length below 3
-        if (message.content.length < 3 && !message.attachments.size) return
-
-        // Base point
-        let points = getRandomInt(2, 3)
-
-        points += (message.content.length * 5).toString().length
-
-        // If contains any attachments
-        if (message.attachments.size) points += 1
-
-        // If contains more than 5 spaces
-        if (message.content.trim().split(/ +/g).length > 5) points += 1
-
-        // If contains emojis
-        if (
-            message.cleanContent.match(
-                /<a?:.+?:\d{18,19}>|\p{Extended_Pictographic}/gu
-            )
-        ) {
-            points += 1
-        }
-
-        // If contains codeblocks
-        if (message.cleanContent.match(/```.+?```/gisu)) {
-            points += 1
-        }
-
-        // If mentioned others or replied to others
-        if (
-            message.cleanContent.match(/<@\d{18,19}>/g) ||
-            (message.type === MessageType.Reply && message.reference)
-        ) {
-            points += 1
-        }
-
-        // If contains URLs
-        if (message.cleanContent.match(/https?:\/\/[^.]+\.[^/]+/g)) {
-            points += 1
-        }
-
-        // Round the point down so there will be no floating point in database
-        const toAddPoints = Math.floor(points / 3)
-
-        // Check if user is exist, if not, create one
-        await syncUser(member.user)
-
-        // Add chat point
-        await this.db
-            .get(User)
-            .addPoints(member.id, [{ type: 'chat_points', value: toAddPoints }])
-
+        this.pm.messageAdd(message);
         this.cooldown.set(member.id, { lastChat: new Date() })
     }
 
