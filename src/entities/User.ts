@@ -123,9 +123,10 @@ export class UserRepository extends EntityRepository<User> {
     private loopAddPoints(points: Point[], userData: Loaded<User, never>) {
         points.forEach((point) => {
             if (point.type !== 'overall_points') {
-                userData[point.type] += Math.floor(point.value)
-                if (userData[point.type] < 0) {
-                    userData[point.type] = 0
+                if (point.value >= 0) {
+                    userData[point.type] += Math.floor(point.value)
+                } else {
+                    userData[point.type] -= Math.abs(Math.floor(point.value))
                 }
             }
         })

@@ -32,6 +32,7 @@ import {
     getRank,
     getRankKeys,
     getRankValues,
+    numberFormat,
     replyToInteraction,
     syncUser,
 } from '@utils/functions'
@@ -120,10 +121,6 @@ export default class RankCommand {
         }
     }
 
-    numberFormat(input: any) {
-        return numeral(input).format('0[.][00]a')
-    }
-
     async drawCanvas(user: DUser) {
         // insert user in db if not exists
         await syncUser(user)
@@ -199,7 +196,7 @@ export default class RankCommand {
         ctx.fillStyle = '#aaaaaa'
         ctx.fillText(
             (rank || '').toUpperCase() +
-                ` (${this.numberFormat(currentPoints)}/${this.numberFormat(
+                ` (${numberFormat(currentPoints)}/${numberFormat(
                     requiredPoints
                 )})`,
             canvas.width / 1.07,

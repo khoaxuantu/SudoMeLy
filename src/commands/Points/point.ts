@@ -9,6 +9,7 @@ import {
     codeBlock,
     AttachmentBuilder,
     User as DUser,
+    chatInputApplicationCommandMention,
 } from 'discord.js'
 import {
     Client,
@@ -30,6 +31,7 @@ import {
     getRank,
     getRankKeys,
     getRankValues,
+    numberFormat,
     replyToInteraction,
     syncUser,
 } from '@utils/functions'
@@ -43,7 +45,7 @@ export default class PointCommand {
         private logger: Logger
     ) {}
 
-    @SimpleCommand({ name: 'point' })
+    @SimpleCommand({ aliases: ['p'], name: 'point' })
     async simplePoint(
         @SimpleCommandOption({
             name: 'user',
@@ -99,36 +101,21 @@ export default class PointCommand {
             return null
         }
 
+        const CPs = `int CP = ${numberFormat(userData.chat_points)};`
+        const VPs = `int VP = ${numberFormat(userData.voice_points)};`
+        const MPs = `int MP = ${numberFormat(userData.mely_points)};`
+
         const fields: APIEmbedField[] = [
             {
-                name: 'Chat Points',
-                value: codeBlock(
-                    'js',
-                    `${this.numberFormat(userData.chat_points)}`
-                ),
-                inline: true,
-            },
-            {
-                name: 'Voice Points',
-                value: codeBlock(
-                    'js',
-                    `${this.numberFormat(userData.voice_points)}`
-                ),
-                inline: true,
-            },
-            {
-                name: 'MeLy Points',
-                value: codeBlock(
-                    'js',
-                    `${this.numberFormat(userData.mely_points)}`
-                ),
+                name: 'Points',
+                value: codeBlock('c', `${[CPs, VPs, MPs].join('\n')}`),
                 inline: true,
             },
         ]
 
         const rank = getRank(userData.overall_points || 0)
 
-        const currentPoints = this.numberFormat(userData.overall_points || 0)
+        const currentPoints = numberFormat(userData.overall_points || 0)
 
         const getNextRank = () => {
             const rankKeys = getRankKeys()
@@ -142,7 +129,7 @@ export default class PointCommand {
                     ? 0
                     : rankKeys.findIndex((v) => v == rank) + 1
             const nextRank = rankKeys[nextIndex]
-            const nextRankPoints = this.numberFormat(getRankValues()[nextIndex])
+            const nextRankPoints = numberFormat(getRankValues()[nextIndex])
             return `Next rank: ${nextRank} (${currentPoints}/${nextRankPoints})`
         }
 
@@ -151,7 +138,7 @@ export default class PointCommand {
                 name: `@${user.username} - ${rank}`,
                 iconURL: user.displayAvatarURL(),
             })
-            .setDescription(userData.description)
+            .setDescription(`${[userData.description].join("\n")}`)
             .addFields(...fields)
             .setColor('Random')
             .setFooter({
@@ -165,9 +152,5 @@ export default class PointCommand {
         )
 
         return embed
-    }
-
-    numberFormat(input: any) {
-        return numeral(input).format('0[.][00]a')
     }
 }

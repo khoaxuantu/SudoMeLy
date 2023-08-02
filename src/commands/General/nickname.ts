@@ -15,10 +15,10 @@ import {
     TextInputStyle,
 } from 'discord.js'
 import { ButtonComponent, Client, SlashOption } from 'discordx'
-import { Guard, UserPermissions } from '@guards'
+import { Guard, Point, UserPermissions } from '@guards'
 import { Discord, Slash } from '@decorators'
 import { Database, Logger } from '@services'
-import { Guild } from '@entities'
+import { Guild, User } from '@entities'
 import { injectable } from 'tsyringe'
 import { replyToInteraction } from '@utils/functions'
 import { UnknownReplyError } from '@errors'
@@ -195,6 +195,10 @@ export default class NickReqCommand {
 
                         this.logger.logError(e, 'unhandledRejection')
                     })
+
+                await this.db
+                    .get(User)
+                    .addPoints(reqMem.id, [{ type: 'mely_points', value: 10 }])
             })
             .catch((error) => {
                 if (error.message) {
@@ -214,7 +218,8 @@ export default class NickReqCommand {
     @Guard(
         RateLimit(TIME_UNIT.minutes, 5, {
             message: 'Hãy thử lại vào lúc {until}!',
-        })
+        }),
+        Point(10)
     )
     async sendNicknameReq(
         @SlashOption({
