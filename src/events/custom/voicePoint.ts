@@ -1,17 +1,26 @@
 import { ArgsOf, Client, Guard } from 'discordx'
 
 import { Discord, On, OnCustom } from '@decorators'
-import { Maintenance } from '@guards'
+import { GuildOnly, Maintenance } from '@guards'
 import { injectable } from 'tsyringe'
-import { Database, PointManager, EventManager, Logger, Stats, Store } from '@services'
+import {
+    Database,
+    PointManager,
+    EventManager,
+    Logger,
+    Stats,
+    Store,
+} from '@services'
 import { VoiceState } from 'discord.js'
+import { NotBot } from '@discordx/utilities'
 
 @Discord()
 @injectable()
 export default class VoicePointEvent {
-    constructor(    
+    constructor(
         private eventManager: EventManager,
-        private pm: PointManager
+        private pm: PointManager,
+        private store: Store
     ) {}
 
     // =============================
@@ -20,7 +29,7 @@ export default class VoicePointEvent {
 
     @OnCustom('voicePoint')
     async voicePointHandler(oldState: VoiceState, newState: VoiceState) {
-        await this.pm.voiceAdd(oldState, newState);
+        await this.pm.voiceAdd(oldState, newState)
     }
 
     // =============================
@@ -28,11 +37,15 @@ export default class VoicePointEvent {
     // =============================
 
     @On('voiceStateUpdate')
-    @Guard(Maintenance)
+    @Guard(NotBot)
     async voiceEmitter(
         [oldState, newState]: ArgsOf<'voiceStateUpdate'>
         // client: Client
     ) {
+        if (this.store.get('maintaining')) {
+            return
+        }
+
         // Only accept private guild and user
         if (
             oldState.guild.id == process.env['TEST_GUILD_ID'] &&
@@ -48,10 +61,5 @@ export default class VoicePointEvent {
              */
             this.eventManager.emit('voicePoint', oldState, newState)
         }
-    }
-
-    calcVoiceDuration(before: Date, after: Date = new Date()) {
-        // 5 mins each
-        return Math.floor((after.getTime() - before.getTime()) / (5 * 60_000))
     }
 }

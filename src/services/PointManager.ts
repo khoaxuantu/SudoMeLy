@@ -10,9 +10,9 @@ import { Store } from "./Store";
 export type PointType = 'chat_points' | 'voice_points' | 'mely_points' | 'overall_points'
 
 export interface PointPackage {
-    user: User | null;
-    type: PointType;
-    value: number;
+    user: User | null
+    type: PointType
+    value: number
 }
 
 export interface TransactionResponse {
@@ -22,17 +22,15 @@ export interface TransactionResponse {
 
 @Injectable()
 class PointEvaluator {
-    constructor(
-        private store: Store
-    ){}
+    constructor(private store: Store) {}
 
     evaluateMessage(message: Message): number {
-        if(message.content.length < 3 && !message.attachments.size) return 0;
+        if (message.content.length < 3 && !message.attachments.size) return 0
 
         // Base point
-        let points = getRandomInt(2, 3);
+        let points = getRandomInt(2, 3)
 
-        points += (message.content.length * 5).toString().length;
+        points += (message.content.length * 5).toString().length
         // If contains any attachments
         if (message.attachments.size) points += 1
 
@@ -73,9 +71,9 @@ class PointEvaluator {
     evaluateVoiceState(
         userData: Loaded<UserEntity, never>,
         oldState: VoiceState,
-        newState: VoiceState,
-    ){
-        let points = 0; 
+        newState: VoiceState
+    ) {
+        let points = 0
 
         const inVoiceChannel =
             oldState.channel !== null && newState.channel !== null
@@ -85,9 +83,9 @@ class PointEvaluator {
 
         // const switchChannel =
         //     inVoiceChannel && oldState.channel !== newState.channel
-        
-        const now = new Date();
-         // User join a voice
+
+        const now = new Date()
+        // User join a voice
         if (oldState.channel === null && newState.channel !== null) {
             // Start count in voice duration for user
             if (newState.mute === false) userData.onMicTime = now
@@ -97,7 +95,10 @@ class PointEvaluator {
         // User turn off their mic
         if (sameChannel && oldState.mute === false && newState.mute === true) {
             if (userData.onMicTime) {
-                const countInVoiceTime = this.getVoiceUnits(userData.onMicTime, now);
+                const countInVoiceTime = this.getVoiceUnits(
+                    userData.onMicTime,
+                    now
+                )
 
                 const countMember = this.store
                     .get('voiceChannels')
@@ -170,11 +171,11 @@ class PointEvaluator {
 
         // User leave a voice
         if (oldState.channel !== null && newState.channel === null) {
-
             // 1 hour in any voice = 1 VP
             if (userData.joinedVoiceTime) {
                 const countInVoiceTime = this.getVoiceUnits(
-                    userData.joinedVoiceTime, now
+                    userData.joinedVoiceTime,
+                    now
                 )
 
                 points += Math.floor(countInVoiceTime / 12)
@@ -214,29 +215,36 @@ class PointEvaluator {
                 points += calcPoints
             }
 
-            userData.onMicTime = null;
-            userData.onStreamTime = null;
-            userData.onVideoTime = null;
-            userData.joinedVoiceTime = null;
+            userData.onMicTime = null
+            userData.onStreamTime = null
+            userData.onVideoTime = null
+            userData.joinedVoiceTime = null
         }
-        return points;
+        
+        return points
     }
 
-    getVoiceUnits(before: Date, after: Date){
-        return Math.floor((after.getTime() - before.getTime()) / (5 * 60_000));
+    getVoiceUnits(before: Date, after: Date) {
+        return Math.floor((after.getTime() - before.getTime()) / (5 * 60_000))
     }
 
-    async evaluateClubThread(userDatas: (Loaded<UserEntity, never> | null) [], thread: ThreadChannel){
-        const owner = userDatas.find((user) => user?.id === thread.ownerId);
-        if(owner){
-            owner.mely_points += Math.floor(userDatas.length / 2);
+    async evaluateClubThread(
+        userDatas: (Loaded<UserEntity, never> | null)[],
+        thread: ThreadChannel
+    ) {
+        const owner = userDatas.find((user) => user?.id === thread.ownerId)
+        if (owner) {
+            owner.mely_points += Math.floor(userDatas.length / 2)
         }
-        const threadMessages = (await thread.messages.fetch())
-            .filter(message => !message.author.bot)
-        userDatas.forEach(user => {
-            if(user){
-                const points = threadMessages.filter(m => m.author.id === user.id).size / 50;
-                user.mely_points += Math.floor(points);
+        const threadMessages = (await thread.messages.fetch()).filter(
+            (message) => !message.author.bot
+        )
+        userDatas.forEach((user) => {
+            if (user) {
+                const points =
+                    threadMessages.filter((m) => m.author.id === user.id).size /
+                    50
+                user.mely_points += Math.floor(points)
             }
         })
     }
@@ -246,8 +254,8 @@ class PointEvaluator {
 export class PointManager extends PointEvaluator {
     private repo: UserRepository
 
-    async initialize(db: Database){
-        this.repo = db.em.getRepository(UserEntity);
+    async initialize(db: Database) {
+        this.repo = db.em.getRepository(UserEntity)
     }
 
     private getRate(fromPointType: PointType, toPointType: PointType){
@@ -323,58 +331,94 @@ export class PointManager extends PointEvaluator {
         }
     }
 
-    async addMany(pointPackages: PointPackage[]){
+    async addMany(pointPackages: PointPackage[]) {
         const userDatas = await Promise.all(
-            pointPackages.map(pkg => this.getUserData(pkg.user))
+            pointPackages.map((pkg) => this.getUserData(pkg.user))
         )
-        for(let i = 0; i < userDatas.length; i++){
-            const userData = userDatas[i];
-            if(userData){
-                const value = Math.floor(pointPackages[i].value);
-                userData[pointPackages[i].type] = Math.max(0, userData[pointPackages[i].type] + value);
+        for (let i = 0; i < userDatas.length; i++) {
+            const userData = userDatas[i]
+            if (userData) {
+                const value = Math.floor(pointPackages[i].value)
+                userData[pointPackages[i].type] = Math.max(
+                    0,
+                    userData[pointPackages[i].type] + value
+                )
             }
         }
-        await this.repo.flush();
+        await this.repo.flush()
     }
 
-    async messageAdd(message: Message){
-        const user = message.member?.user;
-        if(!user) return;
-        const userData = await this.getUserData(user);
-        if(userData){
-            const points = this.evaluateMessage(message);
-            userData.chat_points += points;
-            await this.repo.flush();
+    async messageAdd(message: Message) {
+        const user = message.member?.user
+        if (!user) return
+        const userData = await this.getUserData(user)
+        if (userData) {
+            const points = this.evaluateMessage(message)
+            userData.chat_points += points
+            await this.repo.flush()
         }
     }
 
-    async voiceAdd(oldState: VoiceState, newState: VoiceState){
-        const user = oldState.member?.user || newState.member?.user;
-        if(!user) return;
-        const userData = await this.getUserData(user);
-        if(userData){
-            const points = this.evaluateVoiceState(userData, oldState, newState);
-            if(points > 0){
-                userData.voice_points += points;
-                this.repo.flush();
+    async voiceAdd(oldState: VoiceState, newState: VoiceState) {
+        const user = oldState.member?.user || newState.member?.user
+        if (!user) return
+        const userData = await this.getUserData(user)
+        if (userData) {
+            const points = this.evaluateVoiceState(userData, oldState, newState)
+            if (points > 0) {
+                userData.voice_points += points
             }
+            await this.repo.flush()
         }
     }
 
-    async clubAdd(channel: ForumChannel){
-        const activeThreads = channel.threads.cache
-            .filter(thread => thread.ownerId && !thread.archived);
-        for(let key in activeThreads){
-            const thread = activeThreads.get(key);
-            if(!thread) continue;
+    async clubAdd(channel: ForumChannel) {
+        const activeThreads = channel.threads.cache.filter(
+            (thread) => thread.ownerId && !thread.archived
+        )
+        for (let key in activeThreads) {
+            const thread = activeThreads.get(key)
+            if (!thread) continue
             const users = thread.members.cache
-                .filter(mem => mem.user && !mem.user.bot)
-                .map(mem => mem.user);
+                .filter((mem) => mem.user && !mem.user.bot)
+                .map((mem) => mem.user)
             const userDatas = await Promise.all(
-                users.map(user => this.getUserData(user))
+                users.map((user) => this.getUserData(user))
             )
-            await this.evaluateClubThread(userDatas, thread);
+            await this.evaluateClubThread(userDatas, thread)
         }
-        await this.repo.flush();
+        await this.repo.flush()
+    }
+
+    async calcAndResetState() {
+        const usersData = await this.repo.findAll()
+
+        if (usersData) {
+            const now = new Date()
+            usersData.forEach((userData) => {
+                let points = 0
+
+                // 0.5 hour in any voice = 1 VP
+                if (userData.joinedVoiceTime) {
+                    const countInVoiceTime = this.getVoiceUnits(
+                        userData.joinedVoiceTime,
+                        now
+                    )
+
+                    points += Math.floor(countInVoiceTime / 6)
+                }
+
+                userData.onMicTime = null
+                userData.onStreamTime = null
+                userData.onVideoTime = null
+                userData.joinedVoiceTime = null
+
+                if (points > 0) {
+                    userData.voice_points += points
+                }
+            })
+
+            await this.repo.flush()
+        }
     }
 }

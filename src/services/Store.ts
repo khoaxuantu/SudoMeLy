@@ -10,6 +10,7 @@ interface State {
         websocket: boolean | null
     }
     voiceChannels: Map<string, { peakMembers: number }>
+    maintaining: boolean
 }
 
 const initialState: State = {
@@ -19,7 +20,8 @@ const initialState: State = {
         api: apiConfig.enabled ? false : null,
         websocket: websocketConfig.enabled ? false : null,
     },
-    voiceChannels: new Map()
+    voiceChannels: new Map(),
+    maintaining: false
 }
 
 @singleton()

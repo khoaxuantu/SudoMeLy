@@ -16,15 +16,15 @@ export default class guildBanAddEvent {
         private db: Database
     ) {}
 
-    @On('guildBanAdd')
-    async guildBanAddHandler([ban]: ArgsOf<'guildBanAdd'>, client: Client) {
-        // Delete user from database when they are banned
-        const bannedUserData = await this.db
+    @On('guildMemberRemove')
+    async guildBanAddHandler([member]: ArgsOf<'guildMemberRemove'>, client: Client) {
+        // Delete user from database when they left the guild
+        const userData = await this.db
             .get(User)
-            .findOne({ id: ban.user.id })
+            .findOne({ id: member.user.id })
 
-        if (bannedUserData) {
-            await this.db.get(User).removeAndFlush(bannedUserData)
+        if (userData) {
+            await this.db.get(User).removeAndFlush(userData)
         }
     }
 }

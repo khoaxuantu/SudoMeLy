@@ -14,7 +14,7 @@ export default class MessageCreateEvent {
         Maintenance,
     )
     async messageCreateHandler(
-        [message]: ArgsOf<"messageCreate">, 
+        [message]: ArgsOf<"messageCreate">,
         client: Client,
      ) {
 

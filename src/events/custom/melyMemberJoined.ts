@@ -3,7 +3,7 @@ import { inject, injectable, delay, container } from 'tsyringe'
 
 import { Discord, On, OnCustom } from '@decorators'
 import { Guild as EntityGuild, User } from '@entities'
-import { Maintenance, NotBot, Guard } from '@guards'
+import { Maintenance, Guard } from '@guards'
 import { Database, EventManager, Logger, Stats } from '@services'
 import {
     getPrefixFromMessage,
@@ -39,7 +39,6 @@ export default class MelyMemberJoined {
     // =============================
 
     @OnCustom('melyMemberJoined')
-    @Guard(NotBot)
     async melyMemberJoinedHandler(member: GuildMember) {
         const { guild } = member
         if (guild.id != process.env['TEST_GUILD_ID']) return
