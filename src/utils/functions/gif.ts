@@ -8,6 +8,7 @@ interface KawaiiAPIResponse{
 export const kawaiiGif = (endpoint: string): Promise<string> => {
     return new Promise(resolve => {
         const token = process.env['KAWAII_API'];
+        if(!token) return resolve(MelyAvatarUrl);
         const url = `https://kawaii.red/api/gif/${endpoint}/token=${token}`;
         get(url, (res) => {
             let text = '';
@@ -17,6 +18,6 @@ export const kawaiiGif = (endpoint: string): Promise<string> => {
                 resolve(data.response);
             });
             res.on('error', () => resolve(MelyAvatarUrl));
-        });
+        }).on('error', () => resolve(MelyAvatarUrl));
     })
 }
