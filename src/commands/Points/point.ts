@@ -4,12 +4,9 @@ import {
     EmbedBuilder,
     type CommandInteraction,
     type GuildMember,
-    type Message,
     APIEmbedField,
     codeBlock,
-    AttachmentBuilder,
     User as DUser,
-    chatInputApplicationCommandMention,
 } from 'discord.js'
 import {
     Client,
@@ -18,22 +15,17 @@ import {
     SimpleCommandOption,
     SimpleCommandOptionType,
 } from 'discordx'
-import { createCanvas, type Canvas, loadImage } from '@napi-rs/canvas'
-import { request } from 'undici'
 
 import { Discord, Slash, SlashOption } from '@decorators'
 import { injectable } from 'tsyringe'
-import { User } from '@entities'
-import { Database, Logger } from '@services'
+import { Logger, PointManager } from '@services'
 import { UnknownReplyError } from '@errors'
-import numeral from 'numeral'
 import {
     getRank,
     getRankKeys,
     getRankValues,
     numberFormat,
     replyToInteraction,
-    syncUser,
 } from '@utils/functions'
 
 @Discord()
@@ -41,7 +33,7 @@ import {
 @Category('Points')
 export default class PointCommand {
     constructor(
-        private db: Database,
+        private pm: PointManager,
         private logger: Logger
     ) {}
 
@@ -93,9 +85,7 @@ export default class PointCommand {
 
     async getEmbed(user: DUser) {
         // insert user in db if not exists
-        await syncUser(user)
-
-        const userData = await this.db.get(User).findOne({ id: user.id })
+        const userData = await this.pm.getUserData(user)
 
         if (!userData) {
             return null

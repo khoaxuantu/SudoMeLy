@@ -2,8 +2,8 @@ import { UserRepository, User as UserEntity } from "@entities";
 import { singleton } from "tsyringe";
 import { Database } from "./Database";
 import { ForumChannel, Message, MessageType, ThreadChannel, User, VoiceState } from "discord.js";
-import { getRandomInt, syncUser } from "@utils/functions";
-import { Loaded } from "@mikro-orm/core";
+import { getRandomInt, shortPointType, syncUser } from "@utils/functions";
+import { Loaded, type QBFilterQuery } from "@mikro-orm/core";
 import { Injectable } from "@tsed/di";
 import { Store } from "./Store";
 
@@ -13,6 +13,11 @@ export interface PointPackage {
     user: User | null;
     type: PointType;
     value: number;
+}
+
+export interface TransactionResponse {
+    success: boolean,
+    message: string,
 }
 
 @Injectable()
@@ -245,10 +250,66 @@ export class PointManager extends PointEvaluator {
         this.repo = db.em.getRepository(UserEntity);
     }
 
+    private getRate(fromPointType: PointType, toPointType: PointType){
+        if(fromPointType === toPointType || (fromPointType !== 'mely_points' && toPointType !== 'mely_points')) return 1;
+        if(toPointType === 'mely_points') return 100;
+        return 1 / 20;
+    }
+
+    async getTop(pointPackage: PointPackage){
+        const filter: QBFilterQuery<UserEntity> = {
+            [pointPackage.type]: {
+                $gt: pointPackage.value || 0
+            }
+        };
+        return await this.repo.count(filter) + 1;
+    }
+
+    async getLeaderboard(type: PointType, limit: number){
+        return await this.repo.find({}, {
+            orderBy: {
+                [type]: -1,
+            },
+            limit            
+        })
+    }
+
     async getUserData(user: User | null){
         if(!user) return null;
         await syncUser(user);
         return await this.repo.findOne(user.id);
+    }
+
+    async exchange(
+        user: User | null,
+        fromPointType: PointType,
+        toPointType: PointType,
+        amount: number
+    ): Promise<TransactionResponse>{
+        const userData = await this.getUserData(user);
+        if(!userData){
+            return {
+                success: false,
+                message: 'Không tìm thấy dữ liệu',
+            }
+        }
+        const fromPoints = userData[fromPointType];
+        if(fromPoints < amount){
+            return {
+                success: false,
+                message: 'Điểm không đủ',
+            }
+        }
+        const rate = this.getRate(fromPointType, toPointType);
+        const toPoints = Math.floor(Math.floor(amount) / rate);
+        const remainFromPoints = Math.floor(fromPoints - toPoints * rate);
+        userData[fromPointType] = remainFromPoints;
+        userData[toPointType] += toPoints;
+        await this.repo.flush();
+        return {
+            success: true,
+            message: `Đổi thành công ${toPoints} ${shortPointType(toPointType)}`,
+        }
     }
 
     async add(pointPackage: PointPackage){

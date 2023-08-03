@@ -3,10 +3,6 @@ import {
     ApplicationCommandOptionType,
     EmbedBuilder,
     type CommandInteraction,
-    type GuildMember,
-    type Message,
-    APIEmbedField,
-    codeBlock,
     userMention,
     AttachmentBuilder,
     bold,
@@ -16,8 +12,8 @@ import { Client, SimpleCommand, SimpleCommandMessage } from 'discordx'
 
 import { Discord, Slash, SlashChoice, SlashOption } from '@decorators'
 import { injectable } from 'tsyringe'
-import { PointType, User } from '@entities'
-import { Database, leaderboardGenerator } from '@services'
+import { PointType } from '@entities'
+import { PointManager, leaderboardGenerator } from '@services'
 import { UnknownReplyError } from '@errors'
 import {
     getRank,
@@ -25,14 +21,15 @@ import {
     replyToInteraction,
     resolveGuild,
 } from '@utils/functions'
-import { QueryOrder } from '@mikro-orm/core'
 import { LeaderboardData } from '@services/imageGenerators/leaderboard'
 
 @Discord()
 @injectable()
 @Category('Points')
 export default class LbCommand {
-    constructor(private db: Database) {}
+    constructor(
+        private pm: PointManager
+    ) {}
 
     @Slash({
         name: 'leaderboard',
@@ -54,17 +51,8 @@ export default class LbCommand {
     ) {
         const guild = await resolveGuild(interaction)
 
-        let orderOption: { [key: string]: number } = {}
-        orderOption[`${pointType || 'overall_points'}`] = -1
-
-        const usersData = await this.db.get(User).find(
-            {},
-            {
-                orderBy: [orderOption],
-                limit: 10,
-            }
-        )
-
+        const usersData = await this.pm.getLeaderboard(pointType || 'overall_points', 10);
+        
         if (usersData && usersData.length && guild) {
             const data = usersData
                 .filter(
@@ -119,12 +107,7 @@ export default class LbCommand {
             },
         })
 
-        const topUsers = await this.db
-            .get(User)
-            .createQueryBuilder()
-            .select(['id', 'overall_points'])
-            .orderBy({ overall_points: QueryOrder.DESC })
-            .limit(5)
+        const topUsers = await this.pm.getLeaderboard('overall_points', 5);
 
         const guildMembers = await guild.members.fetch({
             user: topUsers.map((usr) => usr.id),

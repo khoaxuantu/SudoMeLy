@@ -1,12 +1,8 @@
 import { Category } from '@discordx/utilities'
 import {
     ApplicationCommandOptionType,
-    EmbedBuilder,
     type CommandInteraction,
     type GuildMember,
-    type Message,
-    APIEmbedField,
-    codeBlock,
     AttachmentBuilder,
     ActionRowBuilder,
     ButtonBuilder,
@@ -24,17 +20,14 @@ import { request } from 'undici'
 
 import { Discord, Slash, SlashOption } from '@decorators'
 import { injectable } from 'tsyringe'
-import { User } from '@entities'
-import { Canvas, Database, Logger } from '@services'
+import { Canvas, PointManager } from '@services'
 import { UnknownReplyError } from '@errors'
-import numeral from 'numeral'
 import {
     getRank,
     getRankKeys,
     getRankValues,
     numberFormat,
     replyToInteraction,
-    syncUser,
 } from '@utils/functions'
 import { generalConfig } from '@configs'
 
@@ -60,8 +53,7 @@ const applyText = (canvas: Canvas.Canvas, text: string) => {
 @Category('Points')
 export default class RankCommand {
     constructor(
-        private db: Database,
-        private logger: Logger
+        private pm: PointManager,
     ) {}
 
     @SimpleCommand({
@@ -123,22 +115,10 @@ export default class RankCommand {
 
     async drawCanvas(user: DUser) {
         // insert user in db if not exists
-        await syncUser(user)
-
-        const userData = await this.db.get(User).findOne({ id: user.id })
+        const userData = await this.pm.getUserData(user);
 
         if (!userData) return null
-        const currentRankPos =
-            (
-                await this.db.get(User).findAndCount(
-                    {
-                        overall_points: {
-                            $gt: userData.overall_points || 0,
-                        },
-                    },
-                    { orderBy: { overall_points: -1 } }
-                )
-            )[1] + 1
+        const currentRankPos = await this.pm.getTop({user: null, type: 'overall_points', value: userData.overall_points});
 
         const rank = getRank(userData.overall_points || 0)
         const currentPoints = userData.overall_points || 0

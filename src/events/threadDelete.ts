@@ -1,19 +1,16 @@
-import { Message } from 'discord.js'
 import { ArgsOf, Client } from 'discordx'
 
 import { Discord, On } from '@decorators'
 import { injectable } from 'tsyringe'
-import { Database, Logger, Stats } from '@services'
-import { Guild, User } from '@entities'
-import { syncUser } from '@utils/functions'
+import { Database, PointManager } from '@services'
+import { Guild } from '@entities'
 
 @Discord()
 @injectable()
 export default class threadDeleteEvent {
     constructor(
-        private stats: Stats,
-        private logger: Logger,
-        private db: Database
+        private db: Database,
+        private pm: PointManager
     ) {}
 
     @On('threadDelete')
@@ -57,11 +54,11 @@ export default class threadDeleteEvent {
             guildData.sharing_channel_ids.length &&
             guildData.sharing_channel_ids.includes(thread.parentId)
         ) {
-            await syncUser(owner.user)
-
-            await this.db
-                .get(User)
-                .addPoints(owner.id, [{ type: 'mely_points', value: -1 }])
+            await this.pm.add({
+                user: owner.user,
+                type: 'mely_points',
+                value: -1
+            })
         }
 
         /**
@@ -73,11 +70,11 @@ export default class threadDeleteEvent {
             guildData.club_channel_ids.length &&
             guildData.club_channel_ids.includes(thread.parentId)
         ) {
-            await syncUser(owner.user)
-
-            await this.db
-                .get(User)
-                .addPoints(owner.id, [{ type: 'mely_points', value: -1 }])
+            await this.pm.add({
+                user: owner.user,
+                type: 'mely_points',
+                value: -1
+            })
         }
     }
 }
