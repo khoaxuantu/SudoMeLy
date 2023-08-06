@@ -45,13 +45,13 @@ export function getRank(overall_points: number) {
 }
 
 export enum Ranks {
-    Enjoyer = 0,
-    Intern = 100,
-    Fresher = 1_000,
-    Junior = 5_000,
-    Senior = 10_000,
-    Vip = 15_000,
+    Iron = 0,
+    Bronze = 100,
+    Silver = 1_000,
+    Gold = 5_000,
+    Platinum = 10_000,
+    Diamond = 15_000,
     Master = 100_000,
-    Challenger = 1_000_000,
-    Gigachad = 1_000_000_000,
+    Grandmaster = 1_000_000,
+    Challenger = 1_000_000_000,
 }

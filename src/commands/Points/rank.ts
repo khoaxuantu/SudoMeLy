@@ -17,44 +17,26 @@ import {
     SimpleCommandOptionType,
 } from 'discordx'
 import { request } from 'undici'
-
 import { Discord, Slash, SlashOption } from '@decorators'
 import { injectable } from 'tsyringe'
 import { Canvas, PointManager } from '@services'
 import { UnknownReplyError } from '@errors'
 import {
+    getPalette,
     getRank,
     getRankKeys,
     getRankValues,
     numberFormat,
+    hexToRgb,
     replyToInteraction,
 } from '@utils/functions'
 import { generalConfig } from '@configs'
-
-// Pass the entire Canvas object because you'll need access to its width and context
-const applyText = (canvas: Canvas.Canvas, text: string) => {
-    const context = canvas.getContext('2d')
-
-    // Declare a base size of the font
-    let fontSize = 50
-
-    do {
-        // Assign the font to the context and decrement it so it can be measured again
-        context.font = `${(fontSize -= 10)}px Open Sans`
-        // Compare pixel width of the text to the canvas minus the approximate avatar size
-    } while (context.measureText(text).width > canvas.width - 450)
-
-    // Return the result to use in the actual canvas
-    return context.font
-}
 
 @Discord()
 @injectable()
 @Category('Points')
 export default class RankCommand {
-    constructor(
-        private pm: PointManager,
-    ) {}
+    constructor(private pm: PointManager) {}
 
     @SimpleCommand({
         name: 'rank',
@@ -68,11 +50,12 @@ export default class RankCommand {
         commandUser: GuildMember | undefined,
         command: SimpleCommandMessage
     ) {
+        await command.message.channel.sendTyping()
         const user = commandUser?.user || command.message.author
 
         const attachment = await this.drawCanvas(user)
 
-        command.message.reply({
+        await command.message.reply({
             content: attachment ? undefined : `❌ Không tìm thấy người dùng!`,
             files: attachment ? [attachment] : [],
         })
@@ -92,6 +75,7 @@ export default class RankCommand {
         client: Client,
         { localize }: InteractionData
     ) {
+        await interaction.deferReply()
         const user = guildMember?.user || interaction.user
 
         const attachment = await this.drawCanvas(user)
@@ -115,10 +99,40 @@ export default class RankCommand {
 
     async drawCanvas(user: DUser) {
         // insert user in db if not exists
-        const userData = await this.pm.getUserData(user);
+        const userData = await this.pm.getUserData(user)
 
         if (!userData) return null
-        const currentRankPos = await this.pm.getTop({user: null, type: 'overall_points', value: userData.overall_points});
+        const top = await this.pm.getTop({
+            user: null,
+            type: 'overall_points',
+            value: userData.overall_points,
+        })
+
+        const applyText = (
+            canvas: Canvas.Canvas,
+            text: string,
+            fontStyle: string = '',
+            baseFontSize: number = 50,
+            fontFamily: string = 'Open Sans',
+            fontUnit: string = 'px',
+            fontScaleSize: number = 10,
+            compareWidth: number = 450
+        ) => {
+            const context = canvas.getContext('2d')
+
+            let fontSize = baseFontSize
+
+            do {
+                context.font = `${
+                    fontStyle ? `${fontStyle} ` : ''
+                }${(fontSize -= fontScaleSize)}${fontUnit} ${fontFamily}`
+            } while (
+                context.measureText(text).width >
+                canvas.width - compareWidth
+            )
+
+            return context.font
+        }
 
         const rank = getRank(userData.overall_points || 0)
         const currentPoints = userData.overall_points || 0
@@ -126,27 +140,55 @@ export default class RankCommand {
             const rankKeys = getRankKeys()
 
             if (rank == rankKeys[rankKeys.length - 1]) {
-                return 0
+                return null
             }
+            const rankValues = getRankValues()
+
+            const currentIndex = rankKeys.findIndex((v) => v == rank)
 
             const nextIndex =
                 rankKeys.findIndex((v) => v == rank) + 1 >= rankKeys.length
                     ? 0
                     : rankKeys.findIndex((v) => v == rank) + 1
-            const nextRankPoints = getRankValues()[nextIndex]
-            return nextRankPoints
+
+            const currentRankPoints = rankValues[currentIndex]
+            const nextRankPoints = rankValues[nextIndex]
+
+            return {
+                currentRankPoints,
+                nextRankPoints,
+            }
         }
         const requiredPoints = getRequiredPoints()
-        const currentColor = currentRankPos > 3 ? '#fc0356' : '#ffdd00'
+        const currentDisplayPoints = requiredPoints
+            ? currentPoints - requiredPoints.currentRankPoints
+            : -1
+        const neededDisplayPoints = requiredPoints
+            ? requiredPoints.nextRankPoints - requiredPoints.currentRankPoints
+            : -1
 
+        // Colors
+        const palette = getPalette(rank || 'default')
+        const primaryColor = `${palette.find((c) => c.name === 'primary')
+            ?.code}`
+        const secondaryColor = `${palette.find((c) => c.name === 'secondary')
+            ?.code}`
+        const pTextColor = `${palette.find((c) => c.name === 'text')?.code}`
+        const sTextColor = `${this.hexToRgbA(pTextColor, 0.5)}`
+        const barColor = `${palette.find((c) => c.name === 'bar')?.code}`
+        const emptyBarColor = `${this.hexToRgbA(barColor, 0.2)}`
+
+        /**
+         * @Canvas
+         */
         const width = 700,
             height = 200
         const canvas = Canvas.createCanvas(width, height)
         const ctx = canvas.getContext('2d')
 
         // Layer 1st
-        ctx.strokeStyle = 'rgba(0,0,0,0)'
-        ctx.fillStyle = '#222222'
+        ctx.strokeStyle = `rgba(0,0,0,0)`
+        ctx.fillStyle = secondaryColor
         // ctx.fillRect(0, 0, canvas.width, canvas.height)
         ctx.beginPath()
         ctx.roundRect(0, 0, canvas.width, canvas.height, 20)
@@ -154,31 +196,24 @@ export default class RankCommand {
         ctx.fill()
 
         // Layer 2nd
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0)'
-        ctx.fillStyle = '#111111'
-        ctx.beginPath()
-        ctx.roundRect(20, 20, canvas.width - 20 * 2, canvas.height - 20 * 2, 20)
-        ctx.stroke()
-        ctx.fill()
+        // ctx.strokeStyle = `rgba(0,0,0,0)`
+        // ctx.fillStyle = primaryColor
+        // ctx.beginPath()
+        // ctx.roundRect(20, 20, canvas.width - 20 * 2, canvas.height - 20 * 2, 20)
+        // ctx.stroke()
+        // ctx.fill()
 
         // Current Rank Position
         ctx.font = '24pt Open Sans'
         ctx.textAlign = 'right'
-        ctx.fillStyle = currentColor
-        ctx.fillText(
-            `#${currentRankPos}`,
-            canvas.width / 1.07,
-            60
-        )
+        ctx.fillStyle = pTextColor
+        ctx.fillText(`#${top}`, canvas.width / 1.07, 60)
 
         // Current Rank
         ctx.font = 'bold 14pt Open Sans'
-        ctx.fillStyle = '#aaaaaa'
+        ctx.fillStyle = sTextColor
         ctx.fillText(
-            (rank || '').toUpperCase() +
-                ` (${numberFormat(currentPoints)}/${numberFormat(
-                    requiredPoints
-                )})`,
+            (rank || '').toUpperCase(),
             canvas.width / 1.07,
             canvas.height / 1.8
         )
@@ -186,48 +221,64 @@ export default class RankCommand {
         // Username
         ctx.font = applyText(canvas, user.username)
         ctx.textAlign = 'left'
-        ctx.fillStyle = 'white'
+        ctx.fillStyle = pTextColor
         ctx.fillText(user.username, canvas.width / 4, canvas.height / 1.8)
-
-        // // XP Text
-        // ctx.font = applyText(canvas, command.message.author.username)
-        // ctx.fillStyle = 'white'
-        // ctx.fillText(
-        //     command.message.author.username,
-        //     canvas.width / 4,
-        //     canvas.height / 1.8
-        // )
 
         // XP Bar
         // Total bar
         ctx.beginPath()
-        ctx.lineWidth = 10
-        ctx.strokeStyle = '#333333'
-        ctx.fillStyle = '#333333'
-        ctx.roundRect(181, 130, 470, 20, 50)
+        // ctx.lineWidth = 10
+        ctx.strokeStyle = 'rgba(0,0,0,0)'
+        ctx.fillStyle = emptyBarColor
+        ctx.roundRect(canvas.width / 4, canvas.height / 1.6, 480, 30, 50)
         ctx.stroke()
         ctx.fill()
+
         // Child bar
-        const percentage = Math.floor((currentPoints / requiredPoints) * 100)
+        const percentage =
+            requiredPoints === null
+                ? 100
+                : Math.floor((currentDisplayPoints / neededDisplayPoints) * 100)
         const roundedPercent = Math.round(percentage)
-        let i
-        for (i = 0; i < roundedPercent; i++) {
+        for (let i = 0; i < roundedPercent; i++) {
             ctx.beginPath()
             ctx.lineWidth = 10
-            ctx.strokeStyle = currentColor
-            ctx.fillStyle = currentColor
+            ctx.strokeStyle = barColor
+            ctx.fillStyle = barColor
             ctx.arc(190 + i * 4.54, 140, 10, 0, Math.PI * 2, true)
             ctx.stroke()
             ctx.fill()
         }
 
+        // XP Text
+        // head
+        ctx.font = 'bold 14pt Open Sans'
+        ctx.fillStyle = pTextColor
+        ctx.fillText(
+            currentDisplayPoints >= 0 ? numberFormat(currentDisplayPoints) : '>',
+            canvas.width / 3.8,
+            canvas.height / 1.36
+        )
+        // tail
+        ctx.font = 'bold 14pt Open Sans'
+        ctx.textAlign = 'right'
+        ctx.fillStyle = pTextColor
+        ctx.fillText(
+            neededDisplayPoints >= 0 ? numberFormat(neededDisplayPoints) : '<',
+            canvas.width / 1.0835,
+            canvas.height / 1.36
+        )
+
         // Avatar
         // Pick up the pen
+        ctx.lineWidth = 10
+        ctx.strokeStyle = barColor
         ctx.beginPath()
         // Start the arc to form a circle
         ctx.arc(100, 100, 60, 0, Math.PI * 2, true)
         // Put the pen down
         ctx.closePath()
+        ctx.stroke()
         // Clip off the region you drew on
         ctx.clip()
         // Using undici to make HTTP requests for better performance
@@ -237,11 +288,19 @@ export default class RankCommand {
         const avatar = await Canvas.loadImage(await body.arrayBuffer())
         // Move the image downwards vertically and constrain its height to 200, so that it's square
         ctx.drawImage(avatar, 40, 40, 120, 120)
+
         // Use the helpful Attachment class structure to process the file for you
         const attachment = new AttachmentBuilder(await canvas.encode('png'), {
             name: 'point.png',
         })
 
         return attachment
+    }
+
+    private hexToRgbA(hex: string, alpha: number) {
+        const rgb = hexToRgb(hex)
+        if (!rgb) return hex
+
+        return 'rgba(' + rgb.join(',') + ',' + alpha + ')'
     }
 }
