@@ -1,4 +1,5 @@
 import {
+    BigIntType,
     ChangeSet,
     ChangeSetType,
     DateTimeType,
@@ -25,10 +26,9 @@ import { checkRank, resolveDependency } from '@utils/functions'
 import { EventManager, Logger } from '@services'
 import { TransformContext } from '@mikro-orm/core/types/Type'
 
-
-class Int64 extends Type<number, number>{
+class Int64 extends Type<number, number> {
     convertToDatabaseValue(value: number): number {
-        return value;
+        return value
     }
 
     convertToJSValue(value: number): number {
@@ -60,6 +60,8 @@ export class User extends CustomBaseEntity {
 
     @Property({ type: 'text', nullable: true })
     description: string | null
+    @Property({ type: 'text', nullable: true })
+    rankCardPalette: string | null
 
     /**
      * @RANKING

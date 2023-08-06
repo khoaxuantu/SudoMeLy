@@ -1,0 +1,212 @@
+[
+    {
+        "pName": "default",
+        "colors": [
+            {
+                "name": "primary",
+                "code": "rgba(0, 0, 0, 0)"
+            },
+            {
+                "name": "secondary",
+                "code": "rgba(0, 0, 0, 1)"
+            },
+            {
+                "name": "text",
+                "code": "#ffffff"
+            },
+            {
+                "name": "bar",
+                "code": "#ffffff"
+            }
+        ]
+    },
+    {
+        "pName": "Iron",
+        "colors": [
+            {
+                "name": "primary",
+                "code": "rgba(40,24,25,0)"
+            },
+            {
+                "name": "secondary",
+                "code": "rgb(92,79,77)"
+            },
+            {
+                "name": "text",
+                "code": "rgb(219,189,188)"
+            },
+            {
+                "name": "bar",
+                "code": "#998a86"
+            }
+        ]
+    },
+    {
+        "pName": "Bronze",
+        "colors": [
+            {
+                "name": "primary",
+                "code": "rgba(175,103,73,0)"
+            },
+            {
+                "name": "secondary",
+                "code": "rgb(93,56,57)"
+            },
+            {
+                "name": "text",
+                "code": "#d8b7ae"
+            },
+            {
+                "name": "bar",
+                "code": "#af6749"
+            }
+        ]
+    },
+    {
+        "pName": "Silver",
+        "colors": [
+            {
+                "name": "primary",
+                "code": "rgba(92,103,115,0)"
+            },
+            {
+                "name": "secondary",
+                "code": "rgb(92,103,115)"
+            },
+            {
+                "name": "text",
+                "code": "#cacfe9"
+            },
+            {
+                "name": "bar",
+                "code": "#4d63ae"
+            }
+        ]
+    },
+    {
+        "pName": "Gold",
+        "colors": [
+            {
+                "name": "primary",
+                "code": "rgba(0, 0, 0, 0)"
+            },
+            {
+                "name": "secondary",
+                "code": "rgb(191,155,48)"
+            },
+            {
+                "name": "text",
+                "code": "#fdecbb"
+            },
+            {
+                "name": "bar",
+                "code": "#ffbf00"
+            }
+        ]
+    },
+    {
+        "pName": "Platinum",
+        "colors": [
+            {
+                "name": "primary",
+                "code": "rgba(61,145,133,0)"
+            },
+            {
+                "name": "secondary",
+                "code": "rgb(61,145,133)"
+            },
+            {
+                "name": "text",
+                "code": "#bcfef1"
+            },
+            {
+                "name": "bar",
+                "code": "#6dc8b3"
+            }
+        ]
+    },
+    {
+        "pName": "Diamond",
+        "colors": [
+            {
+                "name": "primary",
+                "code": "rgba(79,78,238,0)"
+            },
+            {
+                "name": "secondary",
+                "code": "rgb(73,110,191)"
+            },
+            {
+                "name": "text",
+                "code": "#d8feff"
+            },
+            {
+                "name": "bar",
+                "code": "#4ba2e2"
+            }
+        ]
+    },
+    {
+        "pName": "Master",
+        "colors": [
+            {
+                "name": "primary",
+                "code": "rgba(0, 0, 0, 0)"
+            },
+            {
+                "name": "secondary",
+                "code": "rgb(149,15,185)"
+            },
+            {
+                "name": "text",
+                "code": "#f9cef8"
+            },
+            {
+                "name": "bar",
+                "code": "#ed47f8"
+            }
+        ]
+    },
+    {
+        "pName": "Grandmaster",
+        "colors": [
+            {
+                "name": "primary",
+                "code": "rgba(0, 0, 0, 0)"
+            },
+            {
+                "name": "secondary",
+                "code": "rgb(156,47,34)"
+            },
+            {
+                "name": "text",
+                "code": "#fdc087"
+            },
+            {
+                "name": "bar",
+                "code": "#dc542f"
+            }
+        ]
+    },
+    {
+        "pName": "Challenger",
+        "colors": [
+            {
+                "name": "primary",
+                "code": "rgba(0, 0, 0, 0)"
+            },
+            {
+                "name": "secondary",
+                "code": "rgb(58,156,166)"
+            },
+            {
+                "name": "text",
+                "code": "#fffbe3"
+            },
+            {
+                "name": "bar",
+                "code": "#9a7649"
+            }
+        ]
+    }
+]

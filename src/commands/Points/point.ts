@@ -21,12 +21,15 @@ import { injectable } from 'tsyringe'
 import { Logger, PointManager } from '@services'
 import { UnknownReplyError } from '@errors'
 import {
+    getPalette,
     getRank,
     getRankKeys,
     getRankValues,
+    hexToRgb,
     numberFormat,
     replyToInteraction,
 } from '@utils/functions'
+import { colorPalettes as palettes } from '@configs'
 
 @Discord()
 @injectable()
@@ -123,6 +126,11 @@ export default class PointCommand {
             return `Next rank: ${nextRank} (${currentPoints}/${nextRankPoints})`
         }
 
+        const palette = getPalette(userData.rankCardPalette || 'default')
+        const color = hexToRgb(
+            `${palette.find((c) => c.name === 'text')?.code}`
+        )
+
         const embed = new EmbedBuilder()
             .setAuthor({
                 name: `@${user.username} - ${rank}`,
@@ -130,7 +138,7 @@ export default class PointCommand {
             })
             .setDescription(userData.description)
             .addFields(...fields)
-            .setColor('Random')
+            .setColor(color || 'Random')
             .setFooter({
                 text: getNextRank(),
             })

@@ -43,9 +43,9 @@ export default class RankUpEvent {
             v.name.includes('spam')
         )
 
-        const rolePattern = `>_`
+        // const rolePattern = `>_`
 
-        const newRankName = `${rolePattern}${newRank}`
+        // const newRankName = `${rolePattern}${newRank}`
 
         if (channel && channel.type === ChannelType.GuildText) {
             await channel.send({
@@ -55,25 +55,25 @@ export default class RankUpEvent {
             })
         }
 
-        const roleToRemove = await member.roles.cache.filter((r) =>
-            r.name.includes(rolePattern)
-        )
+        // const roleToRemove = await member.roles.cache.filter((r) =>
+        //     r.name.includes(rolePattern)
+        // )
 
-        if (roleToRemove) {
-            await member.roles.remove(roleToRemove)
-        }
+        // if (roleToRemove) {
+        //     await member.roles.remove(roleToRemove)
+        // }
 
-        const roleToGive =
-            (await guild.roles.cache.find((r) =>
-                r.name.includes(`${newRankName}`)
-            )) ||
-            (await guild.roles.create({
-                name: `${newRankName}`,
-                reason: `MeLy XP System`,
-            }))
+        // const roleToGive =
+        //     (await guild.roles.cache.find((r) =>
+        //         r.name.includes(`${newRankName}`)
+        //     )) ||
+        //     (await guild.roles.create({
+        //         name: `${newRankName}`,
+        //         reason: `MeLy XP System`,
+        //     }))
 
-        if (roleToGive) {
-            await member.roles.add(roleToGive)
-        }
+        // if (roleToGive) {
+        //     await member.roles.add(roleToGive)
+        // }
     }
 }
