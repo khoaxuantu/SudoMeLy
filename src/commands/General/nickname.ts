@@ -216,9 +216,9 @@ export default class NickReqCommand {
         description: 'Gửi yêu cầu đổi tên đến quản trị viên!',
     })
     @Guard(
-        RateLimit(TIME_UNIT.minutes, 5, {
-            message: 'Hãy thử lại vào lúc {until}!',
-        }),
+        // RateLimit(TIME_UNIT.minutes, 5, {
+        //     message: 'Hãy thử lại vào lúc {until}!',
+        // }),
         Point(10)
     )
     async sendNicknameReq(
