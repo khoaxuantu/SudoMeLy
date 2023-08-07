@@ -75,7 +75,6 @@ export default class CountVoiceChannelPeakMembersEvent {
     // =============================
 
     @On('voiceStateUpdate')
-    @Guard(Maintenance)
     async countVoiceChannelPeakMembersEmitter(
         [oldState, newState]: ArgsOf<'voiceStateUpdate'>
         // client: Client

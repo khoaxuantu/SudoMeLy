@@ -36,8 +36,8 @@ export default class LbCommand {
         description: 'Xem ai đang đứng top nào?',
     })
     async lbSlash(
-        @SlashChoice({ name: 'Chat', value: 'chat_points' })
-        @SlashChoice({ name: 'Voice', value: 'voice_points' })
+        // @SlashChoice({ name: 'Chat', value: 'chat_points' })
+        // @SlashChoice({ name: 'Voice', value: 'voice_points' })
         @SlashChoice({ name: 'MeLy', value: 'mely_points' })
         @SlashOption({
             name: 'type',
@@ -52,7 +52,7 @@ export default class LbCommand {
         const guild = await resolveGuild(interaction)
 
         const usersData = await this.pm.getLeaderboard(pointType || 'overall_points', 10);
-        
+
         if (usersData && usersData.length && guild) {
             const data = usersData
                 .filter(
@@ -89,7 +89,7 @@ export default class LbCommand {
         }
     }
 
-    @SimpleCommand({ aliases: ['lb'], name: 'leaderboard' })
+    @SimpleCommand({ aliases: ['lb', 'top'], name: 'leaderboard' })
     async exportLeaderboard(command: SimpleCommandMessage) {
         const guild = command.message.guild
 

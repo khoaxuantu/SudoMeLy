@@ -6,6 +6,7 @@ import { injectable } from 'tsyringe'
 import { Database, EventManager, PointManager } from '@services'
 import { ChannelType, Message, MessageType } from 'discord.js'
 import { Guild, User } from '@entities'
+import { isInMaintenance } from '@utils/functions'
 
 @Discord()
 @injectable()
@@ -69,7 +70,7 @@ export default class ChatPointEvent {
         }
 
         // ignore message without any attachment and content length below 3
-        this.pm.messageAdd(message);
+        this.pm.messageAdd(message)
         this.cooldown.set(member.id, { lastChat: new Date() })
     }
 
@@ -78,11 +79,14 @@ export default class ChatPointEvent {
     // =============================
 
     @On('messageCreate')
-    @Guard(Maintenance)
     async chatPointEmitter(
         [message]: ArgsOf<'messageCreate'>
         // client: Client
     ) {
+        if (await isInMaintenance()) {
+            return
+        }
+
         // Only emit in guild and by user
         if (message.inGuild() && !message.author.bot) {
             /**

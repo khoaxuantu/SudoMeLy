@@ -1,5 +1,4 @@
 import { ArgsOf, Client, Guard } from 'discordx'
-
 import { Discord, On, OnCustom } from '@decorators'
 import { GuildOnly, Maintenance } from '@guards'
 import { injectable } from 'tsyringe'
@@ -13,6 +12,7 @@ import {
 } from '@services'
 import { VoiceState } from 'discord.js'
 import { NotBot } from '@discordx/utilities'
+import { isInMaintenance } from '@utils/functions'
 
 @Discord()
 @injectable()
@@ -42,7 +42,7 @@ export default class VoicePointEvent {
         [oldState, newState]: ArgsOf<'voiceStateUpdate'>
         // client: Client
     ) {
-        if (this.store.get('maintaining')) {
+        if (await isInMaintenance()) {
             return
         }
 

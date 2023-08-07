@@ -6,6 +6,7 @@ import { injectable } from 'tsyringe'
 import { Database, EventManager, Logger, Stats } from '@services'
 import { Message } from 'discord.js'
 import { Guild } from '@entities'
+import { isInMaintenance } from '@utils/functions'
 
 @Discord()
 @injectable()
@@ -54,11 +55,14 @@ export default class ThreadReply {
     // =============================
 
     @On('messageCreate')
-    @Guard(Maintenance)
     async threadReplyEmitter(
         [message]: ArgsOf<'messageCreate'>
         // client: Client
     ) {
+        if (await isInMaintenance()) {
+            return
+        }
+
         if (message.inGuild()) {
             /**
              * @param {Message} message

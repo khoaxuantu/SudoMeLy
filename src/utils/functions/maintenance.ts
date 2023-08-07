@@ -7,10 +7,8 @@ import { Client } from 'discordx'
  * Get the maintenance state of the bot.
  */
 export const isInMaintenance = async (): Promise<boolean> => {
-    const db = await resolveDependency(Database)
-    const dataRepository = db.get(Data)
-    const maintenance = await dataRepository.get('maintenance')
-
+    const store = await resolveDependency(Store)
+    const maintenance = store.get('maintaining')
     return maintenance
 }
 
@@ -22,14 +20,14 @@ export const setMaintenance = async (maintenance: boolean) => {
     const store = await resolveDependency(Store)
     const dataRepository = db.get(Data)
     await dataRepository.set('maintenance', maintenance)
-    await store.set("maintaining", maintenance)
+    await store.set('maintaining', maintenance)
 }
 
 /**
  * Set the maintaining bot status.
  */
 export const setMaintainingStatus = async () => {
-    const maintenance = await isInMaintenance();
+    const maintenance = await isInMaintenance()
     const client = await resolveDependency(Client)
     if (maintenance) {
         client.user?.setPresence({

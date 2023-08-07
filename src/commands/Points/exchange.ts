@@ -1,10 +1,11 @@
 import { Category } from "@discordx/utilities";
 import { PointManager } from "@services";
-import { Discord, Slash, SlashChoice, SlashOption } from "@decorators";
+import { Discord, Guard, Slash, SlashChoice, SlashOption } from "@decorators";
 import { ApplicationCommandOptionType, type CommandInteraction } from "discord.js";
 import { PointType } from "@entities";
 import { injectable } from "tsyringe";
 import { simpleSuccessEmbed, simpleErrorEmbed, syncUser, shortPointType } from "@utils/functions";
+import { Disabled } from "@guards";
 
 
 @Discord()
@@ -19,6 +20,7 @@ export default class ExchangePoints {
         name: "exchange",
         description: "Đổi điểm"
     })
+    @Guard(Disabled)
     async exchangePoint(
         @SlashChoice({ name: 'Chat', value: 'chat_points' })
         @SlashChoice({ name: 'Voice', value: 'voice_points' })

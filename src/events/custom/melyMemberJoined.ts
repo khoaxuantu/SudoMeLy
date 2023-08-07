@@ -7,6 +7,7 @@ import { Maintenance, Guard } from '@guards'
 import { Database, EventManager, Logger, Stats } from '@services'
 import {
     getPrefixFromMessage,
+    isInMaintenance,
     resolveDependency,
     syncUser,
 } from '@utils/functions'
@@ -119,11 +120,14 @@ export default class MelyMemberJoined {
     // =============================
 
     @On('guildMemberAdd')
-    @Guard(Maintenance)
     async melyMemberJoinedEmitter(
         [member]: ArgsOf<'guildMemberAdd'>,
         client: Client
     ) {
+        if (await isInMaintenance()) {
+            return
+        }
+
         /**
          * @param {GuildMember} member
          */

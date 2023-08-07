@@ -1,5 +1,4 @@
 import { ArgsOf, Client, Guard } from 'discordx'
-
 import { Discord, On, OnCustom } from '@decorators'
 import { Maintenance } from '@guards'
 import { injectable } from 'tsyringe'
@@ -9,7 +8,7 @@ import {
     PublicThreadChannel,
 } from 'discord.js'
 import { Guild, Point, User } from '@entities'
-import { sendForm } from '@utils/functions'
+import { isInMaintenance, sendForm } from '@utils/functions'
 
 @Discord()
 @injectable()
@@ -88,7 +87,7 @@ export default class ThreadArchiveEvent {
                     value: points
                 }
             })
-        
+
         await this.pm.addMany(data);
         await sendForm(newThread)
     }
@@ -98,11 +97,14 @@ export default class ThreadArchiveEvent {
     // =============================
 
     @On('threadUpdate')
-    @Guard(Maintenance)
     async voiceEmitter(
         [oldThread, newThread]: ArgsOf<'threadUpdate'>,
         client: Client
     ) {
+        if (await isInMaintenance()) {
+            return
+        }
+
         // Only accept private guild and user
         if (
             oldThread.guild.id == process.env['TEST_GUILD_ID'] &&

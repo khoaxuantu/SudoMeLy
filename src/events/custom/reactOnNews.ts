@@ -5,7 +5,7 @@ import { Maintenance } from '@guards'
 import { injectable } from 'tsyringe'
 import { Database, EventManager, Logger, Stats } from '@services'
 import { ChannelType, Message } from 'discord.js'
-import { resolveGuild } from '@utils/functions'
+import { isInMaintenance, resolveGuild } from '@utils/functions'
 
 @Discord()
 @injectable()
@@ -44,11 +44,14 @@ export default class ReactOnNews {
     // =============================
 
     @On('messageCreate')
-    @Guard(Maintenance)
     async reactOnNewsEmitter(
         [message]: ArgsOf<'messageCreate'>
         // client: Client
     ) {
+        if (await isInMaintenance()) {
+            return
+        }
+
         // Only emit on Announcement Channel
         if (
             message.inGuild() &&
