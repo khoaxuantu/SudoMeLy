@@ -22,6 +22,7 @@ import { Guild, User } from '@entities'
 import { injectable } from 'tsyringe'
 import { replyToInteraction } from '@utils/functions'
 import { UnknownReplyError } from '@errors'
+import { featureCosts } from '@configs'
 
 @Discord()
 @injectable()
@@ -219,7 +220,7 @@ export default class NickReqCommand {
         // RateLimit(TIME_UNIT.minutes, 5, {
         //     message: 'Hãy thử lại vào lúc {until}!',
         // }),
-        Point(10)
+        Point(featureCosts.nickname)
     )
     async sendNicknameReq(
         @SlashOption({

@@ -105,3 +105,7 @@ type APIConfigType = {
 type WebsocketConfigType = {
     enabled: boolean
 }
+
+type CostConfigType = {
+    nickname: number
+}
