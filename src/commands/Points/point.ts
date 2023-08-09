@@ -123,24 +123,40 @@ export default class PointCommand {
                     : rankKeys.findIndex((v) => v == rank) + 1
             const nextRank = rankKeys[nextIndex]
             const nextRankPoints = numberFormat(getRankValues()[nextIndex])
-            return `Next rank: ${nextRank} (${currentPoints}/${nextRankPoints})`
+            return `🆙 ${nextRank} (${nextRankPoints})`
         }
+
+        const highestRank = (
+            await userData.rankHistories.matching({
+                orderBy: { overall_points: -1 },
+                limit: 1,
+            })
+        ).shift()
 
         const palette = getPalette(userData.rankCardPalette || 'default')
         const color = hexToRgb(
             `${palette.find((c) => c.name === 'text')?.code}`
         )
 
+        const highestRankStat = highestRank
+            ? `🏆 ${highestRank.rank} (${numberFormat(
+                  highestRank.overall_points
+              )}) SS${highestRank.season}`
+            : undefined
+
+        const rankStats = [getNextRank(), highestRankStat].filter(s => !!s).join(" | ")
+
         const embed = new EmbedBuilder()
             .setAuthor({
-                name: `@${user.username} - ${rank}`,
+                name: `@${user.username}`,
                 iconURL: user.displayAvatarURL(),
             })
+            .setTitle(`${rank} (${currentPoints})`)
             .setDescription(userData.description)
             .addFields(...fields)
             .setColor(color || 'Random')
             .setFooter({
-                text: getNextRank(),
+                text: rankStats,
             })
 
         this.logger.log(

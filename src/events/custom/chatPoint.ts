@@ -1,4 +1,4 @@
-import { ArgsOf, Client, Guard } from 'discordx'
+import { ArgsOf, Client, Guard, SimpleCommandMessage } from 'discordx'
 
 import { Discord, On, OnCustom } from '@decorators'
 import { Maintenance } from '@guards'
@@ -6,7 +6,8 @@ import { injectable } from 'tsyringe'
 import { Database, EventManager, PointManager } from '@services'
 import { ChannelType, Message, MessageType } from 'discord.js'
 import { Guild, User } from '@entities'
-import { isInMaintenance } from '@utils/functions'
+import { getPrefixFromMessage, isInMaintenance } from '@utils/functions'
+import { generalConfig } from '@configs'
 
 @Discord()
 @injectable()
@@ -53,12 +54,12 @@ export default class ChatPointEvent {
             return
         }
 
-        if (
-            guildData.normal_chat_channel_ids === null ||
-            !guildData.normal_chat_channel_ids.includes(message.channelId)
-        ) {
-            return
-        }
+        // if (
+        //     guildData.normal_chat_channel_ids === null ||
+        //     !guildData.normal_chat_channel_ids.includes(message.channelId)
+        // ) {
+        //     return
+        // }
 
         // 2 secs cooldowns
         if (
@@ -79,11 +80,14 @@ export default class ChatPointEvent {
     // =============================
 
     @On('messageCreate')
-    async chatPointEmitter(
-        [message]: ArgsOf<'messageCreate'>
-        // client: Client
-    ) {
+    async chatPointEmitter([message]: ArgsOf<'messageCreate'>, client: Client) {
         if (await isInMaintenance()) {
+            return
+        }
+        
+        const command = await client.parseCommand(generalConfig.simpleCommandsPrefix, message, false)
+
+        if (command && command instanceof SimpleCommandMessage) {
             return
         }
 

@@ -12,19 +12,20 @@ import {
     EventSubscriber,
     Formula,
     Loaded,
-    Platform,
     PrimaryKey,
     Property,
     Subscriber,
     Type,
+    OneToMany,
     ValidationError,
+    Collection,
 } from '@mikro-orm/core'
 import { EntityRepository } from '@mikro-orm/sqlite'
-
 import { CustomBaseEntity } from './BaseEntity'
 import { checkRank, resolveDependency } from '@utils/functions'
 import { EventManager, Logger } from '@services'
 import { TransformContext } from '@mikro-orm/core/types/Type'
+import { RankHistory } from './RankHistory'
 
 class Int64 extends Type<number, number> {
     convertToDatabaseValue(value: number): number {
@@ -53,6 +54,9 @@ export class User extends CustomBaseEntity {
 
     @Property()
     lastInteract: Date = new Date()
+
+    @OneToMany(() => RankHistory, rankHistory => rankHistory.user)
+    rankHistories = new Collection<RankHistory>(this);
 
     /**
      * @CUSTOMIZE

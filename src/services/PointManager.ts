@@ -28,14 +28,14 @@ class PointEvaluator {
         if (message.content.length < 3 && !message.attachments.size) return 0
 
         // Base point
-        let points = getRandomInt(2, 3)
+        let points = getRandomInt(2, 8)
 
         points += (message.content.length * 5).toString().length
         // If contains any attachments
-        if (message.attachments.size) points += 1
+        if (message.attachments.size) points += 3
 
         // If contains more than 5 spaces
-        if (message.content.trim().split(/ +/g).length > 5) points += 1
+        if (message.content.trim().split(/ +/g).length > 5) points += 2
 
         // If contains emojis
         if (
@@ -48,7 +48,7 @@ class PointEvaluator {
 
         // If contains codeblocks
         if (message.cleanContent.match(/```.+?```/gisu)) {
-            points += 1
+            points += 3
         }
 
         // If mentioned others or replied to others
@@ -120,7 +120,7 @@ class PointEvaluator {
             oldState.streaming === true &&
             newState.streaming === false
         ) {
-            // streamTime: + time / 10 -> tròn xuống.
+            // streamTime: + time -> tròn xuống.
             if (userData.onStreamTime) {
                 points += Math.floor(
                     this.getVoiceUnits(userData.onStreamTime, now)
@@ -136,10 +136,10 @@ class PointEvaluator {
             oldState.selfVideo === true &&
             newState.selfVideo === false
         ) {
-            // onVideo: + time / 10-> tròn xuống.
+            // onVideo: + time -> tròn xuống.
             if (userData.onVideoTime) {
                 points += Math.floor(
-                    this.getVoiceUnits(userData.onVideoTime, now) / 10
+                    this.getVoiceUnits(userData.onVideoTime, now)
                 )
             }
 
@@ -198,19 +198,19 @@ class PointEvaluator {
                 }
             }
 
-            // streamTime: + time / 10 -> tròn xuống.
+            // streamTime: + time -> tròn xuống.
             if (userData.joinedVoiceTime && userData.onStreamTime) {
                 const calcPoints = Math.floor(
-                    this.getVoiceUnits(userData.onStreamTime, now) / 10
+                    this.getVoiceUnits(userData.onStreamTime, now)
                 )
 
                 points += calcPoints
             }
 
-            // onVideo: + time / 10-> tròn xuống.
+            // onVideo: + time * 4 -> tròn xuống.
             if (userData.joinedVoiceTime && userData.onVideoTime) {
                 const calcPoints = Math.floor(
-                    this.getVoiceUnits(userData.onVideoTime, now) / 10
+                    this.getVoiceUnits(userData.onVideoTime, now)
                 )
                 points += calcPoints
             }
@@ -220,7 +220,7 @@ class PointEvaluator {
             userData.onVideoTime = null
             userData.joinedVoiceTime = null
         }
-        
+
         return points
     }
 
@@ -278,7 +278,7 @@ export class PointManager extends PointEvaluator {
             orderBy: {
                 [type]: -1,
             },
-            limit            
+            limit
         })
     }
 

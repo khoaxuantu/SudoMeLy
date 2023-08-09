@@ -35,8 +35,8 @@ export class Guild extends CustomBaseEntity {
     @Property({ nullable: true, type: 'array' })
     excluded_channels: string[] | null
 
-    @Property({ nullable: true, type: 'array' })
-    normal_chat_channel_ids: string[] | null
+    // @Property({ nullable: true, type: 'array' })
+    // normal_chat_channel_ids: string[] | null
 
     // special chat -> special points
     @Property({ nullable: true, type: 'array' })

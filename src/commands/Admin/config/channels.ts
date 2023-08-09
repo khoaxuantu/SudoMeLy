@@ -29,7 +29,7 @@ import { BotName, MelyAvatarUrl, SudoMeLyGitHubRepo } from '@constants'
 
 enum GuildChannelField {
     excluded_channels = 'excluded_channels',
-    normal_chat_channel_ids = 'normal_chat_channel_ids',
+    // normal_chat_channel_ids = 'normal_chat_channel_ids',
     supporting_channel_ids = 'supporting_channel_ids',
     club_channel_ids = 'club_channel_ids',
     sharing_channel_ids = 'sharing_channel_ids',
@@ -75,12 +75,12 @@ export default class GeneralConfigCommand {
                 .setCustomId('config-channels-menu')
                 .setPlaceholder('Config Channels')
                 .addOptions(
-                    new StringSelectMenuOptionBuilder()
-                        .setLabel('Normal Chat')
-                        .setValue(
-                            GuildChannelField.normal_chat_channel_ids +
-                                `|${ChannelType.GuildText}|10`
-                        ),
+                    // new StringSelectMenuOptionBuilder()
+                    //     .setLabel('Normal Chat')
+                    //     .setValue(
+                    //         GuildChannelField.normal_chat_channel_ids +
+                    //             `|${ChannelType.GuildText}|10`
+                    //     ),
                     new StringSelectMenuOptionBuilder()
                         .setLabel('Supporting')
                         .setValue(

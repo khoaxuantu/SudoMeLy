@@ -17,24 +17,27 @@ export function numberFormat(input: any, format: string = '0[.][00]a') {
 }
 
 export function checkRank(overall_points: number) {
-    const ranksArray = Object.values(Ranks).filter(
+    const ranksArray = Object.values(RanksPoint).filter(
         (v) => !isNaN(parseInt(v.toString()))
     ) as number[]
     return ranksArray.some((v) => overall_points == v)
 }
 
 export function getRankKeys() {
-    return Object.values(Ranks).filter((v) =>
+    return Object.values(RanksPoint).filter((v) =>
         isNaN(parseInt(v.toString()))
     ) as string[]
 }
 
 export function getRankValues() {
-    return Object.values(Ranks).filter(
+    return Object.values(RanksPoint).filter(
         (v) => !isNaN(parseInt(v.toString()))
     ) as number[]
 }
 
+/**
+    Return keyof Enum Ranks
+*/
 export function getRank(overall_points: number) {
     if (overall_points < 0) return null
     return getRankKeys().reverse()[
@@ -44,14 +47,57 @@ export function getRank(overall_points: number) {
     ]
 }
 
-export enum Ranks {
+export function getRankV2(overall_points: number): RanksNames {
+    if (overall_points >= RanksPoint.Challenger) {
+        return RanksNames.Challenger
+    }
+    if (overall_points >= RanksPoint.Grandmaster) {
+        return RanksNames.Grandmaster
+    }
+    if (overall_points >= RanksPoint.Master) {
+        return RanksNames.Master
+    }
+    if (overall_points >= RanksPoint.Diamond) {
+        return RanksNames.Diamond
+    }
+    if (overall_points >= RanksPoint.Platinum) {
+        return RanksNames.Platinum
+    }
+    if (overall_points >= RanksPoint.Gold) {
+        return RanksNames.Gold
+    }
+    if (overall_points >= RanksPoint.Silver) {
+        return RanksNames.Silver
+    }
+    if (overall_points >= RanksPoint.Bronze) {
+        return RanksNames.Bronze
+    }
+
+    return RanksNames.Iron
+}
+
+export enum RanksNames {
+    Iron,
+    Bronze,
+    Silver,
+    Gold,
+    Platinum,
+    Diamond,
+    Master,
+    Grandmaster,
+    Challenger,
+}
+
+export enum RanksPoint {
     Iron = 0,
     Bronze = 100,
     Silver = 1_000,
     Gold = 5_000,
     Platinum = 10_000,
-    Diamond = 15_000,
+    Diamond = 20_000,
     Master = 100_000,
     Grandmaster = 1_000_000,
     Challenger = 1_000_000_000,
 }
+
+export type KeyOfRanks = keyof typeof RanksPoint
