@@ -289,6 +289,12 @@ export class PointManager extends PointEvaluator {
         return (await this.repo.count(filter)) + 1
     }
 
+    async getUserData(user: User | null) {
+        if (!user) return null
+        await syncUser(user)
+        return await this.repo.findOne(user.id)
+    }
+
     async getLeaderboard(type: PointType, limit: number) {
         return await this.repo.find(
             {},
@@ -299,16 +305,6 @@ export class PointManager extends PointEvaluator {
                 limit,
             }
         )
-    }
-
-
-    async getLeaderboard(type: PointType, limit: number){
-        return await this.repo.find({}, {
-            orderBy: {
-                [type]: -1,
-            },
-            limit
-        })
     }
 
     async give(
@@ -337,8 +333,8 @@ export class PointManager extends PointEvaluator {
             }
         }
 
-        fromUserData.mely_points -= amount;
-        toUserData.mely_points += amount;
+        fromUserData.mely_points -= amount
+        toUserData.mely_points += amount
 
         await this.repo.flush()
         return {
