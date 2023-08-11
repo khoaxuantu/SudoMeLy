@@ -54,11 +54,15 @@ export default class threadDeleteEvent {
             guildData.sharing_channel_ids.length &&
             guildData.sharing_channel_ids.includes(thread.parentId)
         ) {
-            await this.pm.add({
-                user: owner.user,
-                type: 'mely_points',
-                value: -1
-            })
+            await this.pm.add(
+                {
+                    user: owner.user,
+                    type: 'mely_points',
+                    value: -1,
+                },
+                client.user?.id || '',
+                'Share post Deleted'
+            )
         }
 
         /**
@@ -70,11 +74,15 @@ export default class threadDeleteEvent {
             guildData.club_channel_ids.length &&
             guildData.club_channel_ids.includes(thread.parentId)
         ) {
-            await this.pm.add({
-                user: owner.user,
-                type: 'mely_points',
-                value: -1
-            })
+            await this.pm.add(
+                {
+                    user: owner.user,
+                    type: 'mely_points',
+                    value: -1,
+                },
+                client.user?.id || '',
+                'Club Deleted'
+            )
         }
     }
 }

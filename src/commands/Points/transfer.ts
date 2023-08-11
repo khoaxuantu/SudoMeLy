@@ -1,4 +1,4 @@
-import { Category } from '@discordx/utilities'
+import { Category, RateLimit, TIME_UNIT } from '@discordx/utilities'
 import { PointManager } from '@services'
 import { Discord, Guard, Slash, SlashChoice, SlashOption } from '@decorators'
 import {
@@ -6,6 +6,7 @@ import {
     User as DUser,
     type CommandInteraction,
     GuildMember,
+    EmbedBuilder,
 } from 'discord.js'
 import { PointType } from '@entities'
 import { injectable } from 'tsyringe'
@@ -14,21 +15,22 @@ import {
     simpleErrorEmbed,
     syncUser,
     shortPointType,
+    replyToInteraction,
 } from '@utils/functions'
 import { Disabled } from '@guards'
 
 @Discord()
 @injectable()
 @Category('Points')
-export default class GivePoints {
+export default class TransferPoints {
     constructor(private pm: PointManager) {}
 
     @Slash({
-        name: 'give',
+        name: 'transfer',
         description: 'Chuyển MP',
     })
-    @Guard(Disabled)
-    async exchangePoint(
+    @Guard(RateLimit(TIME_UNIT.seconds, 5))
+    async transferPoint(
         @SlashOption({
             name: 'amount',
             description: 'Số lượng MP mà bạn muốn chuyển',
@@ -44,12 +46,29 @@ export default class GivePoints {
             required: true,
         })
         member: GuildMember,
+        @SlashOption({
+            name: 'message',
+            description: 'Thông điệp',
+            type: ApplicationCommandOptionType.String,
+            required: true,
+        })
+        message: string,
         interaction: CommandInteraction
     ) {
-        const res = await this.pm.give(interaction.user, amount, member.user)
+        const res = await this.pm.transfer(
+            interaction.user,
+            amount,
+            member.user,
+            message
+        )
 
         if (res.success) {
-            simpleSuccessEmbed(interaction, res.message)
+            const embed = new EmbedBuilder()
+                .setTitle('Transaction')
+                .setColor('Random')
+                .setDescription(res.message)
+
+            replyToInteraction(interaction, { embeds: [embed] })
         } else {
             simpleErrorEmbed(interaction, res.message, true)
         }

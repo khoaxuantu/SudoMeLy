@@ -21,7 +21,7 @@ export class Database {
     ) { }
 
     async initialize() {
-        
+
         const pluginsManager = await resolveDependency(PluginsManager)
 
         // get config
@@ -66,15 +66,15 @@ export class Database {
     get<T extends object>(entity: EntityName<T>) {
         return this._orm.em.getRepository(entity)
     }
-    
+
     /**
      * Create a snapshot of the database each day at 00:00
      */
     @Schedule('0 0 * * *')
-    async backup(snapshotName?: string): Promise<boolean> { 
+    async backup(snapshotName?: string): Promise<boolean> {
 
-        const { formatDate } = await import('@utils/functions') 
-        
+        const { formatDate } = await import('@utils/functions')
+
         if (!databaseConfig.backup.enabled && !snapshotName) return false
         if (!this.isSQLiteDatabase()) {
             this.logger.log('Database is not SQLite, couldn\'t backup')
@@ -93,8 +93,8 @@ export class Database {
         try {
 
             await backup(
-                mikroORMConfig[process.env.NODE_ENV]!.dbName!, 
-                snapshotName + '.txt', 
+                mikroORMConfig[process.env.NODE_ENV]!.dbName!,
+                snapshotName + '.txt',
                 objectsPath,
             )
 
@@ -113,7 +113,7 @@ export class Database {
     /**
      * Restore the SQLite database from a snapshot file.
      * @param snapshotDate Date of the snapshot to restore
-     * @returns 
+     * @returns
      */
     async restore(snapshotName: string): Promise<boolean> {
 
@@ -126,7 +126,7 @@ export class Database {
         if (!backupPath) {
             this.logger.log('Backup path not set, couldn\'t restore', 'error', true)
         }
-        
+
         try {
 
             console.debug(mikroORMConfig[process.env.NODE_ENV]!.dbName!)
@@ -141,7 +141,7 @@ export class Database {
             return true
 
         } catch (error) {
-            
+
             console.debug(error)
             this.logger.log('Snapshot file not found, couldn\'t restore', 'error', true)
             return false

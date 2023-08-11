@@ -1,20 +1,21 @@
 import { Category } from '@discordx/utilities'
 import {
     ApplicationCommandOptionType,
-    AutocompleteInteraction,
-    Channel,
     CommandInteraction,
+    EmbedBuilder,
     GuildMember,
     PermissionFlagsBits,
-    User,
     userMention,
-    EmbedBuilder,
-    UserMention
 } from 'discord.js'
-import { Client, DApplicationCommand } from 'discordx'
+import { Client } from 'discordx'
 import { injectable } from 'tsyringe'
 
-import { generalConfig } from '@configs'
+import {
+    BotName,
+    MelyAvatarUrl,
+    SudoMeLyGitHubRepo,
+    TransactionType,
+} from '@constants'
 import {
     Discord,
     Slash,
@@ -22,12 +23,17 @@ import {
     SlashGroup,
     SlashOption,
 } from '@decorators'
-import { Guild, PointType, User as UserEntity } from '@entities'
+import { PointType, User as UserEntity } from '@entities'
 import { UnknownReplyError } from '@errors'
 import { Disabled, Guard, UserPermissions } from '@guards'
 import { Database, Logger, PointManager } from '@services'
-import { resolveGuild, simpleSuccessEmbed, syncUser, replyToInteraction, kawaiiGif, shortPointType } from '@utils/functions'
-import { BotName, MelyAvatarUrl, SudoMeLyGitHubRepo } from '@constants'
+import {
+    kawaiiGif,
+    replyToInteraction,
+    shortPointType,
+    simpleSuccessEmbed,
+    syncUser,
+} from '@utils/functions'
 
 @Discord()
 @injectable()
@@ -67,6 +73,12 @@ export default class PointsAdminCommand {
         })
         pointType: PointType,
         @SlashOption({
+            name: 'message',
+            type: ApplicationCommandOptionType.String,
+            required: true,
+        })
+        message: string,
+        @SlashOption({
             name: 'value',
             type: ApplicationCommandOptionType.Number,
             // minValue: 1,
@@ -77,26 +89,35 @@ export default class PointsAdminCommand {
         client: Client
     ) {
         // insert user in db if not exists
-        await this.pm.add({ user: guildMember.user, type: pointType, value: pointValue })
+        await this.pm.add(
+            { user: guildMember.user, type: pointType, value: pointValue },
+            interaction.user.id,
+            message,
+            TransactionType.ADMIN
+        )
 
-        const pointAction = pointValue >= 0 ? "Cộng" : "Trừ";
-        const color = pointValue >= 0 ? 0x57F287 : 0xED4245;
-        const gifUrl = await kawaiiGif("money");
+        const pointAction = pointValue >= 0 ? 'Cộng' : 'Trừ'
+        const color = pointValue >= 0 ? 0x57f287 : 0xed4245
+        const gifUrl = await kawaiiGif('money')
         const embed = new EmbedBuilder()
             .setAuthor({
                 name: BotName,
                 iconURL: MelyAvatarUrl,
                 url: SudoMeLyGitHubRepo,
             })
-            .setTitle(pointAction + " điểm")
-            .setDescription(`
-                ${pointAction} ${Math.abs(pointValue)} ${shortPointType(pointType)} ${userMention(guildMember.id)}
-            `)
+            .setTitle(pointAction + ' điểm')
+            .setDescription(
+                `
+                ${pointAction} ${Math.abs(pointValue)} ${shortPointType(
+                    pointType
+                )} ${userMention(guildMember.id)}
+            `
+            )
             .setImage(gifUrl)
-            .setColor(color);
+            .setColor(color)
 
         replyToInteraction(interaction, {
-            embeds: [embed]
+            embeds: [embed],
         })
     }
 

@@ -16,11 +16,11 @@ export default class ExchangePoints {
         private pm: PointManager
     ){}
 
-    @Slash({
-        name: "exchange",
-        description: "Đổi điểm"
-    })
-    @Guard(Disabled)
+    // @Slash({
+    //     name: "exchange",
+    //     description: "Đổi điểm"
+    // })
+    // @Guard(Disabled)
     async exchangePoint(
         @SlashChoice({ name: 'Chat', value: 'chat_points' })
         @SlashChoice({ name: 'Voice', value: 'voice_points' })

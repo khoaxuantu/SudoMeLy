@@ -19,6 +19,7 @@ import {
     OneToMany,
     ValidationError,
     Collection,
+    ManyToMany,
 } from '@mikro-orm/core'
 import { EntityRepository } from '@mikro-orm/sqlite'
 import { CustomBaseEntity } from './BaseEntity'
@@ -26,6 +27,7 @@ import { checkRank, resolveDependency } from '@utils/functions'
 import { EventManager, Logger } from '@services'
 import { TransformContext } from '@mikro-orm/core/types/Type'
 import { RankHistory } from './RankHistory'
+import { Transaction } from './Transaction'
 
 class Int64 extends Type<number, number> {
     convertToDatabaseValue(value: number): number {
@@ -57,6 +59,12 @@ export class User extends CustomBaseEntity {
 
     @OneToMany(() => RankHistory, rankHistory => rankHistory.user)
     rankHistories = new Collection<RankHistory>(this);
+
+    @OneToMany(() => Transaction, transaction => transaction.sender)
+    sendTransactions = new Collection<Transaction>(this);
+
+    @OneToMany(() => Transaction, transaction => transaction.receiver)
+    receiveTransactions = new Collection<Transaction>(this);
 
     /**
      * @CUSTOMIZE

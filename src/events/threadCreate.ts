@@ -10,7 +10,7 @@ import { Guild } from '@entities'
 export default class threadCreateEvent {
     constructor(
         private db: Database,
-        private pm: PointManager,
+        private pm: PointManager
     ) {}
 
     @On('threadCreate')
@@ -54,11 +54,15 @@ export default class threadCreateEvent {
             guildData.sharing_channel_ids.length &&
             guildData.sharing_channel_ids.includes(thread.parentId)
         ) {
-            await this.pm.add({
-                user: owner.user,
-                type: 'mely_points',
-                value: 1
-            })
+            await this.pm.add(
+                {
+                    user: owner.user,
+                    type: 'mely_points',
+                    value: 1,
+                },
+                client.user?.id || '',
+                'Share post Created'
+            )
         }
 
         /**
@@ -70,11 +74,15 @@ export default class threadCreateEvent {
             guildData.club_channel_ids.length &&
             guildData.club_channel_ids.includes(thread.parentId)
         ) {
-            await this.pm.add({
-                user: owner.user,
-                type: 'mely_points',
-                value: 1
-            })
+            await this.pm.add(
+                {
+                    user: owner.user,
+                    type: 'mely_points',
+                    value: 1,
+                },
+                client.user?.id || '',
+                'Club Created'
+            )
         }
     }
 }

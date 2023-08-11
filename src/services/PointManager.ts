@@ -1,6 +1,18 @@
-import { UserRepository, User as UserEntity } from '@entities'
-import { singleton } from 'tsyringe'
-import { Database } from './Database'
+import { TransactionType } from '@constants'
+import {
+    Transaction,
+    TransactionRepository,
+    User as UserEntity,
+    UserRepository,
+} from '@entities'
+import { Loaded, wrap, type QBFilterQuery } from '@mikro-orm/core'
+import { Injectable } from '@tsed/di'
+import {
+    getRandomInt,
+    numberFormat,
+    shortPointType,
+    syncUser,
+} from '@utils/functions'
 import {
     ForumChannel,
     Message,
@@ -8,10 +20,11 @@ import {
     ThreadChannel,
     User,
     VoiceState,
+    inlineCode,
+    userMention,
 } from 'discord.js'
-import { getRandomInt, shortPointType, syncUser } from '@utils/functions'
-import { Loaded, type QBFilterQuery } from '@mikro-orm/core'
-import { Injectable } from '@tsed/di'
+import { singleton } from 'tsyringe'
+import { Database } from './Database'
 import { Store } from './Store'
 
 export type PointType =
@@ -117,7 +130,7 @@ class PointEvaluator {
 
                 if (countMember && countInVoiceTime > 0) {
                     points += Math.floor(
-                        (countInVoiceTime * countMember.peakMembers) / 5
+                        (countInVoiceTime * countMember.peakMembers) / 2
                     )
                 }
             }
@@ -192,7 +205,7 @@ class PointEvaluator {
                 points += Math.floor(countInVoiceTime / 12)
             }
 
-            // onMicTime: + time * max(mem) / 5 -> tròn xuống
+            // onMicTime: + time * max(mem) / 2 -> tròn xuống
             if (userData.joinedVoiceTime && userData.onMicTime) {
                 const countMember = this.store
                     .get('voiceChannels')
@@ -202,7 +215,7 @@ class PointEvaluator {
                     const calcPoints = Math.floor(
                         (this.getVoiceUnits(userData.onMicTime, now) *
                             countMember.peakMembers) /
-                            5
+                            2
                     )
 
                     points += calcPoints
@@ -264,9 +277,11 @@ class PointEvaluator {
 @singleton()
 export class PointManager extends PointEvaluator {
     private repo: UserRepository
+    private transactionRepo: TransactionRepository
 
     async initialize(db: Database) {
         this.repo = db.em.getRepository(UserEntity)
+        this.transactionRepo = db.em.getRepository(Transaction)
     }
 
     private getRate(fromPointType: PointType, toPointType: PointType) {
@@ -289,10 +304,13 @@ export class PointManager extends PointEvaluator {
         return (await this.repo.count(filter)) + 1
     }
 
-    async getUserData(user: User | null) {
+    async getUserData(user: User | string | null) {
         if (!user) return null
-        await syncUser(user)
-        return await this.repo.findOne(user.id)
+        if (user instanceof User) {
+            await syncUser(user)
+        }
+        const id = user instanceof User ? user.id : user
+        return await this.repo.findOne({ id })
     }
 
     async getLeaderboard(type: PointType, limit: number) {
@@ -307,10 +325,11 @@ export class PointManager extends PointEvaluator {
         )
     }
 
-    async give(
+    async transfer(
         fromUser: User,
         amount: number,
-        toUser: User
+        toUser: User,
+        message: string
     ): Promise<TransactionResponse> {
         if (toUser.bot) {
             return {
@@ -318,6 +337,14 @@ export class PointManager extends PointEvaluator {
                 message: 'Bot không nhận được MP!',
             }
         }
+
+        if (fromUser.id === toUser.id) {
+            return {
+                success: false,
+                message: 'Gửi cho chính bạn?!?',
+            }
+        }
+
         const fromUserData = await this.getUserData(fromUser)
         const toUserData = await this.getUserData(toUser)
         if (!fromUserData || !toUserData) {
@@ -326,6 +353,7 @@ export class PointManager extends PointEvaluator {
                 message: 'Không tìm thấy dữ liệu',
             }
         }
+
         if (fromUserData.mely_points < amount) {
             return {
                 success: false,
@@ -336,10 +364,24 @@ export class PointManager extends PointEvaluator {
         fromUserData.mely_points -= amount
         toUserData.mely_points += amount
 
-        await this.repo.flush()
+        const transaction = new Transaction()
+        transaction.type = TransactionType.NORMAL
+        transaction.amount = amount
+        transaction.message = message
+        transaction.sender = wrap(fromUserData).toReference()
+        transaction.receiver = wrap(toUserData).toReference()
+
+        await this.transactionRepo.persistAndFlush(transaction)
+
         return {
             success: true,
-            message: `Đã chuyển ${amount} MP cho ${toUser.username}!`,
+            message: [
+                `${inlineCode('🆔 ID       ')} ${transaction.id}`,
+                `${inlineCode('💸 Amount   ')} ${numberFormat(amount)} MP`,
+                `${inlineCode('💰 Sender   ')} ${userMention(fromUser.id)}`,
+                `${inlineCode('🗳 Receiver ')} ${userMention(toUser.id)}`,
+                `${inlineCode('📫 Message  ')} ${message}`,
+            ].join('\n'),
         }
     }
 
@@ -377,17 +419,31 @@ export class PointManager extends PointEvaluator {
         }
     }
 
-    async add(pointPackage: PointPackage) {
+    async add(
+        pointPackage: PointPackage,
+        senderId: string,
+        message: string,
+        transactionType: TransactionType = TransactionType.SYSTEM
+    ) {
         if (!pointPackage.user) return
         const userData = await this.getUserData(pointPackage.user)
-        if (userData) {
+        const senderData = await this.getUserData(senderId)
+        if (userData && senderData) {
             const value = Math.floor(pointPackage.value)
             if (value === 0) return
             userData[pointPackage.type] = Math.max(
                 0,
                 userData[pointPackage.type] + value
             )
-            await this.repo.flush()
+
+            const transaction = new Transaction()
+            transaction.amount = value
+            transaction.message = message
+            transaction.sender = wrap(senderData).toReference()
+            transaction.receiver = wrap(userData).toReference()
+            transaction.type = transactionType
+
+            await this.repo.persistAndFlush(transaction)
         }
     }
 
