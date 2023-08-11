@@ -1,8 +1,9 @@
+import { TransactionType } from '@constants'
 import {
     Entity,
     EntityRepositoryType,
     Enum,
-    ManyToMany,
+    EnumType,
     ManyToOne,
     PrimaryKey,
     Property,
@@ -10,7 +11,6 @@ import {
 } from '@mikro-orm/core'
 import { EntityRepository } from '@mikro-orm/sqlite'
 import { User } from './User'
-import { TransactionType } from '@constants'
 
 // ===========================================
 // ================= Entity ==================
@@ -29,7 +29,7 @@ export class Transaction {
     @ManyToOne(() => User, { ref: true })
     receiver: Ref<User>
 
-    @Enum(() => TransactionType)
+    @Enum({ type: EnumType, items: () => TransactionType })
     type!: TransactionType
 
     @Property()

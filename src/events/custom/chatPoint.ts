@@ -61,11 +61,11 @@ export default class ChatPointEvent {
         //     return
         // }
 
-        // 2 secs cooldowns
+        // 5 secs cooldowns
         if (
             Date.now() -
                 (this.cooldown.get(member.id)?.lastChat.getTime() || 0) <
-            2000
+            5000
         ) {
             return
         }
@@ -84,7 +84,7 @@ export default class ChatPointEvent {
         if (await isInMaintenance()) {
             return
         }
-        
+
         const command = await client.parseCommand(generalConfig.simpleCommandsPrefix, message, false)
 
         if (command && command instanceof SimpleCommandMessage) {

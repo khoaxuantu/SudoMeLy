@@ -231,7 +231,7 @@ class PointEvaluator {
                 points += calcPoints
             }
 
-            // onVideo: + time * 4 -> tròn xuống.
+            // onVideo: + time -> tròn xuống.
             if (userData.joinedVoiceTime && userData.onVideoTime) {
                 const calcPoints = Math.floor(
                     this.getVoiceUnits(userData.onVideoTime, now)
