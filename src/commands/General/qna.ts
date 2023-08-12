@@ -265,7 +265,7 @@ export default class QnaCommand {
         type: ApplicationCommandType.Message,
         defaultMemberPermissions: PermissionFlagsBits.Administrator,
     })
-    @Guard(UserPermissions(['Administrator']), Disabled)
+    @Guard(UserPermissions(['Administrator']))
     async markAsSolved(interaction: MessageContextMenuCommandInteraction) {
         await interaction.targetMessage.react(markedEmoji)
         await interaction.reply({

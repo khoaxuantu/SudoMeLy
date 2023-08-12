@@ -45,7 +45,7 @@ import {
     defaultMemberPermissions: PermissionFlagsBits.Administrator,
 })
 @SlashGroup('points')
-@Guard(UserPermissions(['Administrator']), Disabled)
+@Guard(UserPermissions(['Administrator']))
 export default class PointsAdminCommand {
     constructor(
         private db: Database,

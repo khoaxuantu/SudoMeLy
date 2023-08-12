@@ -58,7 +58,7 @@ import { Loaded, wrap } from '@mikro-orm/core'
     defaultMemberPermissions: PermissionFlagsBits.Administrator,
 })
 @SlashGroup('points')
-@Guard(UserPermissions(['Administrator']), Disabled)
+@Guard(UserPermissions(['Administrator']))
 export default class PointsSchedulerCommand {
     constructor(
         private db: Database,
@@ -67,7 +67,6 @@ export default class PointsSchedulerCommand {
     ) {}
 
     @SimpleCommand({ name: 'test-reset' })
-    @Guard(Disabled)
     async test(command: SimpleCommandMessage, client: Client) {
         this.rankReset()
     }
